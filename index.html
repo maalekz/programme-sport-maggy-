@@ -25,13 +25,13 @@ input,button,select,textarea{font-family:inherit;font-size:inherit}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
 button{cursor:pointer}
-#root{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-t)}
-.screens{flex:1;overflow:hidden;position:relative;min-height:0}
-.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:none}
-.screen.active{display:block}
+#root{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-t);overflow:hidden;pointer-events:all}
+.screens{flex:1;overflow:hidden;position:relative;min-height:0;pointer-events:none}
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:none;pointer-events:none}
+.screen.active{display:block;pointer-events:all}
 /* TAB BAR */
-.tabbar{display:flex;background:rgba(0,0,0,.92);border-top:1px solid var(--sep2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);padding-bottom:var(--safe-b);flex-shrink:0}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px 6px;gap:2px;border:none;background:none;color:var(--t3);min-height:54px}
+.tabbar{display:flex;background:rgba(0,0,0,.92);border-top:1px solid var(--sep2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);padding-bottom:var(--safe-b);flex-shrink:0;pointer-events:all;z-index:50;position:relative}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px 6px;gap:2px;border:none;background:none;color:var(--t3);min-height:54px;pointer-events:all;-webkit-user-select:none;user-select:none}
 .tab.active{color:var(--blue)}
 .tab svg{width:22px;height:22px;fill:currentColor}
 .tab-l{font-size:10px;font-weight:500;letter-spacing:-.01em}
@@ -48,8 +48,8 @@ button{cursor:pointer}
 .empty{text-align:center;padding:28px 16px;color:var(--t3);font-size:14px;font-style:italic}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 /* MODALS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:100;display:none;align-items:flex-end}
-.overlay.open{display:flex}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:100;display:none;align-items:flex-end;pointer-events:none}
+.overlay.open{display:flex;pointer-events:all}
 .sheet{background:var(--bg2);border-radius:22px 22px 0 0;padding:20px 20px calc(20px + var(--safe-b));width:100%;max-height:94vh;overflow-y:auto;animation:up .22s ease}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 18px}
@@ -379,11 +379,11 @@ button{cursor:pointer}
 
 <!-- TABBAR -->
 <nav class="tabbar">
-<button class="tab active" onclick="showS('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="tab-l">Accueil</span></button>
-<button class="tab" onclick="showS('workout',this)"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg><span class="tab-l">Séance</span></button>
-<button class="tab" onclick="showS('nutrition',this)"><svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg><span class="tab-l">Nutrition</span></button>
-<button class="tab" onclick="showS('body',this)"><svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg><span class="tab-l">Corps</span></button>
-<button class="tab" onclick="showS('stats',this)"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span class="tab-l">Stats</span></button>
+<button type="button" class="tab active" onclick="showS('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="tab-l">Accueil</span></button>
+<button type="button" class="tab" onclick="showS('workout',this)"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg><span class="tab-l">Séance</span></button>
+<button type="button" class="tab" onclick="showS('nutrition',this)"><svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg><span class="tab-l">Nutrition</span></button>
+<button type="button" class="tab" onclick="showS('body',this)"><svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg><span class="tab-l">Corps</span></button>
+<button type="button" class="tab" onclick="showS('stats',this)"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span class="tab-l">Stats</span></button>
 </nav>
 </div>
 
