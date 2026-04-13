@@ -6,157 +6,250 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Malek">
-<meta name="theme-color" content="#000">
+<meta name="theme-color" content="#000000">
 <title>Malek Training</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+/* === RESET === */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;height:-webkit-fill-available}
+body{height:100%;height:-webkit-fill-available;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;-webkit-text-size-adjust:100%}
+input,button,select,textarea{font-family:inherit;font-size:inherit;-webkit-appearance:none;appearance:none}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+button{cursor:pointer;background:none;border:none;padding:0;touch-action:manipulation}
+
+/* === COLORS === */
 :root{
   --bg:#000;--bg2:#1c1c1e;--bg3:#2c2c2e;--bg4:#3a3a3c;
-  --sep:rgba(255,255,255,.1);--sep2:rgba(255,255,255,.07);
   --t1:#fff;--t2:rgba(255,255,255,.6);--t3:rgba(255,255,255,.3);
-  --blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;--red:#ff453a;--purple:#bf5af2;--teal:#5ac8fa;
-  --bd:rgba(10,132,255,.15);--gd:rgba(48,209,88,.13);--od:rgba(255,159,10,.13);
-  --rd:rgba(255,69,58,.13);--pd:rgba(191,90,242,.13);
-  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+  --sep:rgba(255,255,255,.1);
+  --blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;
+  --red:#ff453a;--purple:#bf5af2;
+  --bd:rgba(10,132,255,.15);--gd:rgba(48,209,88,.13);
+  --od:rgba(255,159,10,.13);--pd:rgba(191,90,242,.13);--rd:rgba(255,69,58,.13);
+  --sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t1)}
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px}
-input,button,select,textarea{font-family:inherit;font-size:inherit}
-input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
-input[type=number]{-moz-appearance:textfield}
-button{cursor:pointer}
-#root{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-t);overflow:hidden}
-.screens{flex:1;overflow:hidden;position:relative;min-height:0}
-.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:none}
-.screen.active{display:block}
-/* TAB BAR */
-.tabbar{display:flex;background:rgba(0,0,0,.92);border-top:1px solid var(--sep2);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);padding-bottom:var(--safe-b);flex-shrink:0;pointer-events:all;z-index:50;position:relative}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px 6px;gap:2px;border:none;background:none;color:var(--t3);min-height:54px;pointer-events:all;-webkit-user-select:none;user-select:none}
-.tab.active{color:var(--blue)}
-.tab svg{width:22px;height:22px;fill:currentColor}
-.tab-l{font-size:10px;font-weight:500;letter-spacing:-.01em}
-/* COMMON */
-.ph{padding:20px 16px 0;position:sticky;top:0;z-index:10;background:linear-gradient(#000 82%,transparent)}
-.ptitle{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:14px}
-.card{background:var(--bg2);border-radius:16px;overflow:hidden;margin-bottom:10px}
-.card-p{padding:14px 16px}
-.lbl{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
-.badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;white-space:nowrap}
-.b-blue{background:var(--bd);color:var(--blue)}.b-orange{background:var(--od);color:var(--orange)}
-.b-green{background:var(--gd);color:var(--green)}.b-gray{background:var(--bg3);color:var(--t2)}
-.b-red{background:var(--rd);color:var(--red)}.b-purple{background:var(--pd);color:var(--purple)}
-.empty{text-align:center;padding:28px 16px;color:var(--t3);font-size:14px;font-style:italic}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-/* MODALS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:100;display:none;align-items:flex-end;pointer-events:none}
-.overlay.open{display:flex;pointer-events:all}
-.sheet{background:var(--bg2);border-radius:22px 22px 0 0;padding:20px 20px calc(20px + var(--safe-b));width:100%;max-height:94vh;overflow-y:auto;animation:up .22s ease}
-@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 18px}
+
+/* === LAYOUT PRINCIPAL - ÉPROUVÉ iOS === */
+#app{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  height:-webkit-fill-available;
+  padding-top:var(--st);
+}
+
+/* Zone scrollable principale */
+#pages{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  /* Pas de pointer-events:none ici - important */
+}
+
+/* Chaque page */
+.page{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  display:none;
+  background:#000;
+}
+.page.on{display:block}
+
+/* === TAB BAR === */
+#tabbar{
+  flex-shrink:0;
+  display:flex;
+  background:rgba(28,28,30,.95);
+  border-top:1px solid rgba(255,255,255,.1);
+  padding-bottom:var(--sb);
+  /* Toujours au dessus de tout */
+  position:relative;
+  z-index:999;
+}
+.tb{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:8px 4px;
+  min-height:50px;
+  gap:3px;
+  color:rgba(255,255,255,.4);
+  touch-action:manipulation;
+  cursor:pointer;
+  border:none;
+  background:none;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.tb svg{width:22px;height:22px;fill:currentColor;flex-shrink:0}
+.tb span{font-size:10px;font-weight:500}
+.tb.on{color:#0a84ff}
+
+/* === MODALES - STRUCTURE PROPRE === */
+.modal{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.75);
+  z-index:9999;
+  display:flex;
+  align-items:flex-end;
+  /* CACHÉ par défaut */
+  visibility:hidden;
+  opacity:0;
+  transition:opacity .2s,visibility .2s;
+}
+.modal.on{
+  visibility:visible;
+  opacity:1;
+}
+.modal-box{
+  background:#1c1c1e;
+  border-radius:20px 20px 0 0;
+  padding:20px 20px calc(20px + var(--sb));
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  transform:translateY(100%);
+  transition:transform .25s ease;
+}
+.modal.on .modal-box{transform:translateY(0)}
+.mhandle{width:36px;height:4px;border-radius:2px;background:#3a3a3c;margin:0 auto 18px}
 .mtitle{font-size:20px;font-weight:700;margin-bottom:16px}
-.mfield{margin-bottom:13px}
-.mfield label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-.minput{display:block;width:100%;background:var(--bg3);border:none;border-radius:12px;padding:12px 14px;font-size:16px;color:var(--t1);min-height:46px;outline:none;color-scheme:dark}
-.minput:focus{outline:2px solid var(--blue)}
-.minput::placeholder{color:var(--t3)}
-.mactions{display:flex;gap:8px;margin-top:4px}
-.btn{min-height:46px;border-radius:13px;border:none;padding:11px 18px;font-size:15px;font-weight:700;color:#fff}
-.btn-blue{background:var(--blue);flex:2}.btn-gray{background:var(--bg3);color:var(--t2);flex:1}
-.btn-red{background:var(--red)}.btn-green{background:var(--green)}
-.btn:active{opacity:.75}
-/* HOME */
-.hbody{padding:0 16px calc(24px + var(--safe-b))}
-.greeting{font-size:28px;font-weight:700;letter-spacing:-.5px}
-.greeting em{font-style:normal;color:var(--blue)}
-.hsub{font-size:14px;color:var(--t2);margin-top:2px;margin-bottom:18px}
-.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.kcard{background:var(--bg2);border-radius:16px;padding:14px 16px}
+
+/* === COMPOSANTS === */
+.ph{padding:18px 16px 0;position:sticky;top:0;z-index:10;background:#000}
+.ptitle{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:12px}
+.lbl{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.bb{background:var(--bd);color:var(--blue)}.bo{background:var(--od);color:var(--orange)}
+.bg{background:var(--gd);color:var(--green)}.bgr{background:#2c2c2e;color:var(--t2)}
+.br{background:var(--rd);color:var(--red)}
+.card{background:#1c1c1e;border-radius:16px;overflow:hidden;margin-bottom:10px}
+.card-p{padding:14px 16px}
+.empty{text-align:center;padding:28px;color:var(--t3);font-size:14px;font-style:italic}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* Grille KPI */
+.kg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.kc{background:#1c1c1e;border-radius:16px;padding:14px 16px}
 .kv{font-size:26px;font-weight:700;letter-spacing:-.5px}
 .kl{font-size:12px;color:var(--t2);margin-top:2px}
-.kcard.blue .kv{color:var(--blue)}.kcard.green .kv{color:var(--green)}
-.kcard.orange .kv{color:var(--orange)}.kcard.purple .kv{color:var(--purple)}
-.today-wrap{background:var(--bd);border-radius:16px;padding:16px;margin-bottom:14px}
+.kc.blue .kv{color:var(--blue)}.kc.green .kv{color:var(--green)}
+.kc.orange .kv{color:var(--orange)}.kc.purple .kv{color:var(--purple)}
+
+/* Boutons principaux */
+.btn{min-height:46px;border-radius:13px;border:none;padding:11px 18px;font-size:15px;font-weight:700;color:#fff;touch-action:manipulation}
+.btn-blue{background:var(--blue)}.btn-gray{background:#2c2c2e;color:var(--t2)}.btn-green{background:var(--green)}
+.btn:active{opacity:.7}
+
+/* Input */
+.inp{display:block;width:100%;background:#2c2c2e;border:none;border-radius:12px;padding:12px 14px;font-size:16px;color:#fff;min-height:46px;outline:none;color-scheme:dark}
+.inp::placeholder{color:var(--t3)}
+.inp:focus{outline:2px solid var(--blue)}
+.mf{margin-bottom:13px}
+.mf label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.mrow{display:flex;gap:8px;margin-top:4px}
+
+/* Today card */
+.today-c{background:var(--bd);border-radius:16px;padding:16px;margin-bottom:14px}
 .today-tag{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
 .today-name{font-size:18px;font-weight:700;margin-bottom:3px}
 .today-sub{font-size:13px;color:var(--t2)}
-.btn-start{display:block;width:100%;margin-top:12px;background:var(--blue);border:none;border-radius:13px;padding:13px;font-size:16px;font-weight:700;color:#fff}
+.btn-start{display:block;width:100%;margin-top:12px;background:var(--blue);border:none;border-radius:13px;padding:13px;font-size:16px;font-weight:700;color:#fff;touch-action:manipulation}
 .btn-start:active{opacity:.8}
-.install-wrap{background:linear-gradient(135deg,#0d1f33,#0a1525);border:1px solid rgba(10,132,255,.3);border-radius:16px;padding:14px;margin-bottom:14px;display:none}
-.install-wrap.show{display:block}
+.install-b{background:linear-gradient(135deg,#0d1f33,#0a1525);border:1px solid rgba(10,132,255,.3);border-radius:16px;padding:14px;margin-bottom:14px;display:none}
+.install-b.on{display:block}
 .install-t{font-size:14px;font-weight:700;margin-bottom:5px}
 .install-s{font-size:13px;color:var(--t2);line-height:1.7}
 .install-s b{color:var(--blue)}
-.settings-btn{position:absolute;right:16px;top:20px;background:var(--bg2);border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:17px;z-index:20}
-/* WORKOUT */
+.settings-btn{position:absolute;right:16px;top:18px;background:#1c1c1e;border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:17px;z-index:20;touch-action:manipulation}
+
+/* Day chips */
 .day-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
 .day-scroll::-webkit-scrollbar{display:none}
-.dchip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:var(--bg2);color:var(--t2);transition:all .15s}
-.dchip.upper.active{background:var(--bd);color:var(--blue)}.dchip.lower.active{background:var(--gd);color:var(--green)}.dchip.arms.active{background:var(--pd);color:var(--purple)}
+.dchip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:#1c1c1e;color:var(--t2);touch-action:manipulation}
+.dchip.upper.on{background:var(--bd);color:var(--blue)}
+.dchip.lower.on{background:var(--gd);color:var(--green)}
+.dchip.arms.on{background:var(--pd);color:var(--purple)}
+
+/* Session info */
 .sinfo{display:flex;gap:8px;padding:10px 16px}
-.si{flex:1;background:var(--bg2);border-radius:12px;padding:10px;text-align:center}
-.si-v{font-size:18px;font-weight:700}.si-l{font-size:10px;color:var(--t2);margin-top:1px}
+.si{flex:1;background:#1c1c1e;border-radius:12px;padding:10px;text-align:center}
+.si-v{font-size:18px;font-weight:700}
+.si-l{font-size:10px;color:var(--t2);margin-top:1px}
 .si.blue .si-v{color:var(--blue)}.si.green .si-v{color:var(--green)}.si.orange .si-v{color:var(--orange)}
 .snote{margin:4px 16px 8px;padding:9px 12px;background:var(--od);border-radius:10px;font-size:12px;color:var(--orange);line-height:1.5}
+
+/* Section workout */
 .wsec{padding:0 16px}
 .wsec-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0 7px}
 .wsec-t{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
-.btn-add-ex{background:var(--bd);border:none;border-radius:8px;padding:5px 11px;font-size:12px;font-weight:700;color:var(--blue)}
-/* GROUPS */
-.grp{background:var(--bg2);border-radius:16px;overflow:hidden;margin-bottom:8px}
-.grp-hdr{display:flex;align-items:center;gap:6px;padding:9px 14px;border-bottom:1px solid var(--sep2)}
+.btn-add-ex{background:var(--bd);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--blue);touch-action:manipulation}
+
+/* Groups */
+.grp{background:#1c1c1e;border-radius:16px;overflow:hidden;margin-bottom:8px}
+.grp-hdr{display:flex;align-items:center;gap:6px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
 .gdot{width:6px;height:6px;border-radius:50%}
 .gdot.ss{background:var(--orange)}.gdot.ts{background:var(--purple)}.gdot.abs{background:var(--green)}
-.glbl{font-size:12px;font-weight:700}.glbl.ss{color:var(--orange)}.glbl.ts{color:var(--purple)}.glbl.abs{color:var(--green)}
+.glbl{font-size:12px;font-weight:700}
+.glbl.ss{color:var(--orange)}.glbl.ts{color:var(--purple)}.glbl.abs{color:var(--green)}
 .gsub{font-size:11px;color:var(--t3);margin-left:auto}
-/* EXERCISE CARD */
-.excard{background:var(--bg2);border-radius:16px;overflow:hidden;margin-bottom:8px}
-.grp .excard{background:transparent;border-radius:0;margin:0;border-bottom:1px solid var(--sep2)}
+
+/* Exercise cards */
+.excard{background:#1c1c1e;border-radius:16px;overflow:hidden;margin-bottom:8px}
+.grp .excard{background:transparent;border-radius:0;margin:0;border-bottom:1px solid rgba(255,255,255,.07)}
 .grp .excard:last-child{border-bottom:none}
 .exhead{display:flex;align-items:flex-start;gap:10px;padding:13px}
 .exmain{flex:1;min-width:0}
-.exname{font-size:15px;font-weight:600}
+.exname{font-size:15px;font-weight:600;line-height:1.3}
 .exnote{font-size:12px;color:var(--t3);margin-top:3px;font-style:italic}
 .exmeta{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
 .exbtns{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
-.btn-log{min-width:44px;min-height:44px;border-radius:11px;background:var(--bd);border:none;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:17px}
-.btn-edit-ex{min-width:44px;min-height:28px;border-radius:8px;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px}
-/* LOG PANEL */
-.logpanel{display:none;border-top:1px solid var(--sep2);background:rgba(0,0,0,.25);padding:13px}
-.logpanel.open{display:block}
+.btn-log{min-width:44px;min-height:44px;border-radius:11px;background:var(--bd);border:none;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:18px;touch-action:manipulation}
+.btn-edit-ex{min-width:44px;min-height:28px;border-radius:8px;background:#2c2c2e;border:none;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;touch-action:manipulation}
+
+/* Log panel */
+.logpanel{display:none;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.3);padding:13px}
+.logpanel.on{display:block}
 .log-top{display:flex;align-items:center;gap:7px;margin-bottom:11px;flex-wrap:wrap}
 .log-lbl{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;flex:1}
-.ios-date{background:var(--bg3);border:none;border-radius:8px;padding:7px 10px;color:var(--t1);min-height:36px;outline:none;color-scheme:dark;font-size:12px}
-.btn-reprise{min-height:36px;background:var(--bg3);border:none;border-radius:8px;padding:7px 12px;color:var(--t2);font-size:12px;font-weight:600}
+.ios-date{background:#2c2c2e;border:none;border-radius:8px;padding:7px 10px;color:#fff;min-height:36px;outline:none;color-scheme:dark;font-size:12px}
+.btn-reprise{min-height:36px;background:#2c2c2e;border:none;border-radius:8px;padding:7px 12px;color:var(--t2);font-size:12px;font-weight:600;touch-action:manipulation}
 .stbl{width:100%;border-collapse:separate;border-spacing:0 5px;margin-bottom:9px}
-.stbl th{font-size:10px;font-weight:500;color:var(--t3);padding:0 0 2px;text-align:center}
+.stbl th{font-size:10px;color:var(--t3);padding:0 0 2px;text-align:center;font-weight:500}
 .stbl th:first-child{text-align:left;width:26px}
 .sn{font-size:12px;font-weight:600;color:var(--t3)}
-.sf{background:var(--bg3);border:none;border-radius:10px;padding:9px 5px;font-size:16px;font-weight:600;color:var(--t1);width:100%;text-align:center;min-height:42px;outline:none;display:block}
+.sf{background:#2c2c2e;border:none;border-radius:10px;padding:9px 5px;font-size:16px;font-weight:600;color:#fff;width:100%;text-align:center;min-height:42px;outline:none;display:block}
 .sf::placeholder{color:var(--t3);font-size:12px;font-weight:400}
 .sx{font-size:13px;color:var(--t3);padding:0 3px;width:16px;text-align:center}
-.schk{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t3);margin:auto;transition:all .15s}
+.schk{width:32px;height:32px;border-radius:50%;background:#2c2c2e;border:none;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t3);margin:auto;transition:all .15s;touch-action:manipulation}
 .schk.done{background:var(--green);color:#fff}
 .logbtns{display:flex;gap:7px;margin-bottom:12px}
-.btn-adds{min-height:40px;flex:1;background:var(--bg3);border:none;border-radius:11px;font-size:13px;color:var(--t2)}
-.btn-savel{min-height:40px;flex:2;background:var(--blue);border:none;border-radius:11px;font-size:15px;font-weight:700;color:#fff}
-/* HISTORY */
+.btn-adds{min-height:40px;flex:1;background:#2c2c2e;border:none;border-radius:11px;font-size:13px;color:var(--t2);touch-action:manipulation}
+.btn-savel{min-height:40px;flex:2;background:var(--blue);border:none;border-radius:11px;font-size:15px;font-weight:700;color:#fff;touch-action:manipulation}
 .hwrap{display:flex;flex-direction:column;gap:6px}
-.hrow{background:var(--bg3);border-radius:11px;padding:9px 11px}
+.hrow{background:#2c2c2e;border-radius:11px;padding:9px 11px}
 .htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .hdate{font-size:11px;font-weight:600;color:var(--t2)}
 .hright{display:flex;align-items:center;gap:7px}
 .hmax{font-size:12px;font-weight:700;color:var(--orange)}
 .hvol{font-size:11px;color:var(--t3)}
-.btn-delh{background:none;border:none;color:var(--red);font-size:13px;padding:3px;min-width:24px}
+.btn-delh{border:none;color:var(--red);font-size:13px;padding:3px;min-width:24px;min-height:24px;background:none;touch-action:manipulation}
 .hsets{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
-.hset{font-size:11px;font-weight:500;background:var(--bg4);border-radius:5px;padding:2px 7px}
+.hset{font-size:11px;font-weight:500;background:#3a3a3c;border-radius:5px;padding:2px 7px}
 .hset.pr{background:rgba(255,159,10,.2);color:var(--orange)}
-/* NUTRITION */
-.nbody{padding:0 16px calc(30px + var(--safe-b))}
-.ring-wrap{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg2);border-radius:16px;margin-bottom:10px}
+
+/* Nutrition */
+.ring-wrap{display:flex;align-items:center;gap:14px;padding:14px;background:#1c1c1e;border-radius:16px;margin-bottom:10px}
 .ring{position:relative;width:88px;height:88px;flex-shrink:0}
 .ring svg{transform:rotate(-90deg)}
-.ring-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring-c{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .ring-v{font-size:19px;font-weight:700;color:var(--orange)}
 .ring-l{font-size:10px;color:var(--t3)}
 .cinfo{flex:1}
@@ -164,60 +257,62 @@ button{cursor:pointer}
 .creml{font-size:13px;color:var(--t2);margin-bottom:9px}
 .mbars{display:flex;flex-direction:column;gap:6px}
 .mbar-row{display:flex;align-items:center;gap:7px}
-.mbar-lbl{font-size:11px;font-weight:700;width:18px;color:var(--t2)}
-.mbar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.mbar-lbl{font-size:11px;font-weight:700;width:18px}
+.mbar-track{flex:1;height:6px;background:#3a3a3c;border-radius:3px;overflow:hidden}
 .mbar-fill{height:100%;border-radius:3px;transition:width .3s}
 .mbar-fill.p{background:var(--blue)}.mbar-fill.c{background:var(--orange)}.mbar-fill.f{background:var(--purple)}
 .mbar-num{font-size:11px;font-weight:600;min-width:40px;text-align:right;color:var(--t2)}
 .fsechdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .fsect{font-size:16px;font-weight:700}
-.btn-addf{min-height:36px;background:var(--blue);border:none;border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;color:#fff}
-.fitem{background:var(--bg2);border-radius:14px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px}
+.btn-addf{min-height:36px;background:var(--blue);border:none;border-radius:10px;padding:6px 14px;font-size:14px;font-weight:700;color:#fff;touch-action:manipulation}
+.fitem{background:#1c1c1e;border-radius:14px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:11px}
 .fthumb{width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0}
-.fthumb-ph{width:44px;height:44px;border-radius:10px;flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:22px}
+.fthumb-ph{width:44px;height:44px;border-radius:10px;flex-shrink:0;background:#2c2c2e;display:flex;align-items:center;justify-content:center;font-size:22px}
 .finfo{flex:1;min-width:0}
 .fname{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fmacros{font-size:11px;color:var(--t3);margin-top:2px}
 .fcal{font-size:16px;font-weight:700;color:var(--orange);flex-shrink:0}
-.btn-delf{background:none;border:none;color:var(--red);font-size:15px;padding:4px;min-width:28px}
+.btn-delf{border:none;color:var(--red);font-size:15px;padding:4px;min-width:28px;min-height:28px;background:none;touch-action:manipulation}
 .dnav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;margin-bottom:4px}
-.dnav-btn{min-width:44px;min-height:36px;background:var(--bg3);border:none;border-radius:10px;color:var(--t1);font-size:18px}
+.dnav-btn{min-width:44px;min-height:36px;background:#2c2c2e;border:none;border-radius:10px;color:#fff;font-size:18px;touch-action:manipulation}
 .dnav-date{font-size:15px;font-weight:700}
-/* BODY */
-.bbody{padding:0 16px calc(30px + var(--safe-b))}
-.whero{background:var(--bg2);border-radius:16px;padding:20px;margin-bottom:10px;text-align:center}
+
+/* Body/Poids */
+.whero{background:#1c1c1e;border-radius:16px;padding:20px;margin-bottom:10px;text-align:center}
 .wcurrent{font-size:52px;font-weight:700;letter-spacing:-2px}
 .wcurrent span{font-size:24px;font-weight:500;color:var(--t2)}
 .wtarget{font-size:13px;color:var(--t2);margin-top:4px}
 .wchange{font-size:14px;font-weight:600;margin-top:6px}
 .wchange.up{color:var(--red)}.wchange.down{color:var(--green)}.wchange.flat{color:var(--t3)}
 .wform{display:flex;gap:8px;margin-top:16px}
-.winput{flex:1;background:var(--bg3);border:none;border-radius:12px;padding:12px 14px;font-size:20px;font-weight:700;color:var(--t1);text-align:center;min-height:50px;outline:none}
-.btn-logw{min-height:50px;background:var(--blue);border:none;border-radius:12px;padding:12px 18px;font-size:15px;font-weight:700;color:#fff}
-.bmi-card{background:var(--bg2);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.winput{flex:1;background:#2c2c2e;border:none;border-radius:12px;padding:12px 14px;font-size:20px;font-weight:700;color:#fff;text-align:center;min-height:50px;outline:none}
+.btn-logw{min-height:50px;background:var(--blue);border:none;border-radius:12px;padding:12px 18px;font-size:15px;font-weight:700;color:#fff;touch-action:manipulation}
+.bmi-card{background:#1c1c1e;border-radius:16px;padding:14px 16px;margin-bottom:10px}
 .bmi-v{font-size:32px;font-weight:700}
 .bmi-l{font-size:12px;color:var(--t2);margin-top:2px}
 .bmi-bar{height:8px;border-radius:4px;background:linear-gradient(to right,var(--blue),var(--green),var(--orange),var(--red));position:relative;margin-top:10px}
-.bmi-cur{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--bg);transform:translateX(-50%);transition:left .4s}
-.chart-card{background:var(--bg2);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.bmi-cur{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #000;transform:translateX(-50%);transition:left .4s}
+.chart-card{background:#1c1c1e;border-radius:16px;padding:14px 16px;margin-bottom:10px}
 .chart-card svg{width:100%;display:block;overflow:visible}
-.whi{background:var(--bg2);border-radius:12px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.whi{background:#1c1c1e;border-radius:12px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
 .whi-date{font-size:13px;color:var(--t2)}
 .whi-v{font-size:16px;font-weight:700}
 .wdelta{font-size:12px;font-weight:600}
 .wdelta.up{color:var(--red)}.wdelta.down{color:var(--green)}
-/* STATS */
-.sbody{padding:0 16px calc(30px + var(--safe-b))}
+
+/* Stats */
 .spkpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.spk{background:var(--bg2);border-radius:16px;padding:14px}
+.spk{background:#1c1c1e;border-radius:16px;padding:14px}
 .spk-v{font-size:26px;font-weight:700;color:var(--blue);letter-spacing:-.5px}
 .spk-l{font-size:12px;color:var(--t2);margin-top:2px}
 .pday-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
 .pday-row::-webkit-scrollbar{display:none}
-.pdc{flex-shrink:0;padding:7px 13px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:var(--bg2);color:var(--t2)}
-.pdc.upper.active{background:var(--bd);color:var(--blue)}.pdc.lower.active{background:var(--gd);color:var(--green)}.pdc.arms.active{background:var(--pd);color:var(--purple)}.pdc.custom.active{background:var(--od);color:var(--orange)}
-.pcard{background:var(--bg2);border-radius:16px;overflow:hidden;margin-bottom:10px}
-.pc-hdr{padding:12px 14px;border-bottom:1px solid var(--sep2)}
+.pdc{flex-shrink:0;padding:7px 13px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:#1c1c1e;color:var(--t2);touch-action:manipulation}
+.pdc.upper.on{background:var(--bd);color:var(--blue)}
+.pdc.lower.on{background:var(--gd);color:var(--green)}
+.pdc.arms.on{background:var(--pd);color:var(--purple)}
+.pcard{background:#1c1c1e;border-radius:16px;overflow:hidden;margin-bottom:10px}
+.pc-hdr{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.07)}
 .pc-name{font-size:14px;font-weight:600;margin-bottom:3px}
 .pc-stats{display:flex;gap:12px;font-size:11px;color:var(--t2)}
 .pc-stats strong{color:var(--orange);font-weight:700}
@@ -225,79 +320,83 @@ button{cursor:pointer}
 .pc-chart svg{width:100%;display:block;overflow:visible}
 .pc-nodata{padding:18px;font-size:12px;color:var(--t3);font-style:italic;text-align:center}
 .pc-sets{display:flex;gap:5px;padding:6px 14px 12px;flex-wrap:wrap}
-.pset{background:var(--bg3);border-radius:9px;padding:7px 11px;text-align:center}
+.pset{background:#2c2c2e;border-radius:9px;padding:7px 11px;text-align:center}
 .pset-v{font-size:14px;font-weight:700}
 .pset-l{font-size:9px;color:var(--t2);margin-top:1px}
-/* PHOTO MODAL */
+
+/* Search */
+.search-inp{display:block;width:100%;background:#2c2c2e;border:none;border-radius:12px;padding:11px 14px;font-size:15px;color:#fff;outline:none;color-scheme:dark;margin-bottom:12px}
+.search-inp::placeholder{color:var(--t3)}
+.sres{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.sres-item{display:flex;align-items:center;justify-content:space-between;background:#2c2c2e;border-radius:12px;padding:11px 13px}
+.sres-name{font-size:14px;font-weight:600}
+.sres-cat{font-size:11px;color:var(--t3);margin-top:2px}
+.btn-pick{background:var(--blue);border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;touch-action:manipulation}
+.create-ex-link{text-align:center;margin-top:12px;font-size:13px;color:var(--blue);cursor:pointer;padding:8px;touch-action:manipulation}
+
+/* AI photo */
 .pphoto{width:100%;border-radius:14px;max-height:200px;object-fit:cover;margin-bottom:14px;display:none}
-.pphoto.show{display:block}
-.aibox{background:var(--bg3);border-radius:14px;padding:14px;margin-bottom:14px;display:none}
-.aibox.show{display:block}
-.aish{font-size:16px;font-weight:700;margin-bottom:8px}
-.aimacros{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px}
-.aim{background:var(--bg4);border-radius:9px;padding:7px 4px;text-align:center}
+.pphoto.on{display:block}
+.aibox{background:#2c2c2e;border-radius:14px;padding:14px;margin-bottom:14px;display:none}
+.aibox.on{display:block}
+.aish{font-size:16px;font-weight:700}
+.aimacros{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0}
+.aim{background:#3a3a3c;border-radius:9px;padding:7px 4px;text-align:center}
 .aim-v{font-size:15px;font-weight:700}
 .aim-l{font-size:10px;color:var(--t2);margin-top:1px}
-.aim.cal .aim-v{color:var(--orange)}.aim.pro .aim-v{color:var(--blue)}.aim.car .aim-v{color:var(--green)}.aim.fat .aim-v{color:var(--purple)}
+.aim.cal .aim-v{color:var(--orange)}.aim.pro .aim-v{color:var(--blue)}
+.aim.car .aim-v{color:var(--green)}.aim.fat .aim-v{color:var(--purple)}
 .ai-items-t{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .ai-item{font-size:12px;color:var(--t2);padding:2px 0}
 .conf-b{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;margin-left:6px}
 .ch{background:var(--gd);color:var(--green)}.cm{background:var(--od);color:var(--orange)}.cl{background:var(--rd);color:var(--red)}
 .loading{text-align:center;padding:22px;display:none}
-.loading.show{display:block}
-.spinner{width:30px;height:30px;border:3px solid var(--bg4);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
+.loading.on{display:block}
+.spinner{width:30px;height:30px;border:3px solid #3a3a3c;border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .adj-row{display:flex;gap:7px;margin-top:10px}
-.adj-row .minput{font-size:16px;min-height:40px;text-align:center}
-/* SEARCH */
-.search-input{display:block;width:100%;background:var(--bg3);border:none;border-radius:12px;padding:11px 14px;font-size:15px;color:var(--t1);outline:none;color-scheme:dark;margin-bottom:12px}
-.search-input::placeholder{color:var(--t3)}
-.search-res{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto}
-.sres-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:12px;padding:11px 13px}
-.sres-name{font-size:14px;font-weight:600}
-.sres-cat{font-size:11px;color:var(--t3);margin-top:2px}
-.btn-pick{background:var(--blue);border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
-.create-ex-link{text-align:center;margin-top:12px;font-size:13px;color:var(--blue);cursor:pointer;padding:8px}
-/* API hint */
+.adj-row .inp{font-size:16px;min-height:40px;text-align:center}
 .api-hint{font-size:12px;color:var(--t3);margin-top:6px;line-height:1.5}
 </style>
 </head>
 <body>
-<div id="root">
-<div class="screens">
+<div id="app">
+
+<!-- ═══ PAGES ══════════════════════════════════════════════════ -->
+<div id="pages">
 
 <!-- HOME -->
-<div class="screen active" id="sc-home">
+<div class="page on" id="p-home">
 <div style="position:relative">
 <div class="ph" style="padding-bottom:12px">
-<div class="greeting">Bonjour, <em>Malek</em> 💪</div>
-<div class="hsub">82 kg · 1m78 · Upper/Lower 5j/sem</div>
+<div style="font-size:28px;font-weight:700;letter-spacing:-.5px">Bonjour, <span style="color:var(--blue)">Malek</span> 💪</div>
+<div style="font-size:14px;color:var(--t2);margin-top:2px">82 kg · 1m78 · Upper/Lower 5j/sem</div>
 </div>
-<button class="settings-btn" onclick="openM('settings-m')">⚙️</button>
+<button class="settings-btn" type="button" onclick="openM('m-settings')">⚙️</button>
 </div>
-<div class="hbody" style="padding-top:0">
-<div class="install-wrap" id="install-banner">
+<div style="padding:0 16px calc(24px + var(--sb))">
+<div class="install-b" id="install-banner">
 <div class="install-t">📲 Installer sur l'écran d'accueil</div>
 <div class="install-s">1. Appuie sur <b>⎙ Partager</b> en bas de Safari<br>2. Puis <b>«Sur l'écran d'accueil»</b><br>3. Appuie sur <b>Ajouter</b> ✓</div>
 </div>
-<div class="kgrid">
-<div class="kcard blue"><div class="kv" id="h-days">0</div><div class="kl">Jours actifs</div></div>
-<div class="kcard green"><div class="kv" id="h-weight">–</div><div class="kl">Poids actuel</div></div>
-<div class="kcard orange"><div class="kv" id="h-cal">–</div><div class="kl">Kcal aujourd'hui</div></div>
-<div class="kcard purple"><div class="kv" id="h-vol">–</div><div class="kl">Tonnes soulevées</div></div>
+<div class="kg">
+<div class="kc blue"><div class="kv" id="h-days">0</div><div class="kl">Jours actifs</div></div>
+<div class="kc green"><div class="kv" id="h-weight">–</div><div class="kl">Poids actuel</div></div>
+<div class="kc orange"><div class="kv" id="h-cal">–</div><div class="kl">Kcal aujourd'hui</div></div>
+<div class="kc purple"><div class="kv" id="h-vol">–</div><div class="kl">Tonnes soulevées</div></div>
 </div>
-<div class="today-wrap">
+<div class="today-c">
 <div class="today-tag">Aujourd'hui</div>
 <div class="today-name" id="h-today-name">–</div>
 <div class="today-sub" id="h-today-sub"></div>
-<button class="btn-start" onclick="goToday()">Démarrer la séance →</button>
+<button class="btn-start" type="button" onclick="goToday()">Démarrer la séance →</button>
 </div>
 <div class="card card-p">
 <div class="lbl" style="margin-bottom:10px">Protocole · 12 semaines</div>
 <div style="display:flex;flex-direction:column">
-<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--sep2)"><div style="font-size:15px;font-weight:700;color:var(--blue);min-width:44px">S1–4</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Fondation</div><div style="font-size:13px">Charges référence · Technique parfaite · RIR 2</div></div></div>
-<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--sep2)"><div style="font-size:15px;font-weight:700;color:var(--blue);min-width:44px">S5–8</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Progression</div><div style="font-size:13px">+2,5 kg ou +1 rep/semaine</div></div></div>
-<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--sep2)"><div style="font-size:15px;font-weight:700;color:var(--blue);min-width:44px">S9–11</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Intensité</div><div style="font-size:13px">Ralentir l'excentrique · RIR 1</div></div></div>
+<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)"><div style="font-size:15px;font-weight:700;color:var(--blue);min-width:44px">S1–4</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Fondation</div><div style="font-size:13px">Charges référence · Technique parfaite · RIR 2</div></div></div>
+<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)"><div style="font-size:15px;font-weight:700;color:var(--blue);min-width:44px">S5–8</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Progression</div><div style="font-size:13px">+2,5 kg ou +1 rep/semaine</div></div></div>
+<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)"><div style="font-size:15px;font-weight:700;color:var(--blue);min-width:44px">S9–11</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Intensité</div><div style="font-size:13px">Ralentir l'excentrique · RIR 1</div></div></div>
 <div style="display:flex;gap:14px;padding:10px 0"><div style="font-size:15px;font-weight:700;color:var(--orange);min-width:44px">S12</div><div><div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;margin-bottom:2px">Deload</div><div style="font-size:13px">−40% volume · −20% charges</div></div></div>
 </div>
 </div>
@@ -305,23 +404,23 @@ button{cursor:pointer}
 </div>
 
 <!-- WORKOUT -->
-<div class="screen" id="sc-workout">
+<div class="page" id="p-workout">
 <div class="ph"><div class="ptitle">Séance</div><div class="day-scroll" id="day-scroll"></div></div>
 <div id="workout-body" style="padding-bottom:30px"></div>
 </div>
 
 <!-- NUTRITION -->
-<div class="screen" id="sc-nutrition">
+<div class="page" id="p-nutrition">
 <div class="ph" style="padding-bottom:0"><div class="ptitle">Nutrition</div></div>
 <div class="dnav">
-<button class="dnav-btn" onclick="changeNDay(-1)">‹</button>
+<button class="dnav-btn" type="button" onclick="changeNDay(-1)">‹</button>
 <div class="dnav-date" id="nutri-lbl">Aujourd'hui</div>
-<button class="dnav-btn" onclick="changeNDay(1)">›</button>
+<button class="dnav-btn" type="button" onclick="changeNDay(1)">›</button>
 </div>
-<div class="nbody">
+<div style="padding:0 16px calc(30px + var(--sb))">
 <div class="ring-wrap">
 <div class="ring">
-<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="37" fill="none" stroke="var(--bg4)" stroke-width="8"/><circle id="ring-fill" cx="44" cy="44" r="37" fill="none" stroke="var(--orange)" stroke-width="8" stroke-linecap="round" stroke-dasharray="232.48" stroke-dashoffset="232.48" style="transition:stroke-dashoffset .5s"/></svg>
+<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="37" fill="none" stroke="#3a3a3c" stroke-width="8"/><circle id="ring-fill" cx="44" cy="44" r="37" fill="none" stroke="var(--orange)" stroke-width="8" stroke-linecap="round" stroke-dasharray="232.48" stroke-dashoffset="232.48" style="transition:stroke-dashoffset .5s"/></svg>
 <div class="ring-c"><div class="ring-v" id="cal-consumed">0</div><div class="ring-l">kcal</div></div>
 </div>
 <div class="cinfo">
@@ -334,20 +433,20 @@ button{cursor:pointer}
 </div>
 </div>
 </div>
-<div class="fsechdr"><div class="fsect">Repas du jour</div><button class="btn-addf" onclick="openM('add-food-m')">+ Ajouter</button></div>
+<div class="fsechdr"><div class="fsect">Repas du jour</div><button class="btn-addf" type="button" onclick="openM('m-add-food')">+ Ajouter</button></div>
 <div id="food-list"><div class="empty">Aucun aliment.<br>Appuie sur + Ajouter.</div></div>
 </div>
 </div>
 
 <!-- BODY -->
-<div class="screen" id="sc-body">
+<div class="page" id="p-body">
 <div class="ph" style="padding-bottom:12px"><div class="ptitle">Corps</div></div>
-<div class="bbody">
+<div style="padding:0 16px calc(30px + var(--sb))">
 <div class="whero">
 <div class="wcurrent" id="w-current">–<span>kg</span></div>
 <div class="wtarget">Objectif recomposition : 81–83 kg</div>
 <div class="wchange" id="w-change"></div>
-<div class="wform"><input class="winput" type="number" step="0.1" min="40" max="300" placeholder="82.5" id="wfield" inputmode="decimal"><button class="btn-logw" onclick="logWeight()">Logger</button></div>
+<div class="wform"><input class="winput" type="number" step="0.1" min="40" max="300" placeholder="82.5" id="wfield" inputmode="decimal"><button class="btn-logw" type="button" onclick="logWeight()">Logger</button></div>
 </div>
 <div class="bmi-card">
 <div class="row"><div><div class="bmi-v" id="bmi-v">–</div><div class="bmi-l" id="bmi-l">IMC</div></div><div style="text-align:right;font-size:12px;color:var(--t2)">Taille : 1m78<br>Cible : 81–83 kg</div></div>
@@ -361,7 +460,7 @@ button{cursor:pointer}
 </div>
 
 <!-- STATS -->
-<div class="screen" id="sc-stats">
+<div class="page" id="p-stats">
 <div class="ph" style="padding-bottom:4px">
 <div class="ptitle">Progression</div>
 <div class="spkpis">
@@ -372,122 +471,208 @@ button{cursor:pointer}
 </div>
 <div class="pday-row" id="pday-row"></div>
 </div>
-<div class="sbody" style="padding-top:0"><div id="prog-cards"></div></div>
+<div style="padding:0 16px calc(30px + var(--sb))"><div id="prog-cards"></div></div>
 </div>
 
-</div><!-- /screens -->
+</div><!-- /pages -->
 
-<!-- TABBAR -->
-<nav class="tabbar">
-<button type="button" class="tab active" onclick="showS('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="tab-l">Accueil</span></button>
-<button type="button" class="tab" onclick="showS('workout',this)"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg><span class="tab-l">Séance</span></button>
-<button type="button" class="tab" onclick="showS('nutrition',this)"><svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg><span class="tab-l">Nutrition</span></button>
-<button type="button" class="tab" onclick="showS('body',this)"><svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg><span class="tab-l">Corps</span></button>
-<button type="button" class="tab" onclick="showS('stats',this)"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span class="tab-l">Stats</span></button>
+<!-- ═══ TAB BAR ════════════════════════════════════════════════ -->
+<nav id="tabbar">
+<button class="tb on" type="button" id="tb-home" onclick="nav('home')">
+<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+<span>Accueil</span>
+</button>
+<button class="tb" type="button" id="tb-workout" onclick="nav('workout')">
+<svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg>
+<span>Séance</span>
+</button>
+<button class="tb" type="button" id="tb-nutrition" onclick="nav('nutrition')">
+<svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg>
+<span>Nutrition</span>
+</button>
+<button class="tb" type="button" id="tb-body" onclick="nav('body')">
+<svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>
+<span>Corps</span>
+</button>
+<button class="tb" type="button" id="tb-stats" onclick="nav('stats')">
+<svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+<span>Stats</span>
+</button>
 </nav>
-</div>
 
-<!-- MODALS -->
-<!-- Add food -->
-<div class="overlay" id="add-food-m"><div class="sheet"><div class="handle"></div><div class="mtitle">Ajouter un aliment</div>
+</div><!-- /app -->
+
+<!-- ═══ MODALES ═════════════════════════════════════════════════ -->
+
+<div class="modal" id="m-add-food" onclick="if(event.target===this)closeM('m-add-food')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Ajouter un aliment</div>
 <div style="display:flex;flex-direction:column;gap:8px">
-<button style="display:flex;align-items:center;gap:14px;background:var(--bg3);border:none;border-radius:14px;padding:14px 16px;color:var(--t1);width:100%;text-align:left" onclick="openPhotoMode()"><div style="width:40px;height:40px;border-radius:12px;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📷</div><div><div style="font-size:15px;font-weight:600">Analyser une photo (IA)</div><div style="font-size:12px;color:var(--t3);margin-top:1px">Claude détecte les calories automatiquement</div></div></button>
-<button style="display:flex;align-items:center;gap:14px;background:var(--bg3);border:none;border-radius:14px;padding:14px 16px;color:var(--t1);width:100%;text-align:left" onclick="openManualFood()"><div style="width:40px;height:40px;border-radius:12px;background:var(--gd);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✏️</div><div><div style="font-size:15px;font-weight:600">Saisie manuelle</div><div style="font-size:12px;color:var(--t3);margin-top:1px">Nom, calories et macros</div></div></button>
+<button type="button" style="display:flex;align-items:center;gap:14px;background:#2c2c2e;border:none;border-radius:14px;padding:14px 16px;color:#fff;width:100%;text-align:left;touch-action:manipulation" onclick="openPhotoMode()">
+<div style="width:40px;height:40px;border-radius:12px;background:var(--bd);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📷</div>
+<div><div style="font-size:15px;font-weight:600">Analyser une photo (IA)</div><div style="font-size:12px;color:var(--t3);margin-top:1px">Claude détecte les calories automatiquement</div></div>
+</button>
+<button type="button" style="display:flex;align-items:center;gap:14px;background:#2c2c2e;border:none;border-radius:14px;padding:14px 16px;color:#fff;width:100%;text-align:left;touch-action:manipulation" onclick="openManualFood()">
+<div style="width:40px;height:40px;border-radius:12px;background:var(--gd);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✏️</div>
+<div><div style="font-size:15px;font-weight:600">Saisie manuelle</div><div style="font-size:12px;color:var(--t3);margin-top:1px">Nom, calories et macros</div></div>
+</button>
 </div>
-</div></div>
+</div>
+</div>
 
-<!-- Photo -->
-<div class="overlay" id="photo-m"><div class="sheet">
-<div class="handle"></div><div class="mtitle">Analyse IA 🤖</div>
+<div class="modal" id="m-photo" onclick="if(event.target===this)closeM('m-photo')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Analyse IA 🤖</div>
 <img id="pprev" class="pphoto" alt="">
 <div class="loading" id="loading"><div class="spinner"></div><div style="font-size:14px;color:var(--t2)">Claude analyse ton plat…</div></div>
 <div class="aibox" id="aibox">
-<div style="display:flex;align-items:center;margin-bottom:10px"><span class="aish" id="ai-dish"></span><span class="conf-b" id="ai-conf"></span></div>
-<div class="aimacros"><div class="aim cal"><div class="aim-v" id="ai-cal">–</div><div class="aim-l">kcal</div></div><div class="aim pro"><div class="aim-v" id="ai-prot">–</div><div class="aim-l">prot g</div></div><div class="aim car"><div class="aim-v" id="ai-carb">–</div><div class="aim-l">gluc g</div></div><div class="aim fat"><div class="aim-v" id="ai-fat">–</div><div class="aim-l">lip g</div></div></div>
+<div style="display:flex;align-items:center;margin-bottom:4px"><span class="aish" id="ai-dish"></span><span class="conf-b" id="ai-conf"></span></div>
+<div class="aimacros">
+<div class="aim cal"><div class="aim-v" id="ai-cal">–</div><div class="aim-l">kcal</div></div>
+<div class="aim pro"><div class="aim-v" id="ai-prot">–</div><div class="aim-l">prot g</div></div>
+<div class="aim car"><div class="aim-v" id="ai-carb">–</div><div class="aim-l">gluc g</div></div>
+<div class="aim fat"><div class="aim-v" id="ai-fat">–</div><div class="aim-l">lip g</div></div>
+</div>
 <div><div class="ai-items-t">Composition estimée</div><div id="ai-items"></div></div>
-<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Ajuster si besoin</div>
-<div class="adj-row"><input class="minput" type="number" inputmode="numeric" placeholder="kcal" id="adj-cal"><input class="minput" type="number" inputmode="decimal" placeholder="P g" id="adj-prot"><input class="minput" type="number" inputmode="decimal" placeholder="G g" id="adj-carb"><input class="minput" type="number" inputmode="decimal" placeholder="L g" id="adj-fat"></div></div>
+<div style="margin-top:10px">
+<div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Ajuster si besoin</div>
+<div class="adj-row">
+<input class="inp" type="number" inputmode="numeric" placeholder="kcal" id="adj-cal">
+<input class="inp" type="number" inputmode="decimal" placeholder="P g" id="adj-prot">
+<input class="inp" type="number" inputmode="decimal" placeholder="G g" id="adj-carb">
+<input class="inp" type="number" inputmode="decimal" placeholder="L g" id="adj-fat">
+</div>
+</div>
 </div>
 <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
-<div id="photo-actions"><button class="btn btn-blue" style="width:100%;margin-bottom:10px" onclick="document.getElementById('photo-input').click()">📷 Prendre / Choisir une photo</button><button class="btn btn-gray" style="width:100%" onclick="closeM('photo-m')">Annuler</button></div>
-<div id="photo-save" style="display:none"><div class="mactions"><button class="btn btn-blue" onclick="savePhotoFood()">Ajouter au journal</button><button class="btn btn-gray" onclick="closeM('photo-m')">Annuler</button></div></div>
-</div></div>
-
-<!-- Manual food -->
-<div class="overlay" id="manual-food-m"><div class="sheet">
-<div class="handle"></div><div class="mtitle">Saisie manuelle</div>
-<div class="mfield"><label>Nom</label><input class="minput" type="text" id="mf-name" placeholder="Ex : Poulet riz brocolis"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-<div class="mfield" style="margin:0"><label>Calories (kcal)</label><input class="minput" type="number" inputmode="numeric" id="mf-cal" placeholder="450"></div>
-<div class="mfield" style="margin:0"><label>Protéines (g)</label><input class="minput" type="number" inputmode="decimal" id="mf-prot" placeholder="35"></div>
-<div class="mfield" style="margin:0"><label>Glucides (g)</label><input class="minput" type="number" inputmode="decimal" id="mf-carb" placeholder="55"></div>
-<div class="mfield" style="margin:0"><label>Lipides (g)</label><input class="minput" type="number" inputmode="decimal" id="mf-fat" placeholder="12"></div>
+<div id="photo-actions">
+<button class="btn btn-blue" type="button" style="width:100%;margin-bottom:10px" onclick="document.getElementById('photo-input').click()">📷 Prendre / Choisir une photo</button>
+<button class="btn btn-gray" type="button" style="width:100%" onclick="closeM('m-photo')">Annuler</button>
 </div>
-<div class="mactions"><button class="btn btn-blue" onclick="saveManualFood()">Ajouter</button><button class="btn btn-gray" onclick="closeM('manual-food-m')">Annuler</button></div>
-</div></div>
+<div id="photo-save" style="display:none">
+<div class="mrow"><button class="btn btn-blue" type="button" style="flex:2" onclick="savePhotoFood()">Ajouter au journal</button><button class="btn btn-gray" type="button" style="flex:1" onclick="closeM('m-photo')">Annuler</button></div>
+</div>
+</div>
+</div>
 
-<!-- Add exercise to session -->
-<div class="overlay" id="add-ex-m"><div class="sheet">
-<div class="handle"></div><div class="mtitle">Ajouter un exercice</div>
-<input class="search-input" type="text" placeholder="Rechercher un exercice…" id="ex-search" oninput="filterExercises(this.value)">
-<div class="search-res" id="search-res"></div>
+<div class="modal" id="m-manual-food" onclick="if(event.target===this)closeM('m-manual-food')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Saisie manuelle</div>
+<div class="mf"><label>Nom du plat / aliment</label><input class="inp" type="text" id="mf-name" placeholder="Ex : Poulet riz brocolis"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+<div class="mf" style="margin:0"><label>Calories (kcal)</label><input class="inp" type="number" inputmode="numeric" id="mf-cal" placeholder="450"></div>
+<div class="mf" style="margin:0"><label>Protéines (g)</label><input class="inp" type="number" inputmode="decimal" id="mf-prot" placeholder="35"></div>
+<div class="mf" style="margin:0"><label>Glucides (g)</label><input class="inp" type="number" inputmode="decimal" id="mf-carb" placeholder="55"></div>
+<div class="mf" style="margin:0"><label>Lipides (g)</label><input class="inp" type="number" inputmode="decimal" id="mf-fat" placeholder="12"></div>
+</div>
+<div class="mrow"><button class="btn btn-blue" type="button" style="flex:2" onclick="saveManualFood()">Ajouter</button><button class="btn btn-gray" type="button" style="flex:1" onclick="closeM('m-manual-food')">Annuler</button></div>
+</div>
+</div>
+
+<div class="modal" id="m-add-ex" onclick="if(event.target===this)closeM('m-add-ex')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Ajouter un exercice</div>
+<input class="search-inp" type="text" placeholder="Rechercher un exercice…" id="ex-search" oninput="filterExercises(this.value)">
+<div class="sres" id="search-res"></div>
 <div class="create-ex-link" onclick="openCreateEx()">+ Créer un exercice personnalisé</div>
-</div></div>
-
-<!-- Create custom exercise -->
-<div class="overlay" id="create-ex-m"><div class="sheet">
-<div class="handle"></div><div class="mtitle">Nouvel exercice</div>
-<div class="mfield"><label>Nom de l'exercice</label><input class="minput" type="text" id="ce-name" placeholder="Ex : Leg press unilatéral"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-<div class="mfield" style="margin:0"><label>Séries</label><input class="minput" type="number" inputmode="numeric" id="ce-sets" placeholder="3"></div>
-<div class="mfield" style="margin:0"><label>Reps</label><input class="minput" type="text" id="ce-reps" placeholder="10-12"></div>
-<div class="mfield" style="margin:0"><label>Tempo</label><input class="minput" type="text" id="ce-tempo" placeholder="2-0-1-0"></div>
-<div class="mfield" style="margin:0"><label>Repos</label><input class="minput" type="text" id="ce-rest" placeholder="1'30"></div>
 </div>
-<div class="mfield"><label>RIR</label><input class="minput" type="text" id="ce-rir" placeholder="2"></div>
-<div class="mfield"><label>Note / conseil technique</label><input class="minput" type="text" id="ce-note" placeholder="Ex : dos droit, genou aligné"></div>
-<div class="mfield"><label>Catégorie</label><select class="minput" id="ce-cat" style="color-scheme:dark">
-<option value="upper">Upper (Poussée / Tirage)</option>
-<option value="lower">Lower (Jambes / Fessiers)</option>
+</div>
+
+<div class="modal" id="m-create-ex" onclick="if(event.target===this)closeM('m-create-ex')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Nouvel exercice</div>
+<div class="mf"><label>Nom de l'exercice</label><input class="inp" type="text" id="ce-name" placeholder="Ex : Leg press unilatéral"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+<div class="mf" style="margin:0"><label>Séries</label><input class="inp" type="number" inputmode="numeric" id="ce-sets" placeholder="3"></div>
+<div class="mf" style="margin:0"><label>Reps</label><input class="inp" type="text" id="ce-reps" placeholder="10-12"></div>
+<div class="mf" style="margin:0"><label>Tempo</label><input class="inp" type="text" id="ce-tempo" placeholder="2-0-1-0"></div>
+<div class="mf" style="margin:0"><label>Repos</label><input class="inp" type="text" id="ce-rest" placeholder="1'30"></div>
+</div>
+<div class="mf"><label>RIR</label><input class="inp" type="text" id="ce-rir" placeholder="2"></div>
+<div class="mf"><label>Note technique</label><input class="inp" type="text" id="ce-note" placeholder="Ex : dos droit, genou aligné"></div>
+<div class="mf"><label>Catégorie</label>
+<select class="inp" id="ce-cat" style="color-scheme:dark">
+<option value="upper">Haut du corps</option>
+<option value="lower">Bas du corps</option>
 <option value="arms">Bras / Épaules</option>
 <option value="core">Gainage / Abdos</option>
 <option value="cardio">Cardio</option>
 </select></div>
-<div class="mactions"><button class="btn btn-blue" onclick="saveCustomEx()">Créer</button><button class="btn btn-gray" onclick="closeM('create-ex-m');openM('add-ex-m')">Retour</button></div>
-</div></div>
+<div class="mrow"><button class="btn btn-blue" type="button" style="flex:2" onclick="saveCustomEx()">Créer et ajouter</button><button class="btn btn-gray" type="button" style="flex:1" onclick="closeM('m-create-ex');openM('m-add-ex')">Retour</button></div>
+</div>
+</div>
 
-<!-- Edit exercise -->
-<div class="overlay" id="edit-ex-m"><div class="sheet">
-<div class="handle"></div><div class="mtitle">Modifier l'exercice</div>
-<div class="mfield"><label>Nom</label><input class="minput" type="text" id="ee-name"></div>
+<div class="modal" id="m-edit-ex" onclick="if(event.target===this)closeM('m-edit-ex')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Modifier l'exercice</div>
+<div class="mf"><label>Nom</label><input class="inp" type="text" id="ee-name"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-<div class="mfield" style="margin:0"><label>Séries</label><input class="minput" type="number" inputmode="numeric" id="ee-sets"></div>
-<div class="mfield" style="margin:0"><label>Reps</label><input class="minput" type="text" id="ee-reps"></div>
-<div class="mfield" style="margin:0"><label>Tempo</label><input class="minput" type="text" id="ee-tempo"></div>
-<div class="mfield" style="margin:0"><label>Repos</label><input class="minput" type="text" id="ee-rest"></div>
+<div class="mf" style="margin:0"><label>Séries</label><input class="inp" type="number" inputmode="numeric" id="ee-sets"></div>
+<div class="mf" style="margin:0"><label>Reps</label><input class="inp" type="text" id="ee-reps"></div>
+<div class="mf" style="margin:0"><label>Tempo</label><input class="inp" type="text" id="ee-tempo"></div>
+<div class="mf" style="margin:0"><label>Repos</label><input class="inp" type="text" id="ee-rest"></div>
 </div>
-<div class="mfield"><label>RIR</label><input class="minput" type="text" id="ee-rir"></div>
-<div class="mfield"><label>Note technique</label><input class="minput" type="text" id="ee-note"></div>
-<input type="hidden" id="ee-id">
-<input type="hidden" id="ee-day">
-<div class="mactions"><button class="btn btn-blue" onclick="saveEditEx()">Enregistrer</button><button class="btn btn-gray" onclick="closeM('edit-ex-m')">Annuler</button></div>
-<div style="margin-top:12px;text-align:center"><button style="background:none;border:none;color:var(--red);font-size:14px;padding:8px" onclick="removeExFromSession()">Retirer cet exercice de la séance</button></div>
-</div></div>
+<div class="mf"><label>RIR</label><input class="inp" type="text" id="ee-rir"></div>
+<div class="mf"><label>Note technique</label><input class="inp" type="text" id="ee-note"></div>
+<div class="mrow"><button class="btn btn-blue" type="button" style="flex:2" onclick="saveEditEx()">Enregistrer</button><button class="btn btn-gray" type="button" style="flex:1" onclick="closeM('m-edit-ex')">Annuler</button></div>
+<div style="margin-top:12px;text-align:center"><button type="button" style="background:none;border:none;color:var(--red);font-size:14px;padding:8px;touch-action:manipulation" onclick="removeExFromSession()">Retirer de la séance</button></div>
+</div>
+</div>
 
-<!-- Settings -->
-<div class="overlay" id="settings-m"><div class="sheet">
-<div class="handle"></div><div class="mtitle">Paramètres</div>
-<div class="mfield"><label>Clé API Anthropic (analyse photo IA)</label><input class="minput" type="password" id="api-key" placeholder="sk-ant-api03-…"><div class="api-hint">Obtiens ta clé sur <strong>console.anthropic.com</strong>. Stockée uniquement sur ton iPhone.</div></div>
-<div class="mfield"><label>Objectif calorique (kcal/jour)</label><input class="minput" type="number" inputmode="numeric" id="s-cal" placeholder="2350"></div>
+<div class="modal" id="m-settings" onclick="if(event.target===this)closeM('m-settings')">
+<div class="modal-box">
+<div class="mhandle"></div>
+<div class="mtitle">Paramètres</div>
+<div class="mf"><label>Clé API Anthropic (analyse photo IA)</label><input class="inp" type="password" id="api-key" placeholder="sk-ant-api03-…"><div class="api-hint">Obtiens ta clé sur <strong>console.anthropic.com</strong>. Stockée uniquement sur ton iPhone.</div></div>
+<div class="mf"><label>Objectif calorique (kcal/jour)</label><input class="inp" type="number" inputmode="numeric" id="s-cal" placeholder="2350"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
-<div class="mfield" style="margin:0"><label>Prot. (g)</label><input class="minput" type="number" id="s-prot" placeholder="172"></div>
-<div class="mfield" style="margin:0"><label>Gluc. (g)</label><input class="minput" type="number" id="s-carb" placeholder="250"></div>
-<div class="mfield" style="margin:0"><label>Lip. (g)</label><input class="minput" type="number" id="s-fat" placeholder="70"></div>
+<div class="mf" style="margin:0"><label>Prot. (g)</label><input class="inp" type="number" id="s-prot" placeholder="172"></div>
+<div class="mf" style="margin:0"><label>Gluc. (g)</label><input class="inp" type="number" id="s-carb" placeholder="250"></div>
+<div class="mf" style="margin:0"><label>Lip. (g)</label><input class="inp" type="number" id="s-fat" placeholder="70"></div>
 </div>
-<div class="mactions"><button class="btn btn-blue" onclick="saveSettings()">Enregistrer</button><button class="btn btn-gray" onclick="closeM('settings-m')">Annuler</button></div>
-</div></div>
+<div class="mrow"><button class="btn btn-blue" type="button" style="flex:2" onclick="saveSettings()">Enregistrer</button><button class="btn btn-gray" type="button" style="flex:1" onclick="closeM('m-settings')">Annuler</button></div>
+</div>
+</div>
 
 <script>
+/* ─── NAVIGATION (simple et robuste) ─── */
+function nav(name) {
+  // Cacher toutes les pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  // Désactiver tous les tabs
+  document.querySelectorAll('.tb').forEach(t => t.classList.remove('on'));
+  // Afficher la bonne page
+  var page = document.getElementById('p-' + name);
+  if (page) {
+    page.classList.add('on');
+    page.scrollTop = 0;
+  }
+  // Activer le bon tab
+  var tab = document.getElementById('tb-' + name);
+  if (tab) tab.classList.add('on');
+  // Actions spécifiques
+  if (name === 'nutrition') renderNutrition();
+  if (name === 'body') renderBody();
+  if (name === 'stats') { renderStats(); updateStatsKPIs(); }
+  if (name === 'home') updateHome();
+}
+
+/* ─── MODALES ─── */
+function openM(id) {
+  var m = document.getElementById(id);
+  if (m) m.classList.add('on');
+}
+function closeM(id) {
+  var m = document.getElementById(id);
+  if (m) m.classList.remove('on');
+}
+
 /* ─── DATA ─────────────────────────────────────────────────────── */
 const BASE_DAYS={
 L:{name:"Upper Lourd",day:"Lundi",type:"upper",note:"Développé couché : barre aux tétons, coudes 45° · Rowing : barre bas du sternum · Tractions : élastique si <8 reps",exs:[
@@ -591,7 +776,7 @@ function openSettings(){
 }
 
 /* ─── NAVIGATION ────────────────────────────────────────────────── */
-function showS(name,btn){
+function showS(name,btn){ nav(name); return; //
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   document.getElementById("sc-"+name).classList.add("active");
@@ -1177,6 +1362,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     const b=document.getElementById("install-banner");if(b)b.classList.add("show");
   }
 });
+
 </script>
 </body>
 </html>
