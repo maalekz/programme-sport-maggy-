@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Programme Sport</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0e0e10; --card:#17171a; --card2:#1f1f23; --border:#28282e;
+  --accent:#d4a853; --text:#f0ede8; --muted:#7a7880;
+  --lower:#c1705a; --upper:#5a8fc1;
+  --lower-bg:rgba(193,112,90,.1); --upper-bg:rgba(90,143,193,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;font-size:14px}
+/* HERO */
+.hero{background:linear-gradient(160deg,#1a1510,#0e0e10 60%);border-bottom:1px solid var(--border);padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(212,168,83,.12),transparent 70%);pointer-events:none}
+.hero-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(212,168,83,.3);padding:3px 10px;border-radius:20px;margin-bottom:14px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(24px,6vw,38px);line-height:1.1;margin-bottom:4px}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{color:var(--muted);font-size:12px;font-weight:300}
+.stats-bar{display:flex;margin-top:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:460px;margin-left:auto;margin-right:auto}
+.stat{flex:1;padding:10px 6px;text-align:center;background:var(--card);border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-val{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent)}
+.stat-label{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+/* NAV TABS */
+.nav{display:flex;overflow-x:auto;gap:6px;padding:16px 14px 8px;max-width:900px;margin:0 auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.tab{display:flex;flex-direction:column;align-items:center;padding:8px 10px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .2s;flex-shrink:0;min-width:72px;background:var(--card)}
+.tab.lower{background:var(--lower-bg);border-color:rgba(193,112,90,.2)}
+.tab.upper{background:var(--upper-bg);border-color:rgba(90,143,193,.2)}
+.tab.prog{background:rgba(212,168,83,.07);border-color:rgba(212,168,83,.2)}
+.tab.active.lower{border-color:var(--lower)}
+.tab.active.upper{border-color:var(--upper)}
+.tab.active.prog{border-color:var(--accent)}
+.tab:hover{transform:translateY(-2px)}
+.tab-icon{font-size:16px;margin-bottom:2px}
+.tab-day{font-size:8px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tab-name{font-size:11px;font-weight:500;margin-top:1px}
+.tab.lower .tab-name{color:var(--lower)}
+.tab.upper .tab-name{color:var(--upper)}
+.tab.prog .tab-name{color:var(--accent)}
+/* CONTENT */
+.content{max-width:900px;margin:0 auto;padding:0 14px 80px}
+.panel{display:none}
+.panel.visible{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* SESSION HEADER */
+.sess-hdr{display:flex;align-items:center;gap:12px;padding:18px 0 12px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.sess-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sess-icon.lower{background:var(--lower-bg)}
+.sess-icon.upper{background:var(--upper-bg)}
+.sess-title{font-family:'DM Serif Display',serif;font-size:19px}
+.sess-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.sess-badge{margin-left:auto;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:6px;white-space:nowrap}
+.sess-badge.lower{background:var(--lower-bg);color:var(--lower)}
+.sess-badge.upper{background:var(--upper-bg);color:var(--upper)}
+/* WARMUP */
+.warmup{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.warmup-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.warmup-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:600;margin-bottom:2px}
+.warmup-text{font-size:12px;color:var(--text)}
+/* SECTION LABEL */
+.sec-lbl{font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;display:flex;align-items:center;gap:10px}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+/* EXERCISE CARD */
+.ex{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.ex:hover{border-color:rgba(212,168,83,.2)}
+.ex-top{display:flex;align-items:flex-start;gap:10px;padding:12px 13px}
+.ex-info{flex:1;min-width:0}
+.ex-name{font-size:14px;font-weight:600}
+.ex-tip{font-size:11px;color:var(--muted);margin-top:2px;font-style:italic;line-height:1.4}
+.ex-chips{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.chip{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.chip-s{background:rgba(212,168,83,.12);color:var(--accent)}
+.chip-r{background:rgba(240,237,232,.07);color:var(--text)}
+.chip-w{background:rgba(122,120,128,.15);color:var(--muted)}
+.ex-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+/* BUTTONS */
+.btn-yt{display:flex;align-items:center;gap:4px;background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.25);color:#ff7070;border-radius:7px;padding:5px 9px;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;transition:all .2s;font-family:inherit}
+.btn-yt:hover{background:rgba(255,68,68,.2);border-color:rgba(255,68,68,.5)}
+.btn-yt svg{width:11px;height:11px;fill:#ff7070;flex-shrink:0}
+.btn-log{display:flex;align-items:center;gap:4px;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.25);color:var(--accent);border-radius:7px;padding:5px 9px;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit}
+.btn-log:hover{background:rgba(212,168,83,.2)}
+.btn-log.active{background:rgba(212,168,83,.15);border-color:var(--accent)}
+/* DEMO PANEL */
+.ex-demo{display:none;border-top:1px solid var(--border);padding:14px 13px;background:#111113}
+.ex-demo.open{display:block}
+.demo-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.demo-step{display:flex;gap:9px;align-items:flex-start}
+.step-n{width:20px;height:20px;border-radius:50%;background:rgba(212,168,83,.15);color:var(--accent);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-t{font-size:12px;color:#c0bdb8;line-height:1.5}
+.demo-cue{padding:8px 11px;background:rgba(212,168,83,.07);border-left:2px solid var(--accent);border-radius:0 6px 6px 0;font-size:11px;color:var(--accent);margin-bottom:8px}
+.yt-link{display:inline-flex;align-items:center;gap:5px;color:#ff7070;font-size:11px;font-weight:500;text-decoration:none}
+.yt-link:hover{text-decoration:underline}
+/* LOG PANEL */
+.ex-log{display:none;border-top:1px solid var(--border);padding:13px;background:#121215}
+.ex-log.open{display:block}
+.log-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.log-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.log-input{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--text);width:90px;outline:none}
+.log-input:focus{border-color:var(--accent)}
+.log-input::placeholder{color:var(--muted)}
+.log-date{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:11px;font-family:inherit;color:var(--muted);width:120px;outline:none}
+.log-date:focus{border-color:var(--accent)}
+.btn-save{background:var(--accent);border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#0e0e10;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.btn-save:hover{opacity:.85}
+/* LOG HISTORY */
+.log-history{display:flex;flex-direction:column;gap:4px}
+.log-empty{font-size:11px;color:var(--muted);font-style:italic}
+.log-entry{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 11px}
+.log-entry-date{font-size:10px;color:var(--muted)}
+.log-entry-weight{font-size:14px;font-weight:600;color:var(--accent)}
+.log-entry-note{font-size:10px;color:var(--muted)}
+.btn-del{background:none;border:none;color:#555;cursor:pointer;font-size:13px;padding:0 2px;transition:color .2s}
+.btn-del:hover{color:#ff7070}
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.tip{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px}
+.tip-icon{font-size:16px;margin-bottom:5px;display:block}
+.tip-title{font-size:10px;font-weight:600;color:var(--accent);margin-bottom:3px}
+.tip-text{font-size:11px;color:var(--muted);line-height:1.5}
+/* PROGRESSION PANEL */
+.prog-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.prog-sess-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--text)}
+.prog-sess-btn.active.lower{border-color:var(--lower);background:var(--lower-bg);color:var(--lower)}
+.prog-sess-btn.active.upper{border-color:var(--upper);background:var(--upper-bg);color:var(--upper)}
+.prog-sess-btn:hover{transform:translateY(-1px)}
+.prog-sess-name{font-size:12px;font-weight:600;margin-top:2px}
+.prog-exs{display:flex;flex-direction:column;gap:10px}
+.prog-ex-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.prog-ex-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
+.prog-ex-name{font-size:13px;font-weight:600}
+.prog-ex-count{font-size:10px;color:var(--muted)}
+.prog-chart-wrap{padding:14px}
+.prog-chart-wrap svg{width:100%;display:block}
+.prog-empty{font-size:11px;color:var(--muted);font-style:italic;padding:14px;text-align:center}
+.prog-last{display:flex;gap:10px;padding:0 14px 12px;flex-wrap:wrap}
+.prog-last-item{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;text-align:center}
+.pli-val{font-size:15px;font-weight:600;color:var(--accent)}
+.pli-date{font-size:9px;color:var(--muted);margin-top:1px}
+.prog-summary{background:linear-gradient(135deg,rgba(212,168,83,.08),rgba(193,112,90,.05));border:1px solid rgba(212,168,83,.2);border-radius:12px;padding:16px;margin-bottom:14px}
+.prog-summary-title{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.prog-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{text-align:center}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent)}
+.kpi-lbl{font-size:9px;color:var(--muted);margin-top:2px}
+@media(max-width:480px){.tips-grid{grid-template-columns:1fr}.prog-tabs{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Programme Fitness Personnalisé</div>
+  <h1>Force &amp; <em>Silhouette</em></h1>
+  <p class="hero-sub">4 séances / semaine · Haut du corps – Bas du corps · Débutante</p>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val">4</div><div class="stat-label">Séances/sem.</div></div>
+    <div class="stat"><div class="stat-val">~55'</div><div class="stat-label">Durée</div></div>
+    <div class="stat"><div class="stat-val">2–25</div><div class="stat-label">Kg altères</div></div>
+    <div class="stat"><div class="stat-val" id="total-sessions">0</div><div class="stat-label">Séances faites</div></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="nav">
+  <div class="tab lower active" onclick="showPanel('A')">
+    <span class="tab-icon">🦵</span><div class="tab-day">Lundi</div><div class="tab-name">Bas A</div>
+  </div>
+  <div class="tab upper" onclick="showPanel('B')">
+    <span class="tab-icon">💪</span><div class="tab-day">Mercredi</div><div class="tab-name">Haut A</div>
+  </div>
+  <div class="tab lower" onclick="showPanel('C')">
+    <span class="tab-icon">🍑</span><div class="tab-day">Vendredi</div><div class="tab-name">Bas B</div>
+  </div>
+  <div class="tab upper" onclick="showPanel('D')">
+    <span class="tab-icon">🏋️</span><div class="tab-day">Samedi</div><div class="tab-name">Haut B</div>
+  </div>
+  <div class="tab prog" onclick="showPanel('P')">
+    <span class="tab-icon">📈</span><div class="tab-day">Stats</div><div class="tab-name">Progression</div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ============ SESSION A ============ -->
+<div class="panel visible" id="panel-A">
+  <div class="sess-hdr">
+    <div class="sess-icon lower">🦵</div>
+    <div><div class="sess-title">Bas du corps A</div><div class="sess-meta">Quadriceps · Fessiers · Ischios</div></div>
+    <div class="sess-badge lower">Lundi</div>
+  </div>
+  <div class="warmup"><div class="warmup-icon">🚴</div><div><div class="warmup-label">Échauffement</div><div class="warmup-text">Vélo ou tapis · 8 min intensité légère, puis 2 min dynamique (fentes, cercles hanches)</div></div></div>
+
+  <div class="sec-lbl">Exercices principaux</div>
+
+  <!-- Each exercise generated by JS below -->
+  <div id="ex-goblet_squat"></div>
+  <div id="ex-hip_thrust"></div>
+  <div id="ex-romanian_dl"></div>
+  <div id="ex-fente_avant"></div>
+
+  <div class="sec-lbl">Finisher – isolation fessiers</div>
+  <div id="ex-abduction"></div>
+  <div id="ex-donkey_kick"></div>
+
+  <div class="tips-grid">
+    <div class="tip"><span class="tip-icon">⏱️</span><div class="tip-title">Temps de repos</div><div class="tip-text">60–90 sec entre les séries. 45 sec pour le finisher.</div></div>
+    <div class="tip"><span class="tip-icon">🔑</span><div class="tip-title">Focus</div><div class="tip-text">Hip Thrust en priorité. C'est là qu'on progresse en charge semaine après semaine.</div></div>
+  </div>
+</div>
+
+<!-- ============ SESSION B ============ -->
+<div class="panel" id="panel-B">
+  <div class="sess-hdr">
+    <div class="sess-icon upper">💪</div>
+    <div><div class="sess-title">Haut du corps A</div><div class="sess-meta">Pectoraux · Dos · Épaules · Biceps</div></div>
+    <div class="sess-badge upper">Mercredi</div>
+  </div>
+  <div class="warmup"><div class="warmup-icon">🏃</div><div><div class="warmup-label">Échauffement</div><div class="warmup-text">Tapis de course · 8 min marche rapide ou léger trot, puis rotations d'épaules</div></div></div>
+
+  <div class="sec-lbl">Poussée – pectoraux · épaules · triceps</div>
+  <div id="ex-dev_couche"></div>
+  <div id="ex-dev_militaire"></div>
+  <div id="ex-elev_lat"></div>
+
+  <div class="sec-lbl">Tirage – dos · biceps</div>
+  <div id="ex-rowing"></div>
+  <div id="ex-curl_biceps"></div>
+
+  <div class="sec-lbl">Gainage</div>
+  <div id="ex-planche"></div>
+
+  <div class="tips-grid">
+    <div class="tip"><span class="tip-icon">💡</span><div class="tip-title">Objectif</div><div class="tip-text">Tonus et définition, pas volume. Charges modérées, technique propre.</div></div>
+    <div class="tip"><span class="tip-icon">⏱️</span><div class="tip-title">Repos</div><div class="tip-text">60 sec entre les séries. Séance fluide et dynamique.</div></div>
+  </div>
+</div>
+
+<!-- ============ SESSION C ============ -->
+<div class="panel" id="panel-C">
+  <div class="sess-hdr">
+    <div class="sess-icon lower">🍑</div>
+    <div><div class="sess-title">Bas du corps B</div><div class="sess-meta">Fessiers · Ischios · Hanches · Équilibre</div></div>
+    <div class="sess-badge lower">Vendredi</div>
+  </div>
+  <div class="warmup"><div class="warmup-icon">🚴</div><div><div class="warmup-label">Échauffement</div><div class="warmup-text">Vélo · 10 min résistance légère, puis 15 hip thrust poids de corps pour activer les fessiers</div></div></div>
+
+  <div class="sec-lbl">Force – charge lourde</div>
+  <div id="ex-sumo_squat"></div>
+  <div id="ex-hip_thrust_uni"></div>
+  <div id="ex-bulgarian"></div>
+  <div id="ex-rdl_uni"></div>
+
+  <div class="sec-lbl">Finisher – hanches &amp; cardio</div>
+  <div id="ex-fente_lat"></div>
+  <div id="ex-monte_genoux"></div>
+
+  <div class="tips-grid">
+    <div class="tip"><span class="tip-icon">🍑</span><div class="tip-title">Séance clé</div><div class="tip-text">C'est la séance la plus efficace pour les fessiers. Cherche la brûlure.</div></div>
+    <div class="tip"><span class="tip-icon">⚡</span><div class="tip-title">Progression</div><div class="tip-text">+2 kg sur le hip thrust tous les 15 jours quand les reps deviennent faciles.</div></div>
+  </div>
+</div>
+
+<!-- ============ SESSION D ============ -->
+<div class="panel" id="panel-D">
+  <div class="sess-hdr">
+    <div class="sess-icon upper">🏋️</div>
+    <div><div class="sess-title">Haut du corps B</div><div class="sess-meta">Épaules · Dos · Bras · Abdos</div></div>
+    <div class="sess-badge upper">Samedi</div>
+  </div>
+  <div class="warmup"><div class="warmup-icon">🏃</div><div><div class="warmup-label">Échauffement</div><div class="warmup-text">Tapis de course · 10 min footing léger</div></div></div>
+
+  <div class="sec-lbl">Poussée &amp; épaules</div>
+  <div id="ex-dev_incline"></div>
+  <div id="ex-arnold"></div>
+  <div id="ex-oiseau"></div>
+
+  <div class="sec-lbl">Tirage &amp; bras</div>
+  <div id="ex-pullover"></div>
+  <div id="ex-curl_marteau"></div>
+  <div id="ex-ext_triceps"></div>
+
+  <div class="sec-lbl">Abdos &amp; gainage</div>
+  <div id="ex-dead_bug"></div>
+  <div id="ex-crunch_oblique"></div>
+
+  <div class="tips-grid">
+    <div class="tip"><span class="tip-icon">✨</span><div class="tip-title">Fin de semaine</div><div class="tip-text">Récupérer le dimanche. Bien s'hydrater après la séance.</div></div>
+    <div class="tip"><span class="tip-icon">🧘</span><div class="tip-title">Cool-down</div><div class="tip-text">5 min d'étirements : épaules, pectoraux, triceps sur le tapis.</div></div>
+  </div>
+</div>
+
+<!-- ============ PROGRESSION ============ -->
+<div class="panel" id="panel-P">
+  <div class="sess-hdr">
+    <div class="sess-icon prog" style="background:rgba(212,168,83,.1)">📈</div>
+    <div><div class="sess-title">Ma Progression</div><div class="sess-meta">Suivi des charges par exercice</div></div>
+  </div>
+
+  <div class="prog-summary">
+    <div class="prog-summary-title">Vue d'ensemble</div>
+    <div class="prog-kpis">
+      <div class="kpi"><div class="kpi-val" id="kpi-logs">–</div><div class="kpi-lbl">Entrées totales</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-exs">–</div><div class="kpi-lbl">Exercices suivis</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-days">–</div><div class="kpi-lbl">Jours actifs</div></div>
+    </div>
+  </div>
+
+  <div class="prog-tabs">
+    <button class="prog-sess-btn lower active" onclick="showProgSess('A',this)">🦵 Bas A – Lundi</button>
+    <button class="prog-sess-btn upper" onclick="showProgSess('B',this)">💪 Haut A – Mercredi</button>
+    <button class="prog-sess-btn lower" onclick="showProgSess('C',this)">🍑 Bas B – Vendredi</button>
+    <button class="prog-sess-btn upper" onclick="showProgSess('D',this)">🏋️ Haut B – Samedi</button>
+  </div>
+
+  <div class="prog-exs" id="prog-exs"></div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+/* =========================================================
+   EXERCISE DATA
+   ========================================================= */
+const EX = {
+  goblet_squat:{
+    name:"Goblet Squat", sess:"A",
+    sets:4, reps:"12", suggested:"12–16 kg",
+    tip:"Pieds à largeur d'épaule, talons ancrés, descendre les fesses bas",
+    yt:"https://www.youtube.com/results?search_query=goblet+squat+haltere+technique+debutant",
+    steps:[
+      "Tiens un altère vertical à deux mains contre ta poitrine. Pieds légèrement plus larges que les épaules, pointés vers l'extérieur à environ 15–20°.",
+      "Descends lentement en poussant les genoux vers l'extérieur, talons bien ancrés au sol, dos droit et poitrine haute. Descends jusqu'à ce que les cuisses soient parallèles au sol ou plus bas.",
+      "Remonte en poussant dans les talons. Évite que les genoux rentrent vers l'intérieur en remontant."
+    ],
+    cue:"💡 Si les talons se soulèvent, tu peux placer une petite plaque sous chaque talon pour commencer. C'est un problème de mobilité de cheville, ça se travaille avec le temps."
+  },
+  hip_thrust:{
+    name:"Hip Thrust (banc)", sess:"A",
+    sets:4, reps:"15", suggested:"16–20 kg",
+    tip:"Nuque sur le banc, altère sur les hanches, serrer les fesses en haut",
+    yt:"https://www.youtube.com/results?search_query=hip+thrust+haltere+banc+fessiers+technique+debutante",
+    steps:[
+      "Appuie le haut du dos contre le bord du banc (au niveau des omoplates), pieds à plat au sol largeur de hanches. Pose un altère sur tes hanches et maintiens-le avec les mains.",
+      "Descends les hanches vers le sol sans les poser complètement, puis pousse fort dans les talons pour monter les hanches vers le plafond.",
+      "En haut : corps formant une ligne droite épaules–hanches–genoux. Serre fort les fessiers pendant 1 seconde, puis redescends lentement."
+    ],
+    cue:"🔑 L'exercice numéro un pour les fessiers. Commence sans poids pour apprendre le geste, puis augmente la charge toutes les 2 semaines."
+  },
+  romanian_dl:{
+    name:"Romanian Deadlift", sess:"A",
+    sets:4, reps:"12", suggested:"12–16 kg",
+    tip:"Dos droit, altères le long des jambes, ressenti dans les ischios",
+    yt:"https://www.youtube.com/results?search_query=romanian+deadlift+halteres+technique+ischios",
+    steps:[
+      "Debout, altères devant les cuisses, pieds largeur de hanches. Dos plat, épaules en arrière, légère flexion des genoux.",
+      "Penche le buste vers l'avant en poussant les hanches vers l'arrière (comme si tu voulais fermer une porte avec tes fesses). Les altères glissent le long des jambes.",
+      "Descends jusqu'à sentir un étirement dans l'arrière des cuisses, puis remonte en contractant les fessiers."
+    ],
+    cue:"💡 Tu dois sentir l'étirement dans l'arrière des cuisses, pas dans le bas du dos. Si tu sens le dos, c'est que tu arrondis trop la colonne vertébrale."
+  },
+  fente_avant:{
+    name:"Fente avant alternée", sess:"A",
+    sets:3, reps:"10 / côté", suggested:"8–10 kg",
+    tip:"Genou arrière proche du sol, torse droit, poussée sur le talon avant",
+    yt:"https://www.youtube.com/results?search_query=fente+avant+alternee+halteres+technique+debutante",
+    steps:[
+      "Debout avec altères dans chaque main. Fais un grand pas en avant avec une jambe.",
+      "Descends jusqu'à ce que le genou arrière frôle le sol. Le genou avant ne dépasse pas la pointe du pied. Torse bien droit.",
+      "Pousse dans le talon avant pour revenir, puis alterne l'autre jambe."
+    ],
+    cue:"💡 Commence sans altères le temps de bien trouver l'équilibre, puis ajoute la charge progressivement une fois le geste maîtrisé."
+  },
+  abduction:{
+    name:"Abduction couchée sur le côté", sess:"A",
+    sets:3, reps:"20 / côté", suggested:"Poids de corps",
+    tip:"Sur le côté, jambe du dessus levée lentement, contrôler la descente",
+    yt:"https://www.youtube.com/results?search_query=abduction+couchee+cote+fessiers+lateraux+technique",
+    steps:[
+      "Allongée sur le côté sur le tapis, corps aligné, tête posée sur le bras tendu.",
+      "Lève la jambe du dessus en gardant le pied en flexion, jusqu'à environ 45°. Mouvement lent et contrôlé.",
+      "Redescends lentement sans laisser la jambe toucher l'autre. La descente contrôlée est aussi importante que la montée."
+    ],
+    cue:"💡 Pour progresser, place un altère léger (2–4 kg) sur la cuisse ou utilise un élastique. La brûlure dans le fessier latéral est tout à fait normale."
+  },
+  donkey_kick:{
+    name:"Donkey Kick avec altère", sess:"A",
+    sets:3, reps:"15 / côté", suggested:"4–6 kg",
+    tip:"À quatre pattes, altère derrière le genou, extension de la hanche vers le haut",
+    yt:"https://www.youtube.com/results?search_query=donkey+kick+haltere+fessiers+technique+debutante",
+    steps:[
+      "À quatre pattes sur le tapis, mains sous les épaules, genoux sous les hanches. Glisse un altère derrière le genou et maintiens-le en fléchissant la jambe.",
+      "Garde le dos plat, et pousse le pied vers le plafond en maintenant le genou à 90°.",
+      "En haut, la cuisse doit être parallèle au sol. Serre le fessier, puis redescends lentement sans poser le genou au sol."
+    ],
+    cue:"💡 Commence sans altère pour apprendre le mouvement et ne pas stresser le genou. Ajoute le poids quand la technique est bien maîtrisée."
+  },
+  dev_couche:{
+    name:"Développé couché haltères (banc)", sess:"B",
+    sets:3, reps:"12", suggested:"8–10 kg / main",
+    tip:"Coudes à 45°, descendre lentement, poussée explosive vers le haut",
+    yt:"https://www.youtube.com/results?search_query=developpe+couche+halteres+banc+technique+debutante",
+    steps:[
+      "Allongée sur le banc, un altère dans chaque main, pieds à plat au sol. Altères à la hauteur de la poitrine, coudes à environ 45° du corps.",
+      "Pousse les altères vers le plafond en les rapprochant légèrement au sommet. Bras tendus sans verrouiller les coudes.",
+      "Descends lentement (2–3 sec) jusqu'à ressentir un étirement des pectoraux, puis repousse."
+    ],
+    cue:"💡 Évite d'écarter les coudes à 90° du corps, ça stresse les épaules. 45° est l'angle le plus sûr et le plus efficace pour les débutantes."
+  },
+  dev_militaire:{
+    name:"Développé militaire assis", sess:"B",
+    sets:3, reps:"12", suggested:"6–8 kg / main",
+    tip:"Dos droit, pousser les altères droit au-dessus de la tête, abdos contractés",
+    yt:"https://www.youtube.com/results?search_query=developpe+militaire+halteres+assis+epaules+technique",
+    steps:[
+      "Assise sur le banc, dos droit. Altères à hauteur des épaules, coudes à 90°, paumes vers l'avant.",
+      "Pousse les altères vers le haut en les rapprochant légèrement au sommet, sans verrouiller les coudes.",
+      "Redescends lentement à la position de départ. Abdos contractés tout au long pour protéger le bas du dos."
+    ],
+    cue:"💡 Si tu cambres le bas du dos pour pousser, le poids est trop lourd. Diminue et travaille la technique d'abord."
+  },
+  elev_lat:{
+    name:"Élévations latérales", sess:"B",
+    sets:3, reps:"15", suggested:"4–6 kg / main",
+    tip:"Bras quasi-tendus, monter jusqu'à l'épaule, descente très lente (3–4 sec)",
+    yt:"https://www.youtube.com/results?search_query=elevations+laterales+halteres+epaules+technique+debutante",
+    steps:[
+      "Debout, altères le long du corps, légère flexion des coudes. Tu peux te pencher très légèrement en avant.",
+      "Lève les bras sur les côtés jusqu'à la hauteur des épaules, pas plus haut. Pouce légèrement vers le bas.",
+      "Redescends très lentement (3–4 secondes). C'est la descente contrôlée qui sculpte réellement l'épaule."
+    ],
+    cue:"💡 Prends des poids très légers. L'erreur classique est de tricher avec des poids trop lourds en utilisant l'élan du dos."
+  },
+  rowing:{
+    name:"Rowing unilatéral (banc)", sess:"B",
+    sets:3, reps:"12 / côté", suggested:"10–14 kg",
+    tip:"Genou et main sur le banc, tirer le coude haut et serré au corps",
+    yt:"https://www.youtube.com/results?search_query=rowing+unilateral+haltere+banc+grand+dorsal+technique",
+    steps:[
+      "Pose le genou droit et la main droite sur le banc. Dos plat et parallèle au sol. L'altère dans la main gauche pend vers le sol.",
+      "Tire l'altère vers ta hanche en remontant le coude haut et serré au corps. Ton coude pointe vers le plafond au sommet.",
+      "Descends lentement à fond. Sens le grand dorsal s'étirer en bas du mouvement."
+    ],
+    cue:"💡 Pense à 'tirer avec le coude', pas avec la main. Ça force à recruter le dos plutôt que de compenser avec le biceps."
+  },
+  curl_biceps:{
+    name:"Curl biceps alternés", sess:"B",
+    sets:3, reps:"12 / côté", suggested:"6–8 kg / main",
+    tip:"Coude fixe contre le buste, rotation du poignet en montant",
+    yt:"https://www.youtube.com/results?search_query=curl+biceps+alternes+halteres+technique+debutante",
+    steps:[
+      "Debout ou assise, altères le long du corps, paumes vers l'intérieur au départ. Coudes collés au corps.",
+      "Fléchis un bras en faisant pivoter le poignet (paume vers le haut en montant). Monte l'altère jusqu'à l'épaule.",
+      "Redescends lentement et alterne l'autre bras. Le coude ne bouge pas."
+    ],
+    cue:"💡 Si tu balances le buste pour aider, le poids est trop lourd. Diminue et garde la technique stricte."
+  },
+  planche:{
+    name:"Planche frontale", sess:"B",
+    sets:3, reps:"30–45 sec", suggested:"Poids de corps",
+    tip:"Corps aligné, abdos contractés, ne pas laisser les hanches tomber",
+    yt:"https://www.youtube.com/results?search_query=planche+gainage+technique+debutante+abdos",
+    steps:[
+      "Appuie-toi sur les avant-bras et les orteils. Les coudes sous les épaules. Corps aligné de la tête aux pieds.",
+      "Contracte les abdos comme si tu allais recevoir un coup dans le ventre. Pousse les talons vers l'arrière.",
+      "Tiens la position. Si les hanches tombent ou remontent, arrête-toi. 20 sec parfaits valent mieux que 60 sec bancals."
+    ],
+    cue:"💡 Si c'est trop difficile au début, pose les genoux au sol. C'est une version plus accessible, tout aussi efficace pour débuter."
+  },
+  sumo_squat:{
+    name:"Sumo Squat", sess:"C",
+    sets:4, reps:"12", suggested:"16–20 kg",
+    tip:"Pieds très larges, pointes vers l'extérieur, un altère tenu devant, descendre profond",
+    yt:"https://www.youtube.com/results?search_query=sumo+squat+haltere+fessiers+cuisses+interieur+technique",
+    steps:[
+      "Pieds largement écartés (bien plus que les épaules), pointes vers l'extérieur à 45°. Tiens un altère vertical à deux mains devant toi.",
+      "Descends en poussant les genoux dans la direction des orteils, dos droit, poitrine haute. Descends aussi bas que possible.",
+      "Remonte en poussant dans les talons et en contractant les fessiers et l'intérieur des cuisses."
+    ],
+    cue:"💡 Les pieds très écartés ciblent bien l'intérieur des cuisses et les fessiers. C'est ce qui le différencie du goblet squat classique."
+  },
+  bulgarian:{
+    name:"Bulgarian Split Squat", sess:"C",
+    sets:3, reps:"10 / côté", suggested:"8–12 kg / main",
+    tip:"Pied arrière sur le banc, descente lente, genou avant au-dessus du pied",
+    yt:"https://www.youtube.com/results?search_query=bulgarian+split+squat+halteres+banc+technique+debutante",
+    steps:[
+      "Pose le dessus du pied arrière sur le banc. La jambe avant est bien devant toi (un grand pas). Altères dans les mains, torse droit.",
+      "Descends en fléchissant la jambe avant. Le genou avant suit la direction du pied et ne s'effondre pas vers l'intérieur.",
+      "Remonte en poussant dans le talon de la jambe avant. Fessier et quadriceps travaillent ensemble."
+    ],
+    cue:"💡 C'est l'exercice le plus difficile du programme. Commence absolument sans altères pour trouver l'équilibre avant d'ajouter du poids."
+  },
+  rdl_uni:{
+    name:"Romanian Deadlift unilatéral", sess:"C",
+    sets:3, reps:"10 / côté", suggested:"8–10 kg",
+    tip:"Équilibre sur une jambe, altère dans la main opposée, gainage total",
+    yt:"https://www.youtube.com/results?search_query=romanian+deadlift+unilateral+equilibre+haltere+technique",
+    steps:[
+      "Debout sur une jambe, légère flexion du genou d'appui. L'altère est dans la main du côté de la jambe levée.",
+      "Penche le buste en avant en poussant la jambe libre vers l'arrière. Le corps et la jambe arrière forment une ligne droite.",
+      "Remonte en contractant les fessiers. C'est autant un exercice d'équilibre que de force."
+    ],
+    cue:"💡 Si l'équilibre est trop difficile, garde la jambe arrière en contact léger avec le sol au début. L'équilibre vient avec la pratique."
+  },
+  fente_lat:{
+    name:"Fente latérale", sess:"C",
+    sets:3, reps:"12 / côté", suggested:"6–8 kg / main",
+    tip:"Grand pas sur le côté, fléchir la jambe active, l'autre reste tendue",
+    yt:"https://www.youtube.com/results?search_query=fente+laterale+halteres+cuisses+fessiers+technique+debutante",
+    steps:[
+      "Debout, altères dans les mains. Fais un grand pas sur le côté droit, pied pointé légèrement vers l'extérieur.",
+      "Plie la jambe droite en poussant les hanches en arrière. La jambe gauche reste tendue. Dos droit.",
+      "Remonte en poussant dans le talon droit et reviens au centre. Alterne les côtés."
+    ],
+    cue:"💡 Excellent pour l'intérieur des cuisses et les fessiers. Le genou de la jambe fléchie ne doit pas dépasser les orteils."
+  },
+  hip_thrust_uni:{
+    name:"Hip Thrust unilatéral", sess:"C",
+    sets:4, reps:"12 / côté", suggested:"Poids de corps",
+    tip:"Même position que le hip thrust classique, mais une seule jambe, très efficace pour les fesses",
+    yt:"https://www.youtube.com/results?search_query=hip+thrust+unilateral+poids+de+corps+fessiers+technique",
+    steps:[
+      "Appuie le haut du dos contre le banc, pieds à plat au sol. Étends une jambe devant toi, genou légèrement fléchi. Mains posées sur le banc ou les hanches.",
+      "Pousse dans le talon de la jambe d'appui pour monter les hanches. La jambe tendue reste dans l'axe du corps.",
+      "En haut, corps aligné. Serre fort le fessier de la jambe d'appui pendant 1 seconde, puis redescends lentement."
+    ],
+    cue:"💡 Plus difficile que le hip thrust classique car tout le poids repose sur un seul côté. Commence sans altère pour bien sentir le gainage."
+  },
+  monte_genoux:{
+    name:"Montées de genoux (tapis de course)", sess:"C",
+    sets:1, reps:"5 min", suggested:"Cardio léger",
+    tip:"Allure soutenue pour finir la séance et brûler les dernières calories",
+    yt:"https://www.youtube.com/results?search_query=montees+de+genoux+cardio+tapis+de+course+technique",
+    steps:[
+      "Sur le tapis de course à vitesse modérée (6–8 km/h), monte les genoux bien haut à chaque foulée.",
+      "Garde le dos droit, les abdos légèrement contractés, les bras en mouvement naturel.",
+      "Tiens 5 min à cette allure pour terminer la séance et activer le système cardio."
+    ],
+    cue:"💡 Ce finisher cardio permet de brûler les dernières réserves et d'améliorer l'endurance. Diminue la vitesse si nécessaire."
+  },
+  dev_incline:{
+    name:"Développé incliné haltères", sess:"D",
+    sets:3, reps:"12", suggested:"8–10 kg / main",
+    tip:"Banc incliné à 30–45°, cible le haut des pectoraux pour plus de galbe",
+    yt:"https://www.youtube.com/results?search_query=developpe+incline+halteres+pectoraux+haut+technique+debutante",
+    steps:[
+      "Incline le banc à 30–45°. Assieds-toi, altères sur les cuisses, puis allonge-toi en ramenant les altères à hauteur de poitrine.",
+      "Pousse les altères vers le haut. Même technique que le développé à plat, mais sur banc incliné.",
+      "Descends lentement jusqu'à sentir l'étirement dans le haut de la poitrine. Contrôle bien la descente."
+    ],
+    cue:"💡 Ne pas mettre le banc trop incliné (max 45°), sinon ce sont les épaules qui prennent le travail à la place des pectoraux."
+  },
+  arnold:{
+    name:"Arnold Press", sess:"D",
+    sets:3, reps:"12", suggested:"6–8 kg / main",
+    tip:"Rotation des poignets en montant, travaille les 3 faisceaux du deltoïde",
+    yt:"https://www.youtube.com/results?search_query=arnold+press+halteres+epaules+technique+debutante",
+    steps:[
+      "Assise, altères à hauteur des épaules, paumes face à toi (comme si tu regardais tes mains). Coudes devant toi.",
+      "En montant, fais pivoter les poignets vers l'extérieur. En haut, les paumes sont vers l'avant, position classique de développé militaire.",
+      "Redescends en faisant le mouvement inverse, lentement et en contrôlant bien la rotation."
+    ],
+    cue:"💡 Ce mouvement rotatif est ce qui le différencie du développé militaire classique. Il sollicite davantage de fibres dans l'épaule."
+  },
+  pullover:{
+    name:"Pullover haltère (banc)", sess:"D",
+    sets:3, reps:"12", suggested:"10–12 kg",
+    tip:"Couché, un altère à deux mains, descendre derrière la tête, étire le grand dorsal",
+    yt:"https://www.youtube.com/results?search_query=pullover+haltere+banc+grand+dorsal+technique",
+    steps:[
+      "Allongée sur le banc, un altère tenu à deux mains au-dessus de la poitrine. Bras quasi-tendus, légère flexion des coudes.",
+      "Descends l'altère lentement derrière la tête en inspirant. Sens l'étirement dans les côtés du dos et la poitrine.",
+      "Remonte l'altère à la position de départ en contractant le dos et les pectoraux. Coudes légèrement fléchis tout au long."
+    ],
+    cue:"💡 Excellent pour le grand dorsal et l'expansion de la cage thoracique. Prends un poids raisonnable et insiste sur l'étirement."
+  },
+  curl_marteau:{
+    name:"Curl marteau", sess:"D",
+    sets:3, reps:"12 / côté", suggested:"6–8 kg / main",
+    tip:"Poignet neutre (pouces vers le haut), travaille biceps et avant-bras",
+    yt:"https://www.youtube.com/results?search_query=curl+marteau+halteres+biceps+avant-bras+technique",
+    steps:[
+      "Debout, altères le long du corps, pouces vers le haut (prise neutre). Coudes collés au corps.",
+      "Monte l'altère vers l'épaule sans faire pivoter le poignet. Le pouce reste vers le haut tout au long.",
+      "Redescends lentement. Alterne les deux bras ou fais les deux en même temps."
+    ],
+    cue:"💡 Cette prise neutre travaille le brachioradialis (avant-bras) en plus du biceps, ce qui donne un bras plus complet et défini."
+  },
+  ext_triceps:{
+    name:"Extension triceps au-dessus", sess:"D",
+    sets:3, reps:"12", suggested:"8–10 kg",
+    tip:"Un altère à deux mains, coudes serrés, descendre derrière la nuque",
+    yt:"https://www.youtube.com/results?search_query=extension+triceps+haltere+au+dessus+tete+technique+debutante",
+    steps:[
+      "Assise ou debout, tiens un altère à deux mains au-dessus de la tête, bras tendus. Coudes pointés vers le plafond.",
+      "Descends l'altère derrière la nuque en gardant les coudes serrés (ils ne s'écartent pas). Jusqu'à environ 90°.",
+      "Remonte en contractant les triceps. Seuls les avant-bras bougent, pas les coudes."
+    ],
+    cue:"💡 Excellent pour la face arrière des bras. Les coudes qui s'écartent réduisent l'efficacité. Garde-les bien serrés."
+  },
+  oiseau:{
+    name:"Oiseau – élévations arrière", sess:"D",
+    sets:3, reps:"15", suggested:"4–5 kg / main",
+    tip:"Penché à 90°, bras quasi-tendus, monter les haltères sur les côtés",
+    yt:"https://www.youtube.com/results?search_query=oiseau+elevations+arriere+halteres+deltoide+posterieur+technique",
+    steps:[
+      "Debout, penche le buste à environ 90° vers l'avant (dos plat, regard vers le sol). Altères dans les mains, bras pendants, légère flexion des coudes.",
+      "Lève les bras sur les côtés en gardant les coudes légèrement fléchis. Monte jusqu'à la hauteur des épaules.",
+      "Redescends lentement (3–4 secondes). C'est la descente contrôlée qui fait vraiment travailler l'arrière des épaules."
+    ],
+    cue:"💡 Prends des poids très légers pour cet exercice. L'arrière de l'épaule est un petit muscle qui se fatigue vite. 4–5 kg suffisent pour bien le sentir."
+  },
+  crunch_oblique:{
+    name:"Crunch oblique", sess:"D",
+    sets:3, reps:"15 / côté", suggested:"Poids de corps",
+    tip:"Coude vers genou opposé, abdos gainés en permanence",
+    yt:"https://www.youtube.com/results?search_query=crunch+oblique+abdominaux+technique+debutante",
+    steps:[
+      "Allongée sur le dos, mains derrière la tête (sans tirer sur la nuque), genoux fléchis, pieds à plat.",
+      "Monte l'épaule droite vers le genou gauche en expirant. L'épaule décolle du sol, pas le bas du dos.",
+      "Redescends lentement et alterne de l'autre côté. Les abdos restent contractés tout au long."
+    ],
+    cue:"💡 Ne tire pas sur la nuque avec les mains. Les mains sont juste là pour soutenir légèrement la tête. C'est l'épaule qui doit monter vers le genou."
+  },
+  dead_bug:{
+    name:"Dead Bug", sess:"D",
+    sets:3, reps:"10 / côté", suggested:"Poids de corps",
+    tip:"Sur le dos, bras et jambes opposées s'étendent sans toucher le sol, dos plaqué",
+    yt:"https://www.youtube.com/results?search_query=dead+bug+gainage+abdos+profonds+debutante+technique",
+    steps:[
+      "Allongée sur le dos, bras pointés vers le plafond, hanches et genoux à 90°. Dos complètement plaqué au sol.",
+      "Étends simultanément le bras droit vers l'arrière et la jambe gauche vers l'avant, sans toucher le sol. Expire en allongeant.",
+      "Reviens et alterne (bras gauche + jambe droite). Le bas du dos reste plaqué au sol en permanence."
+    ],
+    cue:"💡 Un des meilleurs exercices de gainage profond. Il protège le bas du dos et stabilise le corps. Parfait pour débuter."
+  }
+};
+
+/* =========================================================
+   SESSION GROUPING
+   ========================================================= */
+const SESSIONS = {
+  A:['goblet_squat','hip_thrust','romanian_dl','fente_avant','abduction','donkey_kick'],
+  B:['dev_couche','dev_militaire','elev_lat','rowing','curl_biceps','planche'],
+  C:['sumo_squat','hip_thrust_uni','bulgarian','rdl_uni','fente_lat','monte_genoux'],
+  D:['dev_incline','arnold','oiseau','pullover','curl_marteau','ext_triceps','dead_bug','crunch_oblique']
+};
+
+const SESS_LABELS = {A:'Bas A – Lundi',B:'Haut A – Mercredi',C:'Bas B – Vendredi',D:'Haut B – Samedi'};
+
+/* =========================================================
+   LOCAL STORAGE HELPERS
+   ========================================================= */
+function getLogs(id){
+  try{ return JSON.parse(localStorage.getItem('log_'+id)||'[]'); }
+  catch{ return []; }
+}
+function saveLogs(id,arr){ localStorage.setItem('log_'+id,JSON.stringify(arr)); }
+function addLog(id,weight,note){
+  const arr=getLogs(id);
+  const today=new Date().toISOString().split('T')[0];
+  arr.push({date:today,weight:parseFloat(weight)||0,note:note||''});
+  saveLogs(id,arr);
+}
+function deleteLog(id,idx){
+  const arr=getLogs(id);
+  arr.splice(idx,1);
+  saveLogs(id,arr);
+}
+
+/* =========================================================
+   BUILD EXERCISE CARDS
+   ========================================================= */
+function buildExCard(id){
+  const ex=EX[id];
+  if(!ex) return;
+  const el=document.getElementById('ex-'+id);
+  if(!el) return;
+  el.innerHTML=`
+<div class="ex" id="card-${id}">
+  <div class="ex-top">
+    <div class="ex-info">
+      <div class="ex-name">${ex.name}</div>
+      <div class="ex-tip">${ex.tip}</div>
+      <div class="ex-chips">
+        <span class="chip chip-s">${ex.sets} séries</span>
+        <span class="chip chip-r">${ex.reps}</span>
+        <span class="chip chip-w">${ex.suggested}</span>
+      </div>
+    </div>
+    <div class="ex-actions">
+      <a class="btn-yt" href="${ex.yt}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+        Vidéo
+      </a>
+      <button class="btn-log" onclick="toggleLog('${id}')">📝 Journal</button>
+    </div>
+  </div>
+  <div class="ex-demo" id="demo-${id}">
+    <div class="demo-steps">
+      ${ex.steps.map((s,i)=>`<div class="demo-step"><div class="step-n">${i+1}</div><div class="step-t">${s}</div></div>`).join('')}
+    </div>
+    <div class="demo-cue">${ex.cue}</div>
+    <a class="yt-link" href="${ex.yt}" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#ff7070"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
+      Voir les vidéos de démonstration sur YouTube
+    </a>
+  </div>
+  <div class="ex-log" id="log-${id}">
+    <div class="log-title">📝 Journal de séance</div>
+    <div class="log-form">
+      <input class="log-date" type="date" id="date-${id}" />
+      <input class="log-input" type="number" step="0.5" min="0" max="200" placeholder="Poids (kg)" id="weight-${id}" />
+      <input class="log-input" type="text" placeholder="Note (opt.)" id="note-${id}" style="width:110px" />
+      <button class="btn-save" onclick="saveEntry('${id}')">Enregistrer</button>
+    </div>
+    <div class="log-history" id="hist-${id}"></div>
+  </div>
+</div>`;
+  // set today as default date
+  const d=document.getElementById('date-'+id);
+  if(d) d.value=new Date().toISOString().split('T')[0];
+  renderHistory(id);
+}
+
+function toggleLog(id){
+  const el=document.getElementById('log-'+id);
+  const btn=el.previousElementSibling; // btn-log
+  if(!el) return;
+  const open=el.classList.contains('open');
+  el.classList.toggle('open',!open);
+  // close demo if open
+  document.getElementById('demo-'+id)?.classList.remove('open');
+}
+
+function saveEntry(id){
+  const w=document.getElementById('weight-'+id)?.value;
+  const n=document.getElementById('note-'+id)?.value;
+  const d=document.getElementById('date-'+id)?.value;
+  if(!w){ alert('Entre le poids utilisé !'); return; }
+  const arr=getLogs(id);
+  arr.push({date:d||new Date().toISOString().split('T')[0],weight:parseFloat(w)||0,note:n||''});
+  saveLogs(id,arr);
+  document.getElementById('weight-'+id).value='';
+  document.getElementById('note-'+id).value='';
+  renderHistory(id);
+  updateStats();
+}
+
+function renderHistory(id){
+  const arr=getLogs(id);
+  const el=document.getElementById('hist-'+id);
+  if(!el) return;
+  if(!arr.length){ el.innerHTML='<div class="log-empty">Aucune entrée pour l\'instant. Commence à logger !</div>'; return; }
+  const last=[...arr].slice(-5).reverse();
+  el.innerHTML=last.map((e,i)=>{
+    const realIdx=arr.length-1-(i); // real index in original arr
+    return `<div class="log-entry">
+      <div>
+        <div class="log-entry-date">${formatDate(e.date)}</div>
+        ${e.note?`<div class="log-entry-note">${e.note}</div>`:''}
+      </div>
+      <div class="log-entry-weight">${e.weight} kg</div>
+      <button class="btn-del" onclick="delEntry('${id}',${arr.length-1-i})" title="Supprimer">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function delEntry(id,idx){
+  const arr=getLogs(id);
+  arr.splice(idx,1);
+  saveLogs(id,arr);
+  renderHistory(id);
+  updateStats();
+  if(document.getElementById('panel-P').classList.contains('visible')) renderProgPanel(currentProgSess);
+}
+
+function formatDate(d){
+  if(!d) return '';
+  const [y,m,day]=d.split('-');
+  return `${day}/${m}/${y}`;
+}
+
+/* =========================================================
+   PANEL NAVIGATION
+   ========================================================= */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('visible'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('visible');
+  const tabs=[...document.querySelectorAll('.tab')];
+  const map={A:0,B:1,C:2,D:3,P:4};
+  tabs[map[id]]?.classList.add('active');
+  if(id==='P') renderProgPanel(currentProgSess);
+}
+
+/* =========================================================
+   PROGRESSION PANEL
+   ========================================================= */
+let currentProgSess='A';
+
+function showProgSess(sess,btn){
+  currentProgSess=sess;
+  document.querySelectorAll('.prog-sess-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProgPanel(sess);
+}
+
+function renderProgPanel(sess){
+  const container=document.getElementById('prog-exs');
+  if(!container) return;
+  const ids=SESSIONS[sess]||[];
+  container.innerHTML=ids.map(id=>buildProgCard(id)).join('');
+}
+
+function buildProgCard(id){
+  const ex=EX[id];
+  const logs=getLogs(id);
+  const count=logs.length;
+  const lastEntry=count?logs[logs.length-1]:null;
+  const maxW=count?Math.max(...logs.map(l=>l.weight)):0;
+
+  let chartHtml='';
+  if(count>=2){
+    chartHtml=buildSVGChart(logs);
+  } else if(count===1){
+    chartHtml=`<div class="prog-empty">1 entrée enregistrée. Ajoute au moins une autre séance pour voir le graphique.</div>`;
+  } else {
+    chartHtml=`<div class="prog-empty">Aucune donnée. Active le journal dans cette séance pour commencer le suivi.</div>`;
+  }
+
+  const recentHtml=count?`
+    <div class="prog-last">
+      ${[...logs].slice(-3).reverse().map(e=>`
+        <div class="prog-last-item">
+          <div class="pli-val">${e.weight} kg</div>
+          <div class="pli-date">${formatDate(e.date)}</div>
+        </div>`).join('')}
+    </div>`:'';
+
+  return `<div class="prog-ex-card">
+    <div class="prog-ex-hdr">
+      <div class="prog-ex-name">${ex.name}</div>
+      <div class="prog-ex-count">${count} entrée${count!==1?'s':''}</div>
+    </div>
+    <div class="prog-chart-wrap">${chartHtml}</div>
+    ${recentHtml}
+  </div>`;
+}
+
+function buildSVGChart(logs){
+  const W=300, H=80;
+  const weights=logs.map(l=>l.weight);
+  const minW=Math.min(...weights);
+  const maxW=Math.max(...weights);
+  const range=maxW-minW||1;
+  const n=logs.length;
+  const PAD=8;
+  const pts=logs.map((l,i)=>{
+    const x=PAD+(i/(n-1))*(W-2*PAD);
+    const y=(H-PAD)-((l.weight-minW)/range)*(H-2*PAD);
+    return {x,y,w:l.weight,d:l.date};
+  });
+  const polyline=pts.map(p=>`${p.x},${p.y}`).join(' ');
+  // fill area
+  const areaPath=`M${pts[0].x},${H} `+pts.map(p=>`L${p.x},${p.y}`).join(' ')+` L${pts[pts.length-1].x},${H} Z`;
+  // dots + labels
+  const dots=pts.map((p,i)=>{
+    const isLast=i===pts.length-1;
+    const isMax=p.w===maxW;
+    return `<circle cx="${p.x}" cy="${p.y}" r="${isLast||isMax?4:3}" fill="${isLast?'#d4a853':isMax?'#c1705a':'#555'}" />
+    ${isLast?`<text x="${p.x}" y="${p.y-7}" text-anchor="middle" fill="#d4a853" font-size="9" font-weight="600">${p.w}kg</text>`:''}`;
+  }).join('');
+  // y-axis labels
+  const yLabels=`<text x="0" y="${PAD+4}" fill="#55" font-size="8" fill-opacity=".5">${maxW}kg</text>
+  <text x="0" y="${H-PAD+4}" fill="#55" font-size="8" fill-opacity=".5">${minW}kg</text>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" style="overflow:visible">
+    <defs>
+      <linearGradient id="grad-${Math.random().toString(36).slice(2)}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#d4a853" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#d4a853" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="${areaPath}" fill="rgba(212,168,83,0.1)"/>
+    <polyline points="${polyline}" fill="none" stroke="#d4a853" stroke-width="2" stroke-linejoin="round"/>
+    ${dots}
+    ${yLabels}
+  </svg>`;
+}
+
+/* =========================================================
+   GLOBAL STATS
+   ========================================================= */
+function updateStats(){
+  let totalLogs=0, trackedExs=0;
+  const days=new Set();
+  Object.keys(EX).forEach(id=>{
+    const logs=getLogs(id);
+    if(logs.length){ trackedExs++; totalLogs+=logs.length; logs.forEach(l=>days.add(l.date)); }
+  });
+  // count unique session dates (any exercise logged that day)
+  document.getElementById('kpi-logs').textContent=totalLogs||'–';
+  document.getElementById('kpi-exs').textContent=trackedExs||'–';
+  document.getElementById('kpi-days').textContent=days.size||'–';
+  // total sessions estimate
+  document.getElementById('total-sessions').textContent=days.size;
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+document.addEventListener('DOMContentLoaded',()=>{
+  // build all exercise cards
+  Object.keys(EX).forEach(id=>buildExCard(id));
+  // make video buttons toggle demo on card
+  document.querySelectorAll('.btn-yt').forEach(btn=>{
+    // keep default link behavior — no override
+  });
+  updateStats();
+  renderProgPanel('A');
+  // Init date pickers
+  const today=new Date().toISOString().split('T')[0];
+  document.querySelectorAll('.log-date').forEach(d=>d.value=today);
+});
+</script>
+</body>
+</html>
