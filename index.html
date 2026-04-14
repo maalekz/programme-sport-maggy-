@@ -9,60 +9,84 @@
 <meta name="theme-color" content="#000">
 <title>Malek Training</title>
 <style>
+/* RESET - PAS de overflow:hidden sur body/html */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;overflow:hidden}
-input,button,select{font-family:inherit;font-size:inherit;-webkit-appearance:none}
+html{background:#000}
+body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;padding-top:env(safe-area-inset-top,0px)}
+input,button,select{font-family:inherit;font-size:inherit;-webkit-appearance:none;appearance:none;border:none;outline:none}
 input[type=number]::-webkit-inner-spin-button{display:none}
+button{cursor:pointer;background:none}
 
-/* ── SHELL ── */
-#app{display:flex;flex-direction:column;height:100%;padding-top:env(safe-area-inset-top,0px)}
-#content{flex:1;overflow:hidden;position:relative}
-
-/* ── PAGES ── */
-.pg{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000;display:none}
+/* PAGES - flux normal, display:none/block */
+.pg{display:none;min-height:100vh;padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
 .pg.on{display:block}
 
-/* ── TAB BAR ── */
-#tabs{display:flex;flex-shrink:0;background:#111;border-top:1px solid #2a2a2a;padding-bottom:env(safe-area-inset-bottom,0px)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 6px;gap:3px;color:rgba(255,255,255,.4);background:none;border:none;min-height:52px;cursor:pointer;-webkit-user-select:none;user-select:none}
+/* TAB BAR - position:fixed, toujours visible */
+#tabs{
+  position:fixed;bottom:0;left:0;right:0;
+  display:flex;
+  background:rgba(18,18,18,.97);
+  border-top:1px solid #2a2a2a;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  z-index:1000;
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:8px 2px 6px;gap:3px;
+  color:rgba(255,255,255,.4);background:none;border:none;
+  min-height:50px;cursor:pointer;
+  -webkit-user-select:none;user-select:none;
+}
 .tab.on{color:#0a84ff}
 .tab svg{width:22px;height:22px;fill:currentColor}
 .tab span{font-size:10px;font-weight:500}
 
-/* ── MODALS ── */
-.modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);align-items:flex-end}
+/* MODALS - position:fixed, display:none/flex */
+.modal{
+  display:none;
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,.75);
+  align-items:flex-end;
+}
 .modal.on{display:flex}
-.msheet{background:#1c1c1e;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));width:100%;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.msheet{
+  background:#1c1c1e;border-radius:22px 22px 0 0;
+  padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));
+  width:100%;max-height:90vh;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
 .mbar{width:36px;height:4px;border-radius:2px;background:#3a3a3c;margin:0 auto 18px}
 .mtit{font-size:20px;font-weight:700;margin-bottom:16px}
 
-/* ── VARS ── */
+/* COULEURS */
 :root{--bl:#0a84ff;--gr:#30d158;--or:#ff9f0a;--rd:#ff453a;--pu:#bf5af2;--c2:#1c1c1e;--c3:#2c2c2e;--c4:#3a3a3c;--t2:rgba(255,255,255,.6);--t3:rgba(255,255,255,.3)}
 
-/* ── UTILS ── */
-.body-pad{padding:0 16px calc(30px + env(safe-area-inset-bottom,0px))}
-.ph{padding:18px 16px 12px;position:sticky;top:0;z-index:5;background:#000}
+/* COMPOSANTS */
+.ph{padding:18px 16px 12px;background:#000}
 .ptit{font-size:28px;font-weight:700;letter-spacing:-.5px}
+.sec-pad{padding:0 16px}
 .card{background:var(--c2);border-radius:16px;overflow:hidden;margin-bottom:10px}
 .cp{padding:14px 16px}
 .lbl{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em}
 .bdg{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;white-space:nowrap}
-.bb{background:rgba(10,132,255,.15);color:var(--bl)}.bo{background:rgba(255,159,10,.13);color:var(--or)}
-.bg{background:rgba(48,209,88,.13);color:var(--gr)}.bc{background:var(--c3);color:var(--t2)}
-.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bb{background:rgba(10,132,255,.15);color:var(--bl)}
+.bo{background:rgba(255,159,10,.13);color:var(--or)}
+.bg{background:rgba(48,209,88,.13);color:var(--gr)}
+.bc{background:var(--c3);color:var(--t2)}
 .empty{text-align:center;padding:28px;color:var(--t3);font-size:13px;font-style:italic}
 .inp{display:block;width:100%;background:var(--c3);border:none;border-radius:12px;padding:12px 14px;font-size:16px;color:#fff;min-height:46px;outline:none;color-scheme:dark}
 .inp::placeholder{color:var(--t3)}
 .mf{margin-bottom:13px}
 .mf label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
 .mrow{display:flex;gap:8px}
-.btn{min-height:46px;border-radius:13px;border:none;padding:11px 18px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;-webkit-user-select:none}
+.btn{min-height:46px;border-radius:13px;padding:11px 18px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .btn-bl{background:var(--bl)}.btn-gr{background:var(--c3);color:var(--t2)}.btn-rd{background:var(--rd)}
 .btn:active{opacity:.7}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 
-/* ── HOME ── */
-.kc{background:var(--c2);border-radius:16px;padding:14px 16px;margin-bottom:0}
+/* HOME */
+.kc{background:var(--c2);border-radius:16px;padding:14px 16px}
 .kv{font-size:26px;font-weight:700;letter-spacing:-.5px}
 .kl{font-size:12px;color:var(--t2);margin-top:2px}
 .kc.bl .kv{color:var(--bl)}.kc.gr .kv{color:var(--gr)}.kc.or .kv{color:var(--or)}.kc.pu .kv{color:var(--pu)}
@@ -70,15 +94,16 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .today-tag{font-size:11px;font-weight:700;color:var(--bl);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
 .today-name{font-size:18px;font-weight:700;margin-bottom:3px}
 .today-sub{font-size:13px;color:var(--t2)}
-.start-btn{display:block;width:100%;margin-top:12px;background:var(--bl);border:none;border-radius:13px;padding:13px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;-webkit-user-select:none}
+.start-btn{display:block;width:100%;margin-top:12px;background:var(--bl);border:none;border-radius:13px;padding:13px;font-size:16px;font-weight:700;color:#fff;cursor:pointer}
 .start-btn:active{opacity:.8}
 .install{background:linear-gradient(135deg,#0d1f33,#0a1525);border:1px solid rgba(10,132,255,.3);border-radius:16px;padding:14px;margin-bottom:14px;display:none}
 .install.on{display:block}
+.set-btn{position:fixed;right:16px;background:var(--c2);border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:17px;z-index:100;cursor:pointer;top:calc(18px + env(safe-area-inset-top,0px))}
 
-/* ── WORKOUT ── */
+/* WORKOUT */
 .dscroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
 .dscroll::-webkit-scrollbar{display:none}
-.dchip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:var(--c2);color:var(--t2);cursor:pointer;-webkit-user-select:none}
+.dchip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:var(--c2);color:var(--t2);cursor:pointer}
 .dchip.up.on{background:rgba(10,132,255,.15);color:var(--bl)}
 .dchip.lo.on{background:rgba(48,209,88,.13);color:var(--gr)}
 .dchip.ar.on{background:rgba(191,90,242,.13);color:var(--pu)}
@@ -87,7 +112,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .si-v{font-size:18px;font-weight:700}.si-l{font-size:10px;color:var(--t2);margin-top:1px}
 .si.bl .si-v{color:var(--bl)}.si.gr .si-v{color:var(--gr)}.si.or .si-v{color:var(--or)}
 .snote{margin:4px 16px 8px;padding:9px 12px;background:rgba(255,159,10,.13);border-radius:10px;font-size:12px;color:var(--or);line-height:1.5}
-.wsec{padding:0 16px 30px}
+.wsec{padding:0 16px}
 .wsec-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0 7px}
 .wsec-t{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
 .add-ex-btn{background:rgba(10,132,255,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--bl);cursor:pointer}
@@ -107,8 +132,8 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .exnt{font-size:12px;color:var(--t3);margin-top:3px;font-style:italic}
 .exmt{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
 .exb{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
-.log-btn{min-width:44px;min-height:44px;border-radius:11px;background:rgba(10,132,255,.15);border:none;display:flex;align-items:center;justify-content:center;color:var(--bl);font-size:18px;cursor:pointer;-webkit-user-select:none}
-.edit-btn{min-width:44px;min-height:28px;border-radius:8px;background:var(--c3);border:none;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;cursor:pointer}
+.log-btn{width:44px;height:44px;border-radius:11px;background:rgba(10,132,255,.15);border:none;display:flex;align-items:center;justify-content:center;color:var(--bl);font-size:18px;cursor:pointer}
+.edit-btn{width:44px;height:28px;border-radius:8px;background:var(--c3);border:none;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;cursor:pointer}
 .logp{display:none;border-top:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.2);padding:13px}
 .logp.on{display:block}
 .ltop{display:flex;align-items:center;gap:7px;margin-bottom:11px;flex-wrap:wrap}
@@ -139,7 +164,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .hset{font-size:11px;font-weight:500;background:var(--c4);border-radius:5px;padding:2px 7px}
 .hset.pr{background:rgba(255,159,10,.2);color:var(--or)}
 
-/* ── NUTRITION ── */
+/* NUTRITION */
 .rw{display:flex;align-items:center;gap:14px;padding:14px;background:var(--c2);border-radius:16px;margin-bottom:10px}
 .ring{position:relative;width:88px;height:88px;flex-shrink:0}
 .ring svg{transform:rotate(-90deg)}
@@ -171,7 +196,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .dnav-btn{min-width:44px;min-height:36px;background:var(--c3);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer}
 .dnav-d{font-size:15px;font-weight:700}
 
-/* ── CORPS ── */
+/* CORPS */
 .wh{background:var(--c2);border-radius:16px;padding:20px;margin-bottom:10px;text-align:center}
 .wc{font-size:52px;font-weight:700;letter-spacing:-2px}
 .wc span{font-size:24px;font-weight:500;color:var(--t2)}
@@ -194,7 +219,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .wdl{font-size:12px;font-weight:600}
 .wdl.up{color:var(--rd)}.wdl.dn{color:var(--gr)}
 
-/* ── STATS ── */
+/* STATS */
 .sg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .sk{background:var(--c2);border-radius:16px;padding:14px}
 .skv{font-size:26px;font-weight:700;color:var(--bl);letter-spacing:-.5px}
@@ -218,7 +243,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .pset-v{font-size:14px;font-weight:700}
 .pset-l{font-size:9px;color:var(--t2);margin-top:1px}
 
-/* ── SEARCH ── */
+/* SEARCH */
 .sin{display:block;width:100%;background:var(--c3);border:none;border-radius:12px;padding:11px 14px;font-size:15px;color:#fff;outline:none;color-scheme:dark;margin-bottom:12px}
 .sin::placeholder{color:var(--t3)}
 .sres{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
@@ -228,7 +253,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .pick-btn{background:var(--bl);border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;cursor:pointer}
 .newex{text-align:center;margin-top:12px;font-size:13px;color:var(--bl);cursor:pointer;padding:8px}
 
-/* ── AI PHOTO ── */
+/* AI PHOTO */
 .pp{width:100%;border-radius:14px;max-height:200px;object-fit:cover;margin-bottom:14px;display:none}
 .pp.on{display:block}
 .aib{background:var(--c3);border-radius:14px;padding:14px;margin-bottom:14px;display:none}
@@ -239,7 +264,6 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 .aml{font-size:10px;color:var(--t2);margin-top:1px}
 .am.ca .amv{color:var(--or)}.am.pr .amv{color:var(--bl)}.am.cb .amv{color:var(--gr)}.am.fa .amv{color:var(--pu)}
 .ait{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-.ai-it{font-size:12px;color:var(--t2);padding:2px 0}
 .cfb{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;margin-left:6px}
 .cfb.h{background:rgba(48,209,88,.13);color:var(--gr)}.cfb.m{background:rgba(255,159,10,.13);color:var(--or)}.cfb.l{background:rgba(255,69,58,.13);color:var(--rd)}
 .ld{text-align:center;padding:22px;display:none}
@@ -248,27 +272,25 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .adj{display:flex;gap:7px;margin-top:10px}
 .adj .inp{font-size:16px;min-height:40px;text-align:center}
-.set-btn-top{position:absolute;right:16px;top:18px;background:var(--c2);border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:17px;z-index:10;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="app">
-<div id="content">
 
+<!-- BOUTON SETTINGS FIXE -->
+<button class="set-btn" onclick="oM('m-set')">⚙️</button>
+
+<!-- PAGE ACCUEIL -->
 <div class="pg on" id="pg-h">
-<div style="position:relative">
 <div class="ph">
 <div style="font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:2px">Bonjour, <span style="color:var(--bl)">Malek</span> 💪</div>
 <div style="font-size:14px;color:var(--t2)">82 kg · 1m78 · Upper/Lower 5j/sem</div>
 </div>
-<button class="set-btn-top" onclick="oM('m-set')">⚙️</button>
-</div>
-<div class="body-pad" style="padding-top:14px">
+<div class="sec-pad">
 <div class="install" id="install-b">
 <div style="font-size:14px;font-weight:700;margin-bottom:5px">📲 Installer sur l'écran d'accueil</div>
 <div style="font-size:13px;color:var(--t2);line-height:1.7">1. Appuie sur <b style="color:var(--bl)">⎙ Partager</b> en bas de Safari<br>2. Puis <b style="color:var(--bl)">«Sur l'écran d'accueil»</b></div>
 </div>
-<div class="g2" style="margin-bottom:14px">
+<div class="g2" style="margin-bottom:14px;gap:8px">
 <div class="kc bl"><div class="kv" id="h-days">0</div><div class="kl">Jours actifs</div></div>
 <div class="kc gr"><div class="kv" id="h-weight">–</div><div class="kl">Poids actuel</div></div>
 <div class="kc or"><div class="kv" id="h-cal">–</div><div class="kl">Kcal aujourd'hui</div></div>
@@ -290,21 +312,30 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 </div>
 </div>
 
+<!-- PAGE SÉANCE -->
 <div class="pg" id="pg-w">
-<div class="ph" style="padding-bottom:8px">
+<div class="ph">
 <div class="ptit" style="margin-bottom:10px">Séance</div>
 <div class="dscroll" id="dscroll"></div>
 </div>
 <div id="wbody"></div>
 </div>
 
+<!-- PAGE NUTRITION -->
 <div class="pg" id="pg-n">
-<div class="ph" style="padding-bottom:0"><div class="ptit">Nutrition</div></div>
-<div class="dnav"><button class="dnav-btn" onclick="nDay(-1)">‹</button><div class="dnav-d" id="nd-lbl">Aujourd'hui</div><button class="dnav-btn" onclick="nDay(1)">›</button></div>
-<div class="body-pad">
+<div class="ph"><div class="ptit">Nutrition</div></div>
+<div class="dnav">
+<button class="dnav-btn" onclick="nDay(-1)">‹</button>
+<div class="dnav-d" id="nd-lbl">Aujourd'hui</div>
+<button class="dnav-btn" onclick="nDay(1)">›</button>
+</div>
+<div class="sec-pad">
 <div class="rw">
 <div class="ring">
-<svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="37" fill="none" stroke="#3a3a3c" stroke-width="8"/><circle id="ring-f" cx="44" cy="44" r="37" fill="none" stroke="var(--or)" stroke-width="8" stroke-linecap="round" stroke-dasharray="232.48" stroke-dashoffset="232.48" style="transition:stroke-dashoffset .5s"/></svg>
+<svg width="88" height="88" viewBox="0 0 88 88">
+<circle cx="44" cy="44" r="37" fill="none" stroke="#3a3a3c" stroke-width="8"/>
+<circle id="ring-f" cx="44" cy="44" r="37" fill="none" stroke="var(--or)" stroke-width="8" stroke-linecap="round" stroke-dasharray="232.48" stroke-dashoffset="232.48" style="transition:stroke-dashoffset .5s"/>
+</svg>
 <div class="rc"><div class="rv" id="r-cal">0</div><div class="rl">kcal</div></div>
 </div>
 <div class="ci">
@@ -322,14 +353,18 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 </div>
 </div>
 
+<!-- PAGE CORPS -->
 <div class="pg" id="pg-b">
-<div class="ph" style="padding-bottom:12px"><div class="ptit">Corps</div></div>
-<div class="body-pad">
+<div class="ph"><div class="ptit">Corps</div></div>
+<div class="sec-pad">
 <div class="wh">
 <div class="wc" id="wc">–<span>kg</span></div>
 <div class="wt">Objectif recomposition : 81–83 kg</div>
 <div class="wch" id="wch"></div>
-<div class="wf"><input class="wi" type="number" step="0.1" min="40" max="300" placeholder="82.5" id="wf" inputmode="decimal"><button class="log-w-btn" onclick="logW()">Logger</button></div>
+<div class="wf">
+<input class="wi" type="number" step="0.1" min="40" max="300" placeholder="82.5" id="wf" inputmode="decimal">
+<button class="log-w-btn" onclick="logW()">Logger</button>
+</div>
 </div>
 <div class="bmi-c">
 <div class="row"><div><div class="bmi-v" id="bmi-v">–</div><div class="bmi-l" id="bmi-l">IMC</div></div><div style="text-align:right;font-size:12px;color:var(--t2)">Taille : 1m78<br>Cible : 81–83 kg</div></div>
@@ -342,8 +377,9 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 </div>
 </div>
 
+<!-- PAGE STATS -->
 <div class="pg" id="pg-s">
-<div class="ph" style="padding-bottom:4px">
+<div class="ph">
 <div class="ptit">Progression</div>
 <div class="sg2">
 <div class="sk"><div class="skv" id="sk-s">–</div><div class="skl">Séries loggées</div></div>
@@ -353,21 +389,24 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 </div>
 <div class="pdr" id="pdr"></div>
 </div>
-<div class="body-pad" style="padding-top:0"><div id="pcards"></div></div>
+<div class="sec-pad"><div id="pcards"></div></div>
 </div>
 
-</div><!-- /content -->
-
+<!-- TAB BAR -->
 <nav id="tabs">
-<button class="tab on" id="tb-h" onclick="go('h')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Accueil</span></button>
-<button class="tab" id="tb-w" onclick="go('w')"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg><span>Séance</span></button>
-<button class="tab" id="tb-n" onclick="go('n')"><svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg><span>Nutrition</span></button>
-<button class="tab" id="tb-b" onclick="go('b')"><svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg><span>Corps</span></button>
-<button class="tab" id="tb-s" onclick="go('s')"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span>Stats</span></button>
+<button class="tab on" id="tb-h" onclick="go('h')">
+<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Accueil</span></button>
+<button class="tab" id="tb-w" onclick="go('w')">
+<svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg><span>Séance</span></button>
+<button class="tab" id="tb-n" onclick="go('n')">
+<svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z"/></svg><span>Nutrition</span></button>
+<button class="tab" id="tb-b" onclick="go('b')">
+<svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg><span>Corps</span></button>
+<button class="tab" id="tb-s" onclick="go('s')">
+<svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span>Stats</span></button>
 </nav>
-</div>
 
-<!-- MODALS - display:none only, never visibility:hidden -->
+<!-- MODALS -->
 <div class="modal" id="m-af" onclick="if(event.target===this)cM('m-af')">
 <div class="msheet">
 <div class="mbar"></div><div class="mtit">Ajouter un aliment</div>
@@ -429,7 +468,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 <div class="modal" id="m-ce" onclick="if(event.target===this)cM('m-ce')">
 <div class="msheet">
 <div class="mbar"></div><div class="mtit">Nouvel exercice</div>
-<div class="mf"><label>Nom de l'exercice</label><input class="inp" type="text" id="cen" placeholder="Ex : Leg press unilatéral"></div>
+<div class="mf"><label>Nom</label><input class="inp" type="text" id="cen" placeholder="Ex : Leg press unilatéral"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
 <div class="mf" style="margin:0"><label>Séries</label><input class="inp" type="number" inputmode="numeric" id="ces" placeholder="3"></div>
 <div class="mf" style="margin:0"><label>Reps</label><input class="inp" type="text" id="cer" placeholder="10-12"></div>
@@ -473,8 +512,6 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 
 <script>
 'use strict';
-
-// ── DATA ──────────────────────────────────────────────────────────
 var BD={
   L:{name:'Upper Lourd',day:'Lundi',type:'up',note:'Développé couché : barre aux tétons, coudes 45° · Rowing : barre bas du sternum · Tractions : élastique si <8 reps',exs:[
     {id:'dc',name:'Développé couché barre',sets:4,reps:'5-7',tempo:'3-0-1-0',rest:"2'30",rir:'1-2'},
@@ -489,7 +526,7 @@ var BD={
     {id:'pc',name:'Presse à cuisses pieds hauts',sets:3,reps:'10-12',tempo:'2-0-1-0',rest:"1'30",rir:'2'},
     {id:'lc',name:'Leg curl allongé',sets:3,reps:'10-12',tempo:'2-0-1-1',rest:"1'30",rir:'2'},
     {id:'rk',name:'Planche RKC',sets:2,reps:'20-30s',tempo:'-',rest:"1'",rir:'-',bw:1,note:'Tout contracter : fessiers, abdos, quads'}]},
-  J:{name:'Upper Volume',day:'Jeudi',type:'up',note:'Tirage : barre à la clavicule · Triset : enchaîner sans pause',exs:[
+  J:{name:'Upper Volume',day:'Jeudi',type:'up',note:'Tirage : barre à la clavicule · Triset : sans pause',exs:[
     {id:'tv',name:'Tirage vertical prise large',sets:4,reps:'8-10',tempo:'2-0-1-1',rest:"2'",rir:'2',note:'Barre à la clavicule'},
     {id:'di',name:'Développé incliné haltères',sets:3,reps:'8-10',tempo:'3-0-1-0',rest:"2'",rir:'2'},
     {id:'rp',name:'Rowing poulie basse serrée',sets:3,reps:'10-12',tempo:'2-0-1-1',rest:"1'30",rir:'2'},
@@ -503,7 +540,7 @@ var BD={
     {id:'le',name:'Leg extension',sets:3,reps:'12-15',tempo:'2-0-1-1',rest:"1'30",rir:'2'},
     {id:'nc',name:'Nordic curl / leg curl assis',sets:3,reps:'8-10',tempo:'3-0-1-0',rest:"1'30",rir:'2',note:'Très intense, commence assisté'},
     {id:'mo',name:'Mollets debout machine',sets:3,reps:'15-20',tempo:'2-0-1-1',rest:"1'",rir:'2'}]},
-  Sa:{name:'Upper Court',day:'Samedi',type:'ar',note:"Arnold : rotation poignets en montant · Élévations : 3s montée, 1s pause haute",exs:[
+  Sa:{name:'Upper Court',day:'Samedi',type:'ar',note:"Arnold : rotation poignets · Élévations : 3s montée, 1s pause haute",exs:[
     {id:'ar',name:'Développé Arnold haltères',sets:3,reps:'8-10',tempo:'2-0-1-0',rest:"2'",rir:'2'},
     {id:'els',name:'Élévations latérales tempo lent',sets:4,reps:'12-15',tempo:'3-0-1-1',rest:"1'",rir:'2',note:'3s montée, 1s pause haute'},
     {id:'ci',name:'Curl incliné haltères',sets:3,reps:'10-12',tempo:'2-0-1-1',rest:'-',rir:'2',grp:'g3'},
@@ -521,17 +558,15 @@ var LIB=[
   {id:'add',name:'Adducteurs machine',cat:'lo'},{id:'abd',name:'Abducteurs machine',cat:'lo'},
   {id:'bdb',name:'Développé couché haltères',cat:'up'},{id:'fly',name:'Écarté poulie',cat:'up'},
   {id:'pus',name:'Tractions prise serrée',cat:'up'},{id:'lps',name:'Tirage prise serrée',cat:'up'},
-  {id:'srr',name:'Seal row',cat:'up'},{id:'cbr',name:'Curl barre droite',cat:'ar'},
-  {id:'cco',name:'Curl concentré',cat:'ar'},{id:'skc',name:'Skull crusher',cat:'ar'},
-  {id:'dib',name:'Dips barre parallèles',cat:'ar'},{id:'plf',name:'Planche frontale',cat:'up'},
-  {id:'aw',name:'Ab wheel',cat:'up'},{id:'rkg',name:'Relevés de genoux suspendu',cat:'up'},
+  {id:'cbr',name:'Curl barre droite',cat:'ar'},{id:'cco',name:'Curl concentré',cat:'ar'},
+  {id:'skc',name:'Skull crusher',cat:'ar'},{id:'dib',name:'Dips barre parallèles',cat:'ar'},
+  {id:'plf',name:'Planche frontale',cat:'up'},{id:'aw',name:'Ab wheel',cat:'up'},
   {id:'vlo',name:'Vélo cardio',cat:'lo'},{id:'tco',name:'Tapis de course',cat:'lo'}
 ];
 
-// ── STORAGE ───────────────────────────────────────────────────────
 var S={
-  g:function(k){try{var v=localStorage.getItem('mk5_'+k);return v!==null?JSON.parse(v):null}catch(e){return null}},
-  s:function(k,v){try{localStorage.setItem('mk5_'+k,JSON.stringify(v))}catch(e){}},
+  g:function(k){try{var v=localStorage.getItem('mk6_'+k);return v!==null?JSON.parse(v):null}catch(e){return null}},
+  s:function(k,v){try{localStorage.setItem('mk6_'+k,JSON.stringify(v))}catch(e){}},
   logs:function(id){return this.g('l_'+id)||[]},
   sLogs:function(id,v){this.s('l_'+id,v)},
   lMax:function(id){var l=this.logs(id);if(!l.length)return null;var m=0;l[l.length-1].sets.forEach(function(s){if((s.w||0)>m)m=s.w||0});return m||null},
@@ -541,7 +576,6 @@ var S={
   aCex:function(e){var l=this.cExs();l.push(e);this.s('cexs',l)}
 };
 
-// ── SETTINGS ──────────────────────────────────────────────────────
 function gSet(){return S.g('set')||{cal:2350,prot:172,carb:250,fat:70,api:''}}
 function svSet(){
   var s=gSet(),ak=document.getElementById('sak').value.trim();
@@ -553,14 +587,14 @@ function svSet(){
   S.s('set',s);cM('m-set');rNu();
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────
+// NAVIGATION - la plus simple possible
 var curPg='h';
 function go(k){
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
   var pg=document.getElementById('pg-'+k);
+  if(pg){pg.classList.add('on');window.scrollTo(0,0);}
   var tb=document.getElementById('tb-'+k);
-  if(pg){pg.classList.add('on');pg.scrollTop=0;}
   if(tb)tb.classList.add('on');
   curPg=k;
   if(k==='n')rNu();
@@ -571,7 +605,6 @@ function go(k){
 function oM(id){var el=document.getElementById(id);if(el)el.classList.add('on')}
 function cM(id){var el=document.getElementById(id);if(el)el.classList.remove('on')}
 
-// ── WORKOUT ───────────────────────────────────────────────────────
 var curDay='L';var rowC={};var addTgt=null;var editTgt=null;
 function bDs(){
   var days=S.days();
@@ -615,9 +648,7 @@ function rWo(k){
 }
 function bExC(ex,dk){
   var lm=S.lMax(ex.id);
-  var prH=lm?'<span class="bdg bo">Max: '+lm+'kg</span>':'';
-  return '<div class="exc" id="xc-'+ex.id+'">'+
-    '<div class="exh"><div class="exm">'+
+  return '<div class="exc" id="xc-'+ex.id+'"><div class="exh"><div class="exm">'+
     '<div class="exn">'+ex.name+'</div>'+
     (ex.note?'<div class="exnt">'+ex.note+'</div>':'')+
     '<div class="exmt">'+
@@ -626,7 +657,7 @@ function bExC(ex,dk){
     '<span class="bdg bc">💤'+ex.rest+'</span>'+
     (ex.rir&&ex.rir!=='-'?'<span class="bdg bo">RIR '+ex.rir+'</span>':'')+
     (ex.bw?'<span class="bdg bg">Corps</span>':'')+
-    '<span id="pr-'+ex.id+'">'+prH+'</span>'+
+    '<span id="pr-'+ex.id+'">'+(lm?'<span class="bdg bo">Max: '+lm+'kg</span>':'')+'</span>'+
     '</div></div>'+
     '<div class="exb">'+
     '<button class="log-btn" onclick="tLog(''+ex.id+'',this)">📝</button>'+
@@ -658,8 +689,7 @@ function aRow(id){
   var tb=document.getElementById('sb-'+id);if(!tb)return;
   var days=S.days();var ex=null;
   Object.values(days).forEach(function(d){d.exs.forEach(function(e){if(e.id===id)ex=e})});
-  rowC[id]=(rowC[id]||(ex?ex.sets:3))+1;
-  var i=rowC[id]-1;
+  rowC[id]=(rowC[id]||(ex?ex.sets:3))+1;var i=rowC[id]-1;
   var tr=document.createElement('tr');
   tr.innerHTML='<td class="sn">S'+rowC[id]+'</td>'+
   '<td><input class="sf" inputmode="decimal" type="number" step="0.5" min="0" placeholder="kg" id="sw-'+id+'-'+i+'"></td>'+
@@ -670,16 +700,13 @@ function aRow(id){
 }
 function tLog(id,btn){
   var p=document.getElementById('lp-'+id);if(!p)return;
-  var on=p.classList.toggle('on');
-  btn.textContent=on?'✕':'📝';
+  var on=p.classList.toggle('on');btn.textContent=on?'✕':'📝';
 }
 function pFill(id){
   var logs=S.logs(id);if(!logs.length){alert('Aucune séance précédente.');return;}
-  var last=logs[logs.length-1];
-  var days=S.days();var ex=null;
+  var last=logs[logs.length-1];var days=S.days();var ex=null;
   Object.values(days).forEach(function(d){d.exs.forEach(function(e){if(e.id===id)ex=e})});
-  var n=Math.max(ex?ex.sets:3,last.sets.length);
-  document.getElementById('sb-'+id).innerHTML=bSr(id,n,last.sets);
+  document.getElementById('sb-'+id).innerHTML=bSr(id,Math.max(ex?ex.sets:3,last.sets.length),last.sets);
 }
 function svLog(id){
   var dt=document.getElementById('dt-'+id);var d=dt?dt.value:tStr();
@@ -688,14 +715,12 @@ function svLog(id){
     var wi=document.getElementById('sw-'+id+'-'+i);
     var ri=document.getElementById('sr-'+id+'-'+i);
     if(!wi&&!ri)break;
-    var w=parseFloat(wi&&wi.value?wi.value:0)||0;
-    var r=parseInt(ri&&ri.value?ri.value:0)||0;
+    var w=parseFloat(wi&&wi.value?wi.value:0)||0,r=parseInt(ri&&ri.value?ri.value:0)||0;
     if(w||r)sets.push({w:w,r:r});
   }
   if(!sets.length){alert('Entre au moins un set !');return;}
   var logs=S.logs(id);logs.push({date:d,sets:sets});S.sLogs(id,logs);
-  rH(id);uPr(id);uHome();
-  if(navigator.vibrate)navigator.vibrate([10]);
+  rH(id);uPr(id);uHome();if(navigator.vibrate)navigator.vibrate([10]);
 }
 function rH(id){
   var logs=S.logs(id);var el=document.getElementById('hw-'+id);if(!el)return;
@@ -715,7 +740,6 @@ function rH(id){
 function dLog(id,idx){var logs=S.logs(id);logs.splice(idx,1);S.sLogs(id,logs);rH(id);uPr(id);uHome()}
 function uPr(id){var el=document.getElementById('pr-'+id);if(!el)return;var m=S.lMax(id);el.innerHTML=m?'<span class="bdg bo">Max: '+m+'kg</span>':''}
 
-// ── ADD/EDIT EXERCISE ─────────────────────────────────────────────
 function oAex(dk){addTgt=dk;document.getElementById('exs').value='';fEx('');oM('m-ae')}
 function gAllEx(){
   var days=S.days();var used={};
@@ -742,12 +766,10 @@ function pickEx(exId){
 }
 function oCe(){cM('m-ae');['cen','ces','cer','cet','ceo','ceri','ceno'].forEach(function(i){var el=document.getElementById(i);if(el)el.value=''});oM('m-ce')}
 function svCe(){
-  var name=document.getElementById('cen').value.trim();
-  if(!name){alert("Entre le nom de l'exercice.");return;}
+  var name=document.getElementById('cen').value.trim();if(!name){alert("Entre le nom.");return;}
   var id='cx'+Date.now();
   var ex={id:id,name:name,sets:parseInt(document.getElementById('ces').value)||3,reps:document.getElementById('cer').value||'10-12',tempo:document.getElementById('cet').value||'2-0-1-0',rest:document.getElementById('ceo').value||"1'30",rir:document.getElementById('ceri').value||'2',note:document.getElementById('ceno').value||'',cat:document.getElementById('cecat').value||'up'};
-  S.aCex(ex);
-  var days=S.days();
+  S.aCex(ex);var days=S.days();
   days[addTgt].exs.push({id:ex.id,name:ex.name,sets:ex.sets,reps:ex.reps,tempo:ex.tempo,rest:ex.rest,rir:ex.rir,note:ex.note});
   S.sDays(days);cM('m-ce');bDs();rWo(addTgt);
 }
@@ -756,20 +778,14 @@ function oEe(exId,dk){
   (days[dk]?days[dk].exs:[]).forEach(function(e){if(e.id===exId)ex=e});
   if(!ex)return;
   editTgt={id:exId,dk:dk};
-  document.getElementById('een').value=ex.name;
-  document.getElementById('ees').value=ex.sets;
-  document.getElementById('eer').value=ex.reps;
-  document.getElementById('eet').value=ex.tempo||'';
-  document.getElementById('eeo').value=ex.rest||'';
-  document.getElementById('eeri').value=ex.rir||'';
-  document.getElementById('eeno').value=ex.note||'';
-  oM('m-ee');
+  document.getElementById('een').value=ex.name;document.getElementById('ees').value=ex.sets;
+  document.getElementById('eer').value=ex.reps;document.getElementById('eet').value=ex.tempo||'';
+  document.getElementById('eeo').value=ex.rest||'';document.getElementById('eeri').value=ex.rir||'';
+  document.getElementById('eeno').value=ex.note||'';oM('m-ee');
 }
 function svEe(){
-  if(!editTgt)return;
-  var days=S.days();var exs=days[editTgt.dk].exs;var idx=-1;
-  exs.forEach(function(e,i){if(e.id===editTgt.id)idx=i});
-  if(idx<0)return;
+  if(!editTgt)return;var days=S.days();var exs=days[editTgt.dk].exs;var idx=-1;
+  exs.forEach(function(e,i){if(e.id===editTgt.id)idx=i});if(idx<0)return;
   var e=exs[idx];
   e.name=document.getElementById('een').value.trim()||e.name;
   e.sets=parseInt(document.getElementById('ees').value)||e.sets;
@@ -787,7 +803,6 @@ function rmEx(){
   S.sDays(days);cM('m-ee');bDs();rWo(editTgt.dk);
 }
 
-// ── NUTRITION ─────────────────────────────────────────────────────
 var nD=tStr();
 function nDay(d){var dt=new Date(nD);dt.setDate(dt.getDate()+d);nD=dt.toISOString().split('T')[0];rNu()}
 function gFd(date){return S.g('fd_'+date)||[]}
@@ -797,19 +812,15 @@ function rNu(){
   var tot={cal:0,prot:0,carb:0,fat:0};
   foods.forEach(function(f){tot.cal+=f.cal||0;tot.prot+=f.prot||0;tot.carb+=f.carb||0;tot.fat+=f.fat||0});
   var td=tStr();var yt=new Date();yt.setDate(yt.getDate()-1);
-  var yS=yt.toISOString().split('T')[0];
-  document.getElementById('nd-lbl').textContent=nD===td?"Aujourd'hui":nD===yS?'Hier':fD(nD);
+  document.getElementById('nd-lbl').textContent=nD===td?"Aujourd'hui":nD===yt.toISOString().split('T')[0]?'Hier':fD(nD);
   var pct=Math.min(tot.cal/s.cal,1);
   document.getElementById('ring-f').style.strokeDashoffset=232.48-(232.48*pct);
   document.getElementById('r-cal').textContent=Math.round(tot.cal);
   document.getElementById('r-rem').textContent=Math.max(0,Math.round(s.cal-tot.cal));
   document.getElementById('r-tgt').textContent=s.cal;
-  var pp=Math.min(100,Math.round(tot.prot/s.prot*100));
-  var cp=Math.min(100,Math.round(tot.carb/s.carb*100));
-  var fp=Math.min(100,Math.round(tot.fat/s.fat*100));
-  document.getElementById('b-p').style.width=pp+'%';
-  document.getElementById('b-c').style.width=cp+'%';
-  document.getElementById('b-f').style.width=fp+'%';
+  document.getElementById('b-p').style.width=Math.min(100,Math.round(tot.prot/s.prot*100))+'%';
+  document.getElementById('b-c').style.width=Math.min(100,Math.round(tot.carb/s.carb*100))+'%';
+  document.getElementById('b-f').style.width=Math.min(100,Math.round(tot.fat/s.fat*100))+'%';
   document.getElementById('l-p').textContent=Math.round(tot.prot)+'/'+s.prot+'g';
   document.getElementById('l-c').textContent=Math.round(tot.carb)+'/'+s.carb+'g';
   document.getElementById('l-f').textContent=Math.round(tot.fat)+'/'+s.fat+'g';
@@ -825,13 +836,11 @@ function rNu(){
 }
 function fEm(n){
   var s=(n||'').toLowerCase();
-  if(s.indexOf('poulet')>=0||s.indexOf('chicken')>=0)return'🍗';
-  if(s.indexOf('boeuf')>=0||s.indexOf('steak')>=0)return'🥩';
+  if(s.indexOf('poulet')>=0)return'🍗';if(s.indexOf('boeuf')>=0||s.indexOf('steak')>=0)return'🥩';
   if(s.indexOf('riz')>=0)return'🍚';if(s.indexOf('pasta')>=0||s.indexOf('pâtes')>=0)return'🍝';
   if(s.indexOf('salade')>=0)return'🥗';if(s.indexOf('oeuf')>=0)return'🥚';
-  if(s.indexOf('saumon')>=0||s.indexOf('poisson')>=0)return'🐟';
-  if(s.indexOf('pizza')>=0)return'🍕';if(s.indexOf('burger')>=0)return'🍔';
-  if(s.indexOf('banane')>=0)return'🍌';return'🍽️';
+  if(s.indexOf('saumon')>=0)return'🐟';if(s.indexOf('pizza')>=0)return'🍕';
+  if(s.indexOf('burger')>=0)return'🍔';if(s.indexOf('banane')>=0)return'🍌';return'🍽️';
 }
 function dFd(i){var f=gFd(nD);f.splice(i,1);sFd(nD,f);rNu();uHome()}
 function aFd(food){var f=gFd(nD);f.push(food);sFd(nD,f);rNu();uHome()}
@@ -844,10 +853,8 @@ function svMf(){
 }
 function rPh(){
   var p=document.getElementById('ppv');p.classList.remove('on');p.src='';
-  document.getElementById('ld').classList.remove('on');
-  document.getElementById('aib').classList.remove('on');
-  document.getElementById('ph-a').style.display='block';
-  document.getElementById('ph-s').style.display='none';
+  document.getElementById('ld').classList.remove('on');document.getElementById('aib').classList.remove('on');
+  document.getElementById('ph-a').style.display='block';document.getElementById('ph-s').style.display='none';
   document.getElementById('phi').value='';
 }
 var aiD=null,capUrl=null;
@@ -857,25 +864,20 @@ function hPh(input){
   reader.onload=function(e){
     capUrl=e.target.result;
     var pv=document.getElementById('ppv');pv.src=capUrl;pv.classList.add('on');
-    document.getElementById('ph-a').style.display='none';
-    document.getElementById('ld').classList.add('on');
+    document.getElementById('ph-a').style.display='none';document.getElementById('ld').classList.add('on');
     aPh(capUrl.split(',')[1],file.type);
   };reader.readAsDataURL(file);
 }
 function aPh(b64,mime){
   var s=gSet();
-  if(!s.api){
-    document.getElementById('ld').classList.remove('on');
-    cM('m-ph');oM('m-set');
-    alert("Entre ta clé API Anthropic dans Paramètres pour analyser les photos.");return;
-  }
+  if(!s.api){document.getElementById('ld').classList.remove('on');cM('m-ph');oM('m-set');alert("Entre ta clé API Anthropic dans Paramètres.");return;}
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':s.api,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:[
       {type:'image',source:{type:'base64',media_type:mime,data:b64}},
-      {type:'text',text:'Analyse ce plat et estime les valeurs nutritionnelles. Réponds UNIQUEMENT en JSON valide sans markdown:
-{"dish":"nom du plat en français","calories":450,"protein":35,"carbs":50,"fat":12,"confidence":"high","items":["ingrédient 1 ~Xg"]}'}
+      {type:'text',text:'Analyse ce plat. Réponds UNIQUEMENT en JSON valide:
+{"dish":"nom en français","calories":450,"protein":35,"carbs":50,"fat":12,"confidence":"high","items":["ingrédient 1 ~Xg"]}'}
     ]}]})
   }).then(function(r){return r.json()}).then(function(data){
     if(data.error)throw new Error(data.error.message);
@@ -893,7 +895,7 @@ function shAI(d){
   document.getElementById('ai-cb').textContent=d.carbs||0;document.getElementById('ai-fa').textContent=d.fat||0;
   document.getElementById('a-ca').value=d.calories||0;document.getElementById('a-pr').value=d.protein||0;
   document.getElementById('a-cb').value=d.carbs||0;document.getElementById('a-fa').value=d.fat||0;
-  document.getElementById('ai-it').innerHTML=(d.items||[]).map(function(it){return '<div class="ai-it">• '+it+'</div>'}).join('');
+  document.getElementById('ai-it').innerHTML=(d.items||[]).map(function(it){return '<div style="font-size:12px;color:var(--t2);padding:2px 0">• '+it+'</div>'}).join('');
   document.getElementById('ph-s').style.display='block';
 }
 function svPh(){
@@ -903,17 +905,16 @@ function svPh(){
   cM('m-ph');
 }
 
-// ── CORPS ─────────────────────────────────────────────────────────
 function gWts(){return S.g('wts')||[]}
 function logW(){
   var val=parseFloat(document.getElementById('wf').value);
   if(!val||val<20||val>300){alert('Entre un poids valide.');return;}
-  var wts=gWts();var date=tStr();
-  var idx=-1;wts.forEach(function(w,i){if(w.date===date)idx=i});
+  var wts=gWts();var date=tStr();var idx=-1;
+  wts.forEach(function(w,i){if(w.date===date)idx=i});
   if(idx>=0)wts[idx].w=val;else wts.push({date:date,w:val});
   wts.sort(function(a,b){return a.date.localeCompare(b.date)});
-  S.s('wts',wts);document.getElementById('wf').value='';
-  rBo();uHome();if(navigator.vibrate)navigator.vibrate([10]);
+  S.s('wts',wts);document.getElementById('wf').value='';rBo();uHome();
+  if(navigator.vibrate)navigator.vibrate([10]);
 }
 function rBo(){
   var wts=gWts();var last=wts.length?wts[wts.length-1]:null;var prev=wts.length>1?wts[wts.length-2]:null;
@@ -958,7 +959,6 @@ function bWC(wts){
   return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(48,209,88,.1)"/><polyline points="'+line+'" fill="none" stroke="var(--gr)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+last.x+'" cy="'+last.y+'" r="5" fill="var(--gr)"/><text x="'+last.x+'" y="'+(last.y-9)+'" text-anchor="middle" fill="var(--gr)" font-size="11" font-weight="700">'+last.v+'kg</text><text x="0" y="'+(PT+4)+'" fill="rgba(255,255,255,.3)" font-size="9">'+maxV.toFixed(1)+'</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(255,255,255,.3)" font-size="9">'+minV.toFixed(1)+'</text></svg>';
 }
 
-// ── STATS ─────────────────────────────────────────────────────────
 var pDay='L';
 function bPdr(){
   var days=S.days();
@@ -978,7 +978,7 @@ function bPc(ex){
   var mxs=logs.map(function(l){var m=0;l.sets.forEach(function(s){if((s.w||0)>m)m=s.w||0});return m});
   var vls=logs.map(function(l){return l.sets.reduce(function(a,s){return a+(s.w||0)*(s.r||0)},0)});
   var gMx=Math.max.apply(null,mxs),lVl=vls[n-1];
-  var chart=n>=2?bExC2(mxs):'<div style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Reviens après la prochaine séance 🔜</div>';
+  var chart=n>=2?bExC2(mxs):'<div style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Reviens après la prochaine séance</div>';
   var last=logs[n-1].sets;
   return'<div class="pc"><div class="pch"><div class="pcn">'+ex.name+'</div><div class="pcs"><span>'+n+' séance'+(n>1?'s':'')+'</span><span>Max: <strong>'+gMx+'kg</strong></span><span>Vol: '+lVl+'kg</span></div></div>'+
   '<div class="pcc">'+chart+'</div>'+
@@ -1011,7 +1011,6 @@ function uSkpi(){
   el('sk-v',vol>0?(vol/1000).toFixed(1)+'t':'–');el('sk-e',exs||'–');
 }
 
-// ── HOME ──────────────────────────────────────────────────────────
 function uHome(){
   var vol=0,days2={};
   Object.values(S.days()).forEach(function(d){d.exs.forEach(function(ex){
@@ -1030,19 +1029,14 @@ function uHome(){
 }
 function goToday(){var dow=new Date().getDay();var dk=TM[dow]||'L';go('w');selDay(dk)}
 
-// ── UTILS ─────────────────────────────────────────────────────────
 function tStr(){return new Date().toISOString().split('T')[0]}
 function fD(d){if(!d)return'';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0].slice(2)}
 
-// ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',function(){
-  nD=tStr();
-  bDs();rWo(curDay);bPdr();uHome();
+  nD=tStr();bDs();rWo(curDay);bPdr();uHome();
   var s=gSet();
-  document.getElementById('sc').value=s.cal;
-  document.getElementById('sp').value=s.prot;
-  document.getElementById('sg').value=s.carb;
-  document.getElementById('sf').value=s.fat;
+  document.getElementById('sc').value=s.cal;document.getElementById('sp').value=s.prot;
+  document.getElementById('sg').value=s.carb;document.getElementById('sf').value=s.fat;
   if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone){
     var b=document.getElementById('install-b');if(b)b.classList.add('on');
   }
