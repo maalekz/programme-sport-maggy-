@@ -243,6 +243,13 @@ input[type=number]{-moz-appearance:textfield}
 @keyframes spin{to{transform:rotate(360deg)}}
 .adj{display:flex;gap:7px;margin-top:10px}
 .adj .inp{font-size:16px;min-height:40px;text-align:center}
+.sin{display:block;width:100%;background:var(--c3);border:none;border-radius:12px;padding:11px 14px;font-size:15px;color:#fff;outline:none;color-scheme:dark;margin-bottom:12px}
+.sin::placeholder{color:var(--t3)}
+.fdb-i{background:var(--c3);border-radius:12px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.fdb-i:active{opacity:.7}
+.fdb-n{font-size:14px;font-weight:600}
+.fdb-m{font-size:11px;color:var(--t3);margin-top:2px}
+.fdb-c{font-size:13px;font-weight:700;color:var(--or);flex-shrink:0;margin-left:10px}
 </style>
 </head>
 <body>
@@ -318,7 +325,7 @@ input[type=number]{-moz-appearance:textfield}
 </div>
 </div>
 </div>
-<div class="fsh"><div class="fst">Repas du jour</div><button class="add-f-btn" onclick="oM('m-af')">+ Ajouter</button></div>
+<div class="fsh"><div class="fst">Repas du jour</div><button class="add-f-btn" onclick="oM('m-af');setTimeout(function(){searchFood('');},50)">+ Ajouter</button></div>
 <div id="food-l"><div class="empty">Aucun aliment. Appuie sur + Ajouter.</div></div>
 </div>
 </div>
@@ -393,15 +400,24 @@ input[type=number]{-moz-appearance:textfield}
 <div class="modal" id="m-af" onclick="if(event.target===this)cM('m-af')">
 <div class="mbox">
 <div class="mbar"></div><div class="mtit">Ajouter un aliment</div>
-<div style="display:flex;flex-direction:column;gap:8px">
-<button onclick="oPh()" style="display:flex;align-items:center;gap:14px;background:var(--c3);border:none;border-radius:14px;padding:14px 16px;color:#fff;width:100%;text-align:left;cursor:pointer">
-<div style="width:40px;height:40px;border-radius:12px;background:rgba(10,132,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px">📷</div>
-<div><div style="font-size:15px;font-weight:600">Analyser une photo (IA)</div><div style="font-size:12px;color:var(--t3);margin-top:1px">Claude détecte les calories</div></div>
-</button>
-<button onclick="oMf()" style="display:flex;align-items:center;gap:14px;background:var(--c3);border:none;border-radius:14px;padding:14px 16px;color:#fff;width:100%;text-align:left;cursor:pointer">
-<div style="width:40px;height:40px;border-radius:12px;background:rgba(48,209,88,.13);display:flex;align-items:center;justify-content:center;font-size:20px">✏️</div>
-<div><div style="font-size:15px;font-weight:600">Saisie manuelle</div><div style="font-size:12px;color:var(--t3);margin-top:1px">Nom, calories et macros</div></div>
-</button>
+<input class="sin" type="text" placeholder="Chercher (ex: riz, poulet, injera...)" id="food-search" oninput="searchFood(this.value)" autocomplete="off">
+<div id="food-results" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
+<div id="food-gram-box" style="display:none;margin-top:12px">
+<div style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--bl)" id="food-gram-label"></div>
+<div style="background:var(--c3);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--t2)" id="food-per100"></div>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+<input class="inp" type="number" inputmode="numeric" placeholder="Grammes" id="food-grams" style="font-size:20px;font-weight:700;text-align:center" oninput="updateGramPreview()">
+<span style="font-size:15px;color:var(--t2);flex-shrink:0;font-weight:600">g</span>
+</div>
+<div id="food-preview" style="margin-bottom:12px"></div>
+<div class="mrow">
+<button class="btn btn-bl" style="flex:2" onclick="addFoodFromDB()">Ajouter au journal</button>
+<button class="btn btn-gr2" style="flex:1" onclick="resetFoodSearch()">Retour</button>
+</div>
+</div>
+<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:14px;padding-top:12px;display:flex;gap:8px">
+<button onclick="oPh()" style="flex:1;background:var(--c3);border:none;border-radius:12px;padding:11px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">📷 Photo IA</button>
+<button onclick="oMf()" style="flex:1;background:var(--c3);border:none;border-radius:12px;padding:11px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">✏️ Manuel</button>
 </div>
 </div></div>
 
@@ -1332,6 +1348,204 @@ document.addEventListener('DOMContentLoaded', function() {
     if (b) b.classList.add('on');
   }
 });
+
+/* FOOD DATABASE */
+var FOOD_DB = [
+{id:"riz_c",     name:"Riz blanc cuit",           cal:130, prot:2.7,  carb:28,  fat:0.3},
+{id:"riz_b",     name:"Riz brun cuit",             cal:112, prot:2.6,  carb:23,  fat:0.9},
+{id:"riz_basmati",name:"Riz basmati cuit",         cal:138, prot:2.9,  carb:30,  fat:0.3},
+{id:"pates_c",   name:"Pates cuites",              cal:158, prot:5.8,  carb:31,  fat:0.9},
+{id:"pates_int", name:"Pates completes cuites",    cal:149, prot:6,    carb:29,  fat:1.1},
+{id:"pain_b",    name:"Pain blanc",                cal:265, prot:9,    carb:49,  fat:3.2},
+{id:"pain_c",    name:"Pain complet",              cal:247, prot:9,    carb:41,  fat:3.4},
+{id:"avoine",    name:"Flocons d avoine",          cal:379, prot:13,   carb:68,  fat:7},
+{id:"quin",      name:"Quinoa cuit",               cal:120, prot:4.4,  carb:21,  fat:1.9},
+{id:"pomme_t",   name:"Pomme de terre cuite",      cal:87,  prot:1.9,  carb:20,  fat:0.1},
+{id:"patate_d",  name:"Patate douce cuite",        cal:90,  prot:2,    carb:21,  fat:0.1},
+{id:"corn",      name:"Mais doux cuit",            cal:86,  prot:3.2,  carb:19,  fat:1.2},
+{id:"semoul",    name:"Semoule cuite",             cal:150, prot:5.3,  carb:31,  fat:0.3},
+{id:"pain_beurre",name:"Pain burger",              cal:260, prot:9,    carb:46,  fat:4},
+{id:"pouch_bl",  name:"Blanc de poulet grille",    cal:165, prot:31,   carb:0,   fat:3.6},
+{id:"pouch_c",   name:"Cuisse de poulet cuite",    cal:209, prot:26,   carb:0,   fat:11},
+{id:"boeuf_m",   name:"Boeuf maigre cuit",         cal:215, prot:28,   carb:0,   fat:11},
+{id:"steak_5",   name:"Steak hache 5%",            cal:136, prot:21,   carb:0,   fat:5.4},
+{id:"steak_15",  name:"Steak hache 15%",           cal:235, prot:17,   carb:0,   fat:18},
+{id:"porc_f",    name:"Filet de porc grille",      cal:185, prot:28,   carb:0,   fat:7.7},
+{id:"agneau",    name:"Agneau cuit",               cal:294, prot:25,   carb:0,   fat:21},
+{id:"dinde",     name:"Blanc de dinde grille",     cal:135, prot:30,   carb:0,   fat:1.6},
+{id:"saumon",    name:"Saumon grille",             cal:208, prot:25,   carb:0,   fat:12},
+{id:"thon_bo",   name:"Thon en boite naturel",     cal:116, prot:26,   carb:0,   fat:1},
+{id:"cabillaud", name:"Cabillaud cuit",            cal:105, prot:23,   carb:0,   fat:0.9},
+{id:"crevettes", name:"Crevettes cuites",          cal:99,  prot:21,   carb:0,   fat:1.1},
+{id:"oeuf",      name:"Oeuf entier",               cal:155, prot:13,   carb:1.1, fat:11},
+{id:"blanc_oeuf",name:"Blanc d oeuf",              cal:52,  prot:11,   carb:0.7, fat:0.2},
+{id:"lentilles", name:"Lentilles cuites",          cal:116, prot:9,    carb:20,  fat:0.4},
+{id:"pois_ch",   name:"Pois chiches cuits",        cal:164, prot:8.9,  carb:27,  fat:2.6},
+{id:"haricots",  name:"Haricots rouges cuits",     cal:127, prot:8.7,  carb:23,  fat:0.5},
+{id:"feves",     name:"Feves cuites",              cal:110, prot:7.6,  carb:20,  fat:0.4},
+{id:"tofu",      name:"Tofu nature",               cal:76,  prot:8,    carb:1.9, fat:4.8},
+{id:"edamame",   name:"Edamame cuit",              cal:122, prot:11,   carb:10,  fat:5.2},
+{id:"fromage_b", name:"Fromage blanc 0%",          cal:47,  prot:7.5,  carb:3.8, fat:0.2},
+{id:"yaourt_n",  name:"Yaourt nature",             cal:59,  prot:3.5,  carb:4.7, fat:3.3},
+{id:"yaourt_g",  name:"Yaourt grec 0%",            cal:59,  prot:10,   carb:3.6, fat:0.4},
+{id:"cottage",   name:"Cottage cheese",            cal:98,  prot:11,   carb:3.4, fat:4.3},
+{id:"lait",      name:"Lait demi-ecreme",          cal:46,  prot:3.2,  carb:4.7, fat:1.5},
+{id:"mozzarella",name:"Mozzarella",               cal:280, prot:18,   carb:2.2, fat:22},
+{id:"gruyere",   name:"Gruyere",                  cal:413, prot:29,   carb:0,   fat:33},
+{id:"skyr",      name:"Skyr nature",              cal:63,  prot:11,   carb:4,   fat:0.2},
+{id:"whey",      name:"Whey proteine poudre",     cal:380, prot:75,   carb:7,   fat:5},
+{id:"casei",     name:"Caseine poudre",           cal:365, prot:80,   carb:5,   fat:2},
+{id:"prot_veg",  name:"Proteine vegetale poudre", cal:370, prot:72,   carb:8,   fat:4},
+{id:"beurre_ca", name:"Beurre de cacahuete",      cal:588, prot:25,   carb:20,  fat:50},
+{id:"brocoli",   name:"Brocolis cuits",           cal:35,  prot:2.4,  carb:7,   fat:0.4},
+{id:"epinards",  name:"Epinards cuits",           cal:23,  prot:2.9,  carb:3.8, fat:0.4},
+{id:"haricot_v", name:"Haricots verts cuits",     cal:35,  prot:1.9,  carb:7.9, fat:0.3},
+{id:"courgette", name:"Courgettes cuites",        cal:20,  prot:1.5,  carb:3.7, fat:0.3},
+{id:"tomate",    name:"Tomates",                  cal:18,  prot:0.9,  carb:3.9, fat:0.2},
+{id:"concombre", name:"Concombre",                cal:15,  prot:0.7,  carb:3.6, fat:0.1},
+{id:"carotte",   name:"Carottes",                 cal:41,  prot:0.9,  carb:10,  fat:0.2},
+{id:"poivron",   name:"Poivron rouge",            cal:31,  prot:1,    carb:6,   fat:0.3},
+{id:"champign",  name:"Champignons cuits",        cal:28,  prot:2.2,  carb:5.3, fat:0.3},
+{id:"chou_f",    name:"Chou-fleur cuit",          cal:25,  prot:1.9,  carb:5,   fat:0.3},
+{id:"avocat",    name:"Avocat",                   cal:160, prot:2,    carb:9,   fat:15},
+{id:"oignon",    name:"Oignon cuit",              cal:44,  prot:0.9,  carb:10,  fat:0.2},
+{id:"banane",    name:"Banane",                   cal:89,  prot:1.1,  carb:23,  fat:0.3},
+{id:"pomme",     name:"Pomme",                    cal:52,  prot:0.3,  carb:14,  fat:0.2},
+{id:"orange",    name:"Orange",                   cal:47,  prot:0.9,  carb:12,  fat:0.1},
+{id:"mangue",    name:"Mangue",                   cal:60,  prot:0.8,  carb:15,  fat:0.4},
+{id:"ananas",    name:"Ananas",                   cal:50,  prot:0.5,  carb:13,  fat:0.1},
+{id:"fraise",    name:"Fraises",                  cal:32,  prot:0.7,  carb:7.7, fat:0.3},
+{id:"myrtilles", name:"Myrtilles",                cal:57,  prot:0.7,  carb:14,  fat:0.3},
+{id:"kiwi",      name:"Kiwi",                     cal:61,  prot:1.1,  carb:15,  fat:0.5},
+{id:"raisin",    name:"Raisins",                  cal:69,  prot:0.7,  carb:18,  fat:0.2},
+{id:"huile_ol",  name:"Huile d olive",            cal:884, prot:0,    carb:0,   fat:100},
+{id:"beurre",    name:"Beurre",                   cal:717, prot:0.9,  carb:0.1, fat:81},
+{id:"amandes",   name:"Amandes",                  cal:579, prot:21,   carb:22,  fat:50},
+{id:"noix",      name:"Noix",                     cal:654, prot:15,   carb:14,  fat:65},
+{id:"noix_caj",  name:"Noix de cajou",            cal:553, prot:18,   carb:30,  fat:44},
+{id:"chocolat",  name:"Chocolat noir 70%",        cal:598, prot:8,    carb:46,  fat:43},
+{id:"lait_av",   name:"Lait d avoine",            cal:46,  prot:1,    carb:8,   fat:1.5},
+{id:"lait_am",   name:"Lait d amande",            cal:24,  prot:0.8,  carb:3.1, fat:1.1},
+{id:"jus_or",    name:"Jus d orange",             cal:45,  prot:0.7,  carb:10,  fat:0.2},
+{id:"barre_pr",  name:"Barre proteines",          cal:360, prot:30,   carb:35,  fat:8},
+{id:"granola",   name:"Granola",                  cal:471, prot:9,    carb:64,  fat:20},
+/* ETHIOPIE */
+{id:"injera",    name:"Injera (galette teff)",    cal:218, prot:5.7,  carb:43,  fat:1.1},
+{id:"teff_d",    name:"Teff grain sec",           cal:367, prot:13,   carb:73,  fat:2.4},
+{id:"doro_wat",  name:"Doro wat (poulet epice)",  cal:185, prot:18,   carb:8,   fat:9},
+{id:"tibs_b",    name:"Beef tibs (boeuf saute)",  cal:210, prot:22,   carb:4,   fat:12},
+{id:"tibs_a",    name:"Tibs agneau",              cal:240, prot:20,   carb:3,   fat:16},
+{id:"kitfo",     name:"Kitfo (boeuf hache epice)",cal:260, prot:23,   carb:1,   fat:18},
+{id:"shiro",     name:"Shiro (pois chiches epices)",cal:155,prot:8,   carb:20,  fat:5.5},
+{id:"misir",     name:"Misir wat (lentilles rouges)",cal:118,prot:8.5,carb:21,  fat:0.8},
+{id:"gomen",     name:"Gomen (chou epice)",       cal:55,  prot:2.1,  carb:10,  fat:1.8},
+{id:"fosolia",   name:"Fosolia (haricots verts ethiopiens)",cal:65,prot:1.8,carb:11,fat:2.2},
+{id:"kik_ali",   name:"Kik alicha (pois jaunes)", cal:135, prot:8,    carb:24,  fat:0.6},
+{id:"atakilt",   name:"Atakilt wat (legumes)",    cal:75,  prot:2,    carb:14,  fat:2},
+{id:"ful",       name:"Ful (feves epicees)",      cal:130, prot:8.5,  carb:22,  fat:1.2},
+{id:"ayib",      name:"Ayib (fromage ethiopien)", cal:110, prot:9,    carb:2,   fat:7.5},
+{id:"firfir",    name:"Firfir (injera epicee)",   cal:190, prot:5,    carb:35,  fat:4},
+{id:"kategna",   name:"Kategna (injera grillee)", cal:235, prot:5.5,  carb:44,  fat:5},
+{id:"sambusa",   name:"Sambusa lentilles",        cal:280, prot:8,    carb:34,  fat:12},
+{id:"genfo",     name:"Genfo (bouillie teff)",    cal:185, prot:5.5,  carb:38,  fat:1.5},
+{id:"timatim",   name:"Timatim (salade tomates)", cal:45,  prot:1.2,  carb:9,   fat:1.5},
+{id:"dulet",     name:"Dulet (abats epicees)",    cal:220, prot:24,   carb:3,   fat:13},
+{id:"siga_tibs", name:"Siga tibs (viande sautee)",cal:225, prot:21,   carb:5,   fat:14},
+{id:"chechebsa", name:"Chechebsa (pain epice)",   cal:310, prot:6,    carb:42,  fat:14},
+{id:"dabo",      name:"Dabo (pain ethiopien)",    cal:255, prot:8,    carb:50,  fat:3},
+{id:"niter_k",   name:"Niter kibbeh (beurre epice)",cal:720,prot:0.8, carb:0,   fat:81},
+{id:"buna",      name:"Cafe ethiopien buna",      cal:5,   prot:0.3,  carb:0.5, fat:0},
+{id:"tej",       name:"Tej (miel fermente)",      cal:75,  prot:0.3,  carb:12,  fat:0},
+{id:"kurt",      name:"Kurt (boeuf cru epicee)",  cal:175, prot:26,   carb:0,   fat:7.5},
+{id:"tibfir",    name:"Tibs firfir",              cal:195, prot:16,   carb:18,  fat:7}
+];
+
+var selectedFood = null;
+
+function searchFood(q) {
+  document.getElementById('food-gram-box').style.display = 'none';
+  var ct = document.getElementById('food-results');
+  if (!q || q.length < 1) {
+    ct.innerHTML = '<div style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Tape un aliment pour chercher</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">' +
+      ['Riz','Poulet','Boeuf','Oeuf','Lentilles','Yaourt','Injera','Tibs','Shiro','Misir','Doro','Avoine'].map(function(s){
+        return '<button style="background:var(--c3);border:none;border-radius:8px;padding:5px 10px;font-size:12px;color:var(--t2);cursor:pointer" onclick="searchFood(\''+s+'\')">'+s+'</button>';
+      }).join('') + '</div>';
+    return;
+  }
+  var ql = q.toLowerCase().replace(/[éèê]/g,'e').replace(/[àâ]/g,'a').replace(/[ùû]/g,'u').replace(/[îï]/g,'i').replace(/[ôö]/g,'o').replace(/[ç]/g,'c');
+  var res = FOOD_DB.filter(function(f){
+    var fn = f.name.toLowerCase().replace(/[éèê]/g,'e').replace(/[àâ]/g,'a').replace(/[ùû]/g,'u').replace(/[îï]/g,'i').replace(/[ôö]/g,'o').replace(/[ç]/g,'c');
+    return fn.indexOf(ql) >= 0;
+  });
+  if (!res.length) {
+    ct.innerHTML = '<div style="font-size:13px;color:var(--t3);text-align:center;padding:16px">Aucun resultat.<br><span style="font-size:12px">Utilise la saisie manuelle.</span></div>';
+    return;
+  }
+  var html = '';
+  res.slice(0,25).forEach(function(f){
+    html += '<div class="fdb-i" onclick="selectFood(\''+f.id+'\')">'+
+      '<div><div class="fdb-n">'+f.name+'</div><div class="fdb-m">P:'+f.prot+'g G:'+f.carb+'g L:'+f.fat+'g / 100g</div></div>'+
+      '<div class="fdb-c">'+f.cal+' kcal</div></div>';
+  });
+  ct.innerHTML = html;
+}
+
+function selectFood(id) {
+  var f = null;
+  FOOD_DB.forEach(function(x){ if(x.id===id) f=x; });
+  if (!f) return;
+  selectedFood = f;
+  document.getElementById('food-results').innerHTML = '';
+  document.getElementById('food-gram-label').textContent = f.name;
+  document.getElementById('food-per100').innerHTML = 'Pour 100g : <strong>'+f.cal+' kcal</strong> · P:'+f.prot+'g · G:'+f.carb+'g · L:'+f.fat+'g';
+  document.getElementById('food-grams').value = '';
+  document.getElementById('food-preview').innerHTML = '';
+  document.getElementById('food-gram-box').style.display = 'block';
+  setTimeout(function(){ document.getElementById('food-grams').focus(); }, 100);
+}
+
+function updateGramPreview() {
+  var g = parseFloat(document.getElementById('food-grams').value) || 0;
+  var f = selectedFood;
+  if (!f || !g) { document.getElementById('food-preview').innerHTML = ''; return; }
+  var r = g / 100;
+  var cal  = Math.round(f.cal * r);
+  var prot = (f.prot * r).toFixed(1);
+  var carb = (f.carb * r).toFixed(1);
+  var fat  = (f.fat  * r).toFixed(1);
+  document.getElementById('food-preview').innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+
+    '<div style="background:rgba(255,159,10,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+cal+'</div><div style="font-size:10px;color:var(--t2)">kcal</div></div>'+
+    '<div style="background:rgba(10,132,255,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--bl)">'+prot+'</div><div style="font-size:10px;color:var(--t2)">prot g</div></div>'+
+    '<div style="background:rgba(255,159,10,.08);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+carb+'</div><div style="font-size:10px;color:var(--t2)">gluc g</div></div>'+
+    '<div style="background:rgba(191,90,242,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--pu)">'+fat+'</div><div style="font-size:10px;color:var(--t2)">lip g</div></div>'+
+    '</div>';
+}
+
+function addFoodFromDB() {
+  var g = parseFloat(document.getElementById('food-grams').value);
+  if (!g || g <= 0) { alert('Entre une quantite en grammes.'); return; }
+  var f = selectedFood;
+  if (!f) return;
+  var r = g / 100;
+  addFood({
+    name: f.name + ' (' + Math.round(g) + 'g)',
+    cal:  Math.round(f.cal * r),
+    prot: parseFloat((f.prot * r).toFixed(1)),
+    carb: parseFloat((f.carb * r).toFixed(1)),
+    fat:  parseFloat((f.fat  * r).toFixed(1))
+  });
+  resetFoodSearch();
+  cM('m-af');
+}
+
+function resetFoodSearch() {
+  selectedFood = null;
+  document.getElementById('food-gram-box').style.display = 'none';
+  document.getElementById('food-search').value = '';
+  searchFood('');
+}
 </script>
 </body>
 </html>
