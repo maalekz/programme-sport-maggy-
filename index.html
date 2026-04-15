@@ -547,12 +547,11 @@ input[type=number]{-moz-appearance:textfield}
 <div><label style="font-size:10px;color:var(--t3)">Age</label><input class="inp" type="number" inputmode="numeric" id="s-age" placeholder="26" style="min-height:40px;font-size:15px"></div>
 <div><label style="font-size:10px;color:var(--t3)">Poids (kg)</label><input class="inp" type="number" inputmode="numeric" id="s-weight-p" placeholder="82" style="min-height:40px;font-size:15px"></div>
 </div></div>
-<div class="mf"><label>Clé API (Groq gratuit ou OpenAI)</label>
-<input class="inp" type="text" id="s-gemini" placeholder="gsk_... (Groq) ou sk-... (OpenAI)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<div class="mf"><label>Clé API OpenAI</label>
+<input class="inp" type="text" id="s-gemini" placeholder="sk-proj-..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 <div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.6">
-<strong style="color:var(--gr)">Groq gratuit</strong> : console.groq.com → API Keys (clé = gsk_...)<br>
 
-<button onclick="testGeminiKey()" style="margin-top:6px;background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" id="test-key-btn">🔍 Tester la clé</button>
+<button onclick="testGeminiKey()" style="margin-top:6px;background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" id="test-key-btn">🔍 Tester la clé OpenAI</button>
 <span id="test-key-result" style="font-size:12px;margin-left:8px"></span>
 </div></div>
 <div class="mf"><label>Objectif calorique (kcal/jour)</label><input class="inp" type="number" inputmode="numeric" id="sc" placeholder="2350"></div>
@@ -1109,70 +1108,63 @@ function hPh(input) {
   reader.readAsDataURL(file);
 }
 
-/* ─ PHOTO ANALYSIS (Groq / OpenAI) ─────────────────────────── */
+/* ─ PHOTO ANALYSIS (OpenAI GPT-4o) ─────────────────────────── */
 function analyzePhoto(b64, mime) {
   var s = gSet();
   var key = s.gemini || '';
   if (!key) {
     document.getElementById('ld').classList.remove('on');
     cM('m-ph'); oM('m-set');
-    alert('Entre ta clé API dans Paramètres ⚙️\nGroq (gratuit) : console.groq.com\nOpenAI : platform.openai.com');
+    alert('Entre ta clé API OpenAI dans Paramètres ⚙️\nplatform.openai.com → API Keys\n(Nécessite des crédits séparés de ChatGPT Plus)');
     return;
   }
-  if (key.startsWith('sk-')) {
-    analyzeWithOpenAI(b64, mime, key);
-  } else {
-    analyzeWithGroq(b64, mime, key);
-  }
-}
-
-function analyzeWithGroq(b64, mime, key) {
-  var prompt = 'Analyze this food photo. Return ONLY valid JSON (no markdown, no extra text): {"dish":"name in french","calories":500,"protein":30,"carbs":60,"fat":15,"confidence":"high","items":["ingredient ~Xg"]}';
-  fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
-    body: JSON.stringify({
-      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-      messages: [{role:'user', content:[
-        {type:'image_url', image_url:{url:'data:'+mime+';base64,'+b64}},
-        {type:'text', text:prompt}
-      ]}],
-      max_tokens: 400, temperature: 0.1
-    })
-  }).then(function(r){return r.json();}).then(function(d){
-    if (d.error) throw new Error(d.error.message);
-    var text = d.choices[0].message.content || '{}';
-    var m = text.replace(/```json?|```/g,'').trim().match(/\{[\s\S]*\}/);
-    if (!m) throw new Error('Format inattendu');
-    showAI(JSON.parse(m[0]));
-  }).catch(function(err){
-    document.getElementById('ld').classList.remove('on');
-    alert('Erreur Groq : '+err.message);
-  });
+  analyzeWithOpenAI(b64, mime, key);
 }
 
 function analyzeWithOpenAI(b64, mime, key) {
-  var prompt = 'Analyze this food photo. Return ONLY valid JSON (no markdown): {"dish":"name in french","calories":500,"protein":30,"carbs":60,"fat":15,"confidence":"high","items":["ingredient ~Xg"]}';
+  var prompt = 'You are a nutrition expert. Analyze this food photo carefully. Return ONLY a valid JSON object, no markdown, no explanation, just the JSON: {"dish":"dish name in french","calories":500,"protein":30,"carbs":60,"fat":15,"confidence":"high","items":["ingredient 1 ~Xg","ingredient 2 ~Xg"]}';
+
   fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + key
+    },
     body: JSON.stringify({
       model: 'gpt-4o-mini',
-      messages: [{role:'user', content:[
-        {type:'image_url', image_url:{url:'data:'+mime+';base64,'+b64}},
-        {type:'text', text:prompt}
-      ]}],
-      max_tokens: 400
+      messages: [{
+        role: 'user',
+        content: [
+          {type: 'image_url', image_url: {url: 'data:' + mime + ';base64,' + b64, detail: 'low'}},
+          {type: 'text', text: prompt}
+        ]
+      }],
+      max_tokens: 300
     })
-  }).then(function(r){return r.json();}).then(function(d){
-    if (d.error) throw new Error(d.error.message);
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.error) {
+      var msg = d.error.message || 'Erreur OpenAI';
+      // Friendly error messages
+      if (d.error.code === 'insufficient_quota' || msg.indexOf('quota') >= 0) {
+        throw new Error('Quota dépassé. Ajoute des crédits sur platform.openai.com → Billing');
+      }
+      if (d.error.code === 'invalid_api_key' || msg.indexOf('invalid') >= 0) {
+        throw new Error('Clé API invalide. Vérifie sur platform.openai.com → API Keys');
+      }
+      throw new Error(msg);
+    }
+    if (!d.choices || !d.choices[0]) throw new Error('Réponse vide du modèle');
     var text = d.choices[0].message.content || '{}';
-    var m = text.replace(/```json?|```/g,'').trim().match(/\{[\s\S]*\}/);
-    if (!m) throw new Error('Format inattendu');
+    var clean = text.replace(/```json?|```/g, '').trim();
+    var m = clean.match(/\{[\s\S]*\}/);
+    if (!m) throw new Error('Format de réponse inattendu');
     showAI(JSON.parse(m[0]));
-  }).catch(function(err){
+  })
+  .catch(function(err) {
     document.getElementById('ld').classList.remove('on');
-    alert('Erreur OpenAI : '+err.message);
+    alert('Erreur : ' + err.message);
   });
 }
 
@@ -1193,7 +1185,7 @@ function showAI(d) {
   document.getElementById('a-cb').value = d.carbs||0;
   document.getElementById('a-fa').value = d.fat||0;
   var it = '';
-  (d.items||[]).forEach(function(x){it+='<div style="font-size:12px;color:var(--t2);padding:2px 0">• '+x+'</div>';});
+  (d.items||[]).forEach(function(x){ it += '<div style="font-size:12px;color:var(--t2);padding:2px 0">• '+x+'</div>'; });
   document.getElementById('ai-it').innerHTML = it;
   document.getElementById('ph-s').style.display = 'block';
   aiData = d;
@@ -1282,21 +1274,29 @@ function testGeminiKey() {
   if (!key) { res.textContent = 'Entre une clé d abord'; res.style.color = 'var(--or)'; return; }
   if (key.length < 10) { res.textContent = 'Clé trop courte'; res.style.color = 'var(--or)'; return; }
   res.textContent = 'Test en cours...'; res.style.color = 'var(--t2)'; btn.disabled = true;
-  if (key.startsWith('sk-')) {
-    fetch('https://api.openai.com/v1/models', {headers:{'Authorization':'Bearer '+key}})
-    .then(function(r){return r.json();}).then(function(d){
-      btn.disabled=false;
-      if(d.error){res.textContent='Cle OpenAI invalide';res.style.color='var(--rd)';}
-      else{res.textContent='Cle OpenAI valide ! Sauvegardee.';res.style.color='var(--gr)';var s=gSet();s.gemini=key;S.set('set',s);}
-    }).catch(function(){btn.disabled=false;res.textContent='Erreur reseau';res.style.color='var(--rd)';});
-  } else {
-    fetch('https://api.groq.com/openai/v1/models', {headers:{'Authorization':'Bearer '+key}})
-    .then(function(r){return r.json();}).then(function(d){
-      btn.disabled=false;
-      if(d.error||!d.data){res.textContent='Cle Groq invalide';res.style.color='var(--rd)';}
-      else{res.textContent='Cle Groq valide ! Sauvegardee.';res.style.color='var(--gr)';var s=gSet();s.gemini=key;S.set('set',s);}
-    }).catch(function(){btn.disabled=false;res.textContent='Erreur reseau';res.style.color='var(--rd)';});
-  }
+  fetch('https://api.openai.com/v1/models', {
+    headers: {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    btn.disabled = false;
+    if (d.error) {
+      var msg = d.error.message || 'Clé invalide';
+      if (d.error.code === 'insufficient_quota' || msg.indexOf('quota') >= 0) {
+        res.textContent = '⚠️ Clé valide mais pas de crédits — ajoute sur platform.openai.com/billing';
+        res.style.color = 'var(--or)';
+      } else {
+        res.textContent = '❌ ' + msg;
+        res.style.color = 'var(--rd)';
+      }
+    } else {
+      res.textContent = '✅ Clé valide ! Sauvegardée.';
+      res.style.color = 'var(--gr)';
+      var s = gSet(); s.gemini = key; S.set('set', s);
+    }
+  }).catch(function(err) {
+    btn.disabled = false;
+    res.textContent = '❌ Erreur réseau : ' + err.message;
+    res.style.color = 'var(--rd)';
+  });
 }
 
 /* ─ INIT ─────────────────────────────────────────────────────── */
