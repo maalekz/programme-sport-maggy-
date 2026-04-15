@@ -354,6 +354,35 @@ input[type=number]{-moz-appearance:textfield}
 <div class="cc"><div class="lbl" style="margin-bottom:10px">Évolution du poids</div><div id="wc-d"><div class="empty" style="padding:16px">Enregistre ton poids pour voir l'évolution</div></div></div>
 <div class="lbl" style="margin-bottom:8px;margin-top:4px">Historique</div>
 <div id="w-h"></div>
+<div style="height:14px"></div>
+<div class="lbl" style="margin-bottom:8px">Calories brûlées aujourd'hui</div>
+<div id="cal-burn-card" style="background:var(--c2);border-radius:16px;padding:16px;margin-bottom:10px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+    <div style="background:var(--c3);border-radius:12px;padding:10px;text-align:center">
+      <div style="font-size:20px;font-weight:700;color:var(--or)" id="bmr-val">–</div>
+      <div style="font-size:10px;color:var(--t2);margin-top:2px">BMR kcal</div>
+    </div>
+    <div style="background:var(--c3);border-radius:12px;padding:10px;text-align:center">
+      <div style="font-size:20px;font-weight:700;color:var(--bl)" id="sport-cal-val">0</div>
+      <div style="font-size:10px;color:var(--t2);margin-top:2px">Sport kcal</div>
+    </div>
+    <div style="background:var(--c3);border-radius:12px;padding:10px;text-align:center">
+      <div style="font-size:20px;font-weight:700;color:var(--gr)" id="steps-cal-val">0</div>
+      <div style="font-size:10px;color:var(--t2);margin-top:2px">Marche kcal</div>
+    </div>
+  </div>
+  <div style="background:rgba(48,209,88,.1);border-radius:12px;padding:12px;text-align:center;margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Total brûlé aujourd'hui</div>
+    <div style="font-size:32px;font-weight:700;color:var(--gr)" id="total-burn-val">–</div>
+    <div style="font-size:12px;color:var(--t2);margin-top:2px">kcal</div>
+  </div>
+  <div style="font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Pas aujourd'hui</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+    <input class="wi" type="number" inputmode="numeric" placeholder="Ex : 8000" id="steps-input" style="font-size:18px" oninput="updateBurn()">
+    <span style="font-size:14px;color:var(--t2);flex-shrink:0">pas</span>
+  </div>
+  <div style="font-size:11px;color:var(--t3)">1 000 pas ≈ 40 kcal · 10 000 pas ≈ 400 kcal</div>
+</div>
 </div>
 </div>
 
@@ -416,7 +445,7 @@ input[type=number]{-moz-appearance:textfield}
 </div>
 </div>
 <div style="border-top:1px solid rgba(255,255,255,.07);margin-top:14px;padding-top:12px;display:flex;gap:8px">
-<button onclick="oPh()" style="flex:1;background:var(--c3);border:none;border-radius:12px;padding:11px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">📷 Photo IA</button>
+<button onclick="oPh()" style="flex:1;background:rgba(10,132,255,.15);border:none;border-radius:12px;padding:11px;color:var(--bl);font-size:13px;font-weight:600;cursor:pointer">📷 Photo IA</button>
 <button onclick="oMf()" style="flex:1;background:var(--c3);border:none;border-radius:12px;padding:11px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">✏️ Manuel</button>
 </div>
 </div></div>
@@ -499,7 +528,13 @@ input[type=number]{-moz-appearance:textfield}
 <div class="modal" id="m-set" onclick="if(event.target===this)cM('m-set')">
 <div class="mbox">
 <div class="mbar"></div><div class="mtit">Paramètres</div>
-<div class="mf"><label>Clé API Anthropic (analyse photo)</label><input class="inp" type="password" id="sak" placeholder="sk-ant-api03-…"><div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.5">Obtiens ta clé sur <strong>console.anthropic.com</strong>. Stockée localement sur ton iPhone.</div></div>
+<div class="mf"><label>Profil (pour calories brulees)</label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div><label style="font-size:10px;color:var(--t3)">Age</label><input class="inp" type="number" inputmode="numeric" id="s-age" placeholder="26" style="min-height:40px;font-size:15px"></div>
+<div><label style="font-size:10px;color:var(--t3)">Poids (kg)</label><input class="inp" type="number" inputmode="numeric" id="s-weight-p" placeholder="82" style="min-height:40px;font-size:15px"></div>
+</div></div>
+<div class="mf"><label>Analyse photo IA (clé Gemini - gratuit)</label><input class="inp" type="password" id="s-gemini" placeholder="AIza..."><div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.5">Clé <strong>gratuite</strong> sur <strong>aistudio.google.com</strong> → Get API Key. 1500 analyses/jour gratuites.</div></div>
+<div class="mf"><label>Clé API Anthropic (optionnel)</label><input class="inp" type="password" id="sak" placeholder="sk-ant-api03-…"></div>
 <div class="mf"><label>Objectif calorique (kcal/jour)</label><input class="inp" type="number" inputmode="numeric" id="sc" placeholder="2350"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
 <div class="mf" style="margin:0"><label>Prot. g</label><input class="inp" type="number" id="sp"></div>
@@ -514,20 +549,20 @@ input[type=number]{-moz-appearance:textfield}
 
 /* ─ DATA ─────────────────────────────────────────────────────── */
 var DAYS = {
-  L:  { name:'Upper Lourd',  day:'Lundi',   type:'up', note:"Développé couché : barre aux tétons, coudes 45° · Rowing : barre bas du sternum",
+  L:  { name:'Upper Lourd',  day:'Séance 1',   type:'up', note:"Développé couché : barre aux tétons, coudes 45° · Rowing : barre bas du sternum",
         exs:[{id:'dc', name:'Développé couché barre',       sets:4, reps:'5-7',        tempo:'3-0-1-0', rest:"2'30", rir:'1-2'},
              {id:'rb', name:'Rowing barre supination',       sets:3, reps:'6-8',        tempo:'2-0-1-0', rest:"2'",   rir:'1-2'},
              {id:'dm', name:'Développé militaire barre',     sets:3, reps:'6-8',        tempo:'2-0-1-0', rest:"2'",   rir:'2'},
              {id:'tr', name:'Tractions lestées',             sets:3, reps:'6-8',        tempo:'2-0-1-0', rest:"2'",   rir:'2',  note:'Élastique si besoin'},
              {id:'el', name:'Élévations latérales',          sets:3, reps:'12-15',      tempo:'2-0-1-0', rest:'-',    rir:'2',  grp:'g1'},
              {id:'fp', name:'Face pull corde',               sets:3, reps:'12-15',      tempo:'2-0-1-1', rest:"1'30", rir:'2',  grp:'g1'}]},
-  Ma: { name:'Lower Lourd',  day:'Mardi',   type:'lo', note:"Squat : cuisses parallèles · Hip thrust : pause 1s en haut · Hack squat si gêne jambe",
+  Ma: { name:'Lower Lourd',  day:'Séance 2',   type:'lo', note:"Squat : cuisses parallèles · Hip thrust : pause 1s en haut · Hack squat si gêne jambe",
         exs:[{id:'sq', name:'Squat barre / Hack squat',     sets:4, reps:'6-8',        tempo:'3-0-1-0', rest:"2'30", rir:'1-2', note:'Hack squat si gêne jambe'},
              {id:'ht', name:'Hip thrust barre',              sets:3, reps:'8-10',       tempo:'2-0-1-1', rest:"2'",   rir:'2',   note:'Pause 1s en haut'},
              {id:'pc', name:'Presse à cuisses pieds hauts',  sets:3, reps:'10-12',      tempo:'2-0-1-0', rest:"1'30", rir:'2'},
              {id:'lc', name:'Leg curl allongé',              sets:3, reps:'10-12',      tempo:'2-0-1-1', rest:"1'30", rir:'2'},
              {id:'rk', name:'Planche RKC',                   sets:2, reps:'20-30s',     tempo:'-',       rest:"1'",   rir:'-',   bw:true, note:'Tout contracter'}]},
-  J:  { name:'Upper Volume', day:'Jeudi',   type:'up', note:"Tirage : barre à la clavicule · Triset : sans pause",
+  J:  { name:'Upper Volume', day:'Séance 3',   type:'up', note:"Tirage : barre à la clavicule · Triset : sans pause",
         exs:[{id:'tv', name:'Tirage vertical prise large',  sets:4, reps:'8-10',       tempo:'2-0-1-1', rest:"2'",   rir:'2',  note:'Barre à la clavicule'},
              {id:'di', name:'Développé incliné haltères',   sets:3, reps:'8-10',       tempo:'3-0-1-0', rest:"2'",   rir:'2'},
              {id:'rp', name:'Rowing poulie basse serrée',   sets:3, reps:'10-12',      tempo:'2-0-1-1', rest:"1'30", rir:'2'},
@@ -535,13 +570,13 @@ var DAYS = {
              {id:'cm', name:'Curl marteau haltères',        sets:3, reps:'10-12',      tempo:'2-0-1-0', rest:'-',    rir:'2',  grp:'g2'},
              {id:'ec', name:'Extension triceps corde',      sets:3, reps:'10-12',      tempo:'2-0-1-1', rest:'-',    rir:'2',  grp:'g2'},
              {id:'gl', name:'Gainage latéral',              sets:3, reps:'20-30s',     tempo:'-',       rest:"1'30", rir:'-',  bw:true, grp:'g2'}]},
-  V:  { name:'Lower Volume', day:'Vendredi',type:'lo', note:"SDT roumain : genoux légèrement fléchis · Nordic : commence assisté",
+  V:  { name:'Lower Volume', day:'Séance 4',type:'lo', note:"SDT roumain : genoux légèrement fléchis · Nordic : commence assisté",
         exs:[{id:'sd', name:'Soulevé de terre roumain',    sets:4, reps:'6-8',        tempo:'3-0-1-0', rest:"2'30", rir:'1-2'},
              {id:'fb', name:'Fentes bulgares haltères',    sets:3, reps:'8-10/jambe', tempo:'2-0-1-0', rest:"2'",   rir:'2'},
              {id:'le', name:'Leg extension',               sets:3, reps:'12-15',      tempo:'2-0-1-1', rest:"1'30", rir:'2'},
              {id:'nc', name:'Nordic curl / leg curl assis',sets:3, reps:'8-10',       tempo:'3-0-1-0', rest:"1'30", rir:'2',  note:'Commence assisté'},
              {id:'mo', name:'Mollets debout machine',      sets:3, reps:'15-20',      tempo:'2-0-1-1', rest:"1'",   rir:'2'}]},
-  Sa: { name:'Upper Court',  day:'Samedi',  type:'ar', note:"Arnold : rotation en montant · Élévations : 3s montée, 1s pause haute",
+  Sa: { name:'Upper Court',  day:'Séance 5',  type:'ar', note:"Arnold : rotation en montant · Élévations : 3s montée, 1s pause haute",
         exs:[{id:'ar',  name:'Développé Arnold haltères',       sets:3, reps:'8-10',  tempo:'2-0-1-0', rest:"2'",   rir:'2'},
              {id:'els', name:'Élévations latérales tempo lent',  sets:4, reps:'12-15', tempo:'3-0-1-1', rest:"1'",   rir:'2',  note:'3s montée, 1s pause haute'},
              {id:'ci',  name:'Curl incliné haltères',            sets:3, reps:'10-12', tempo:'2-0-1-1', rest:'-',    rir:'2',  grp:'g3'},
@@ -1546,6 +1581,253 @@ function resetFoodSearch() {
   document.getElementById('food-search').value = '';
   searchFood('');
 }
+
+/* ─ CALORIE BURN + STEPS ─────────────────────────────────────── */
+function calcBMR() {
+  var s = gSet();
+  var w = s.weightKg || 82;
+  var age = s.age || 26;
+  // Mifflin-St Jeor hommes: 10*poids + 6.25*taille - 5*age + 5
+  return Math.round(10 * w + 6.25 * 178 - 5 * age + 5);
+}
+
+function calcSportCalories() {
+  // Estime les calories brûlées à partir des sets loggés aujourd'hui
+  var td = todayStr();
+  var cal = 0;
+  Object.values(S.days()).forEach(function(d) {
+    d.exs.forEach(function(ex) {
+      var logs = S.logs(ex.id);
+      var todayLog = logs.filter(function(l){ return l.date === td; });
+      todayLog.forEach(function(l) {
+        l.sets.forEach(function(s) {
+          var w = s.w || 0;
+          var r = s.r || 0;
+          // ~0.1 kcal par kg par rep (estimation muscu)
+          cal += w * r * 0.1;
+        });
+      });
+    });
+  });
+  return Math.round(cal);
+}
+
+function updateBurn() {
+  var bmr = calcBMR();
+  var sportCal = calcSportCalories();
+  var steps = parseInt(document.getElementById('steps-input') ? document.getElementById('steps-input').value : 0) || 0;
+  var stepsCal = Math.round(steps * 0.04);
+  var total = bmr + sportCal + stepsCal;
+
+  var el = function(id, v) { var e = document.getElementById(id); if(e) e.textContent = v; };
+  el('bmr-val', bmr);
+  el('sport-cal-val', sportCal);
+  el('steps-cal-val', stepsCal);
+  el('total-burn-val', total);
+
+  // Save steps
+  S.set('steps_' + todayStr(), steps);
+
+  // Update home h-cal comparison
+  updateBurnHome(total);
+}
+
+function updateBurnHome(totalBurn) {
+  // Optionally update something on home
+}
+
+/* ─ GEMINI PHOTO ANALYSIS ────────────────────────────────────── */
+function analyzePhoto(b64, mime) {
+  var s = gSet();
+  var geminiKey = s.gemini || '';
+  var anthropicKey = s.api || '';
+
+  if (geminiKey) {
+    analyzeWithGemini(b64, mime, geminiKey);
+  } else if (anthropicKey) {
+    analyzeWithAnthropic(b64, mime, anthropicKey);
+  } else {
+    document.getElementById('ld').classList.remove('on');
+    cM('m-ph');
+    oM('m-set');
+    alert('Entre une clé API Gemini (gratuite) dans Paramètres pour analyser les photos.');
+  }
+}
+
+function analyzeWithGemini(b64, mime, key) {
+  var prompt = 'Analyse ce plat et estime les valeurs nutritionnelles. Reponds UNIQUEMENT en JSON valide sans markdown: {"dish":"nom du plat en francais","calories":450,"protein":35,"carbs":50,"fat":12,"confidence":"high","items":["ingredient 1 ~Xg"]}';
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + key, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      contents: [{parts: [
+        {inline_data: {mime_type: mime, data: b64}},
+        {text: prompt}
+      ]}],
+      generationConfig: {maxOutputTokens: 400}
+    })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    var text = '';
+    try { text = data.candidates[0].content.parts[0].text || '{}'; } catch(e) { text = '{}'; }
+    var clean = text.replace(/```json?|```/g,'').trim();
+    // Extract JSON from response
+    var jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (jsonMatch) clean = jsonMatch[0];
+    var aiData2 = JSON.parse(clean);
+    showAI(aiData2);
+  }).catch(function(err) {
+    document.getElementById('ld').classList.remove('on');
+    alert('Erreur Gemini : ' + err.message);
+  });
+}
+
+function analyzeWithAnthropic(b64, mime, key) {
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-6', max_tokens:600,
+      messages:[{role:'user', content:[
+        {type:'image', source:{type:'base64', media_type:mime, data:b64}},
+        {type:'text', text:'Analyse ce plat. Reponds UNIQUEMENT en JSON valide: {"dish":"nom en francais","calories":450,"protein":35,"carbs":50,"fat":12,"confidence":"high","items":["ingredient 1 ~Xg"]}'}
+      ]}]
+    })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (data.error) throw new Error(data.error.message);
+    var text = (data.content && data.content[0]) ? data.content[0].text || '{}' : '{}';
+    var aiData2 = JSON.parse(text.replace(/```json?|```/g,'').trim());
+    showAI(aiData2);
+  }).catch(function(err) {
+    document.getElementById('ld').classList.remove('on');
+    alert('Erreur : ' + err.message);
+  });
+}
+
+/* ─ EXPANDED FOOD DATABASE ───────────────────────────────────── */
+// Add more foods to existing FOOD_DB
+var FOOD_DB_EXTRA = [
+// PLATS COMPLETS
+{id:"riz_lentilles",  name:"Riz et lentilles",           cal:145, prot:6.5,  carb:28,  fat:0.6},
+{id:"poulet_curry",   name:"Poulet curry",                cal:180, prot:22,   carb:8,   fat:7},
+{id:"salade_thon",    name:"Salade thon tomates",         cal:110, prot:18,   carb:6,   fat:2.5},
+{id:"omelette",       name:"Omelette 3 oeufs",            cal:195, prot:18,   carb:1.5, fat:13},
+{id:"riz_legumes",    name:"Riz sauté aux légumes",       cal:155, prot:4,    carb:30,  fat:2.5},
+{id:"wrap_poulet",    name:"Wrap poulet crudités",        cal:285, prot:22,   carb:32,  fat:7},
+{id:"soupe_leg",      name:"Soupe de légumes",            cal:55,  prot:2.5,  carb:10,  fat:0.8},
+{id:"salade_verte",   name:"Salade verte vinaigrette",    cal:45,  prot:1.2,  carb:5,   fat:2.5},
+{id:"puree_pomme",    name:"Puree de pommes de terre",    cal:105, prot:2.5,  carb:22,  fat:1.5},
+{id:"tabouleh",       name:"Tabouleh",                    cal:120, prot:3.5,  carb:20,  fat:3.5},
+// VIANDES SUPPLEMENTAIRES
+{id:"veau_esc",       name:"Escalope de veau",            cal:175, prot:29,   carb:0,   fat:6},
+{id:"merguez",        name:"Merguez grillée",             cal:285, prot:17,   carb:2,   fat:24},
+{id:"jambon_bl",      name:"Jambon blanc",                cal:107, prot:17,   carb:1.5, fat:3.5},
+{id:"chipolata",      name:"Chipolata grillée",           cal:270, prot:16,   carb:3,   fat:22},
+{id:"filet_mig",      name:"Filet mignon porc",          cal:175, prot:26,   carb:0,   fat:7.5},
+// POISSONS
+{id:"sardine_bo",     name:"Sardines boite huile",        cal:208, prot:22,   carb:0,   fat:13},
+{id:"maquereau",      name:"Maquereau grillé",            cal:239, prot:22,   carb:0,   fat:16},
+{id:"truite",         name:"Truite au four",              cal:168, prot:24,   carb:0,   fat:8},
+{id:"dorade",         name:"Dorade grillée",              cal:142, prot:22,   carb:0,   fat:6},
+// SNACKS PROTEINES
+{id:"riz_galette",    name:"Galette de riz",              cal:35,  prot:0.7,  carb:7.3, fat:0.3},
+{id:"skyr_fruits",    name:"Skyr aux fruits",             cal:88,  prot:8.5,  carb:11,  fat:0.3},
+{id:"amandes_grillees",name:"Amandes grillées",          cal:601, prot:21,   carb:22,  fat:53},
+{id:"graines_ch",     name:"Graines de chia",            cal:486, prot:17,   carb:42,  fat:31},
+{id:"graines_lin",    name:"Graines de lin",             cal:534, prot:18,   carb:29,  fat:42},
+// SAUCES ET CONDIMENTS
+{id:"ketchup",        name:"Ketchup",                    cal:105, prot:1.5,  carb:25,  fat:0.3},
+{id:"mayo",           name:"Mayonnaise",                  cal:680, prot:1.5,  carb:2.5, fat:75},
+{id:"moutarde",       name:"Moutarde",                   cal:66,  prot:4.4,  carb:5.3, fat:3.3},
+{id:"sauce_soja",     name:"Sauce soja",                 cal:53,  prot:5.6,  carb:7,   fat:0.6},
+// ETHIOPIE SUPPLEMENTAIRE
+{id:"ye_misir_k",     name:"Ye misir kik (lentilles jaunes)",cal:125, prot:8.5, carb:22, fat:0.5},
+{id:"tikur_azmud",    name:"Tikur azmud (nigelle)",      cal:345, prot:17,   carb:44,  fat:15},
+{id:"enset",          name:"Kocho (enset fermenté)",     cal:180, prot:2.5,  carb:42,  fat:0.5},
+{id:"chiro_doro",     name:"Chiro (poudre pois chiches)",cal:380, prot:22,   carb:58,  fat:6},
+{id:"lab_lega",       name:"Lalab (epinards ethiopiens)",cal:30,  prot:2.5,  carb:5,   fat:0.5},
+{id:"kollo",          name:"Kollo (grains grillés)",     cal:380, prot:12,   carb:72,  fat:5},
+{id:"besso",          name:"Besso (orge grillée)",       cal:350, prot:12,   carb:71,  fat:2.5},
+{id:"fata",           name:"Fata (pain bouillon viande)",cal:210, prot:12,   carb:28,  fat:6},
+{id:"quanta",         name:"Quanta (boeuf séché)",       cal:280, prot:42,   carb:2,   fat:12},
+{id:"yekem_sir",      name:"Yekemis sir (betterave épicée)",cal:70, prot:2,  carb:14,  fat:1.5},
+// BOISSONS SUPPLEMENTAIRES
+{id:"cafe_lait",      name:"Café latte",                 cal:120, prot:5.5,  carb:12,  fat:5},
+{id:"the_v",          name:"Thé vert",                   cal:2,   prot:0,    carb:0.5, fat:0},
+{id:"smoothie_pr",    name:"Smoothie protéiné maison",   cal:280, prot:25,   carb:30,  fat:5},
+{id:"eau_coco",       name:"Eau de coco",                cal:19,  prot:0.7,  carb:3.7, fat:0.2},
+{id:"kombucha",       name:"Kombucha",                   cal:30,  prot:0.5,  carb:7,   fat:0},
+// FROMAGES
+{id:"emmental",       name:"Emmental",                   cal:380, prot:29,   carb:1.5, fat:29},
+{id:"brie",           name:"Brie",                       cal:334, prot:20,   carb:0.5, fat:28},
+{id:"feta",           name:"Feta",                       cal:264, prot:14,   carb:4,   fat:21},
+{id:"parmesan",       name:"Parmesan",                   cal:431, prot:38,   carb:3.2, fat:29},
+// CÉRÉALES PETIT-DEJ
+{id:"corn_flakes",    name:"Corn flakes",                cal:375, prot:7.5,  carb:84,  fat:0.9},
+{id:"muesli",         name:"Muesli",                     cal:360, prot:9,    carb:65,  fat:6},
+{id:"pain_grill",     name:"Pain grillé beurre",         cal:180, prot:4.5,  carb:24,  fat:7.5},
+{id:"cramique",       name:"Brioche tranchée",           cal:320, prot:7,    carb:52,  fat:9},
+// SUPPLEMENTS
+{id:"creatine",       name:"Créatine (poudre)",          cal:0,   prot:0,    carb:0,   fat:0},
+{id:"bcaa",           name:"BCAA",                       cal:20,  prot:5,    carb:0,   fat:0},
+{id:"oat_meal_pr",    name:"Overnight oats protéiné",   cal:290, prot:20,   carb:38,  fat:6}
+];
+
+// Merge extra foods into FOOD_DB
+if (typeof FOOD_DB !== 'undefined') {
+  FOOD_DB_EXTRA.forEach(function(f) {
+    var exists = FOOD_DB.some(function(x){ return x.id === f.id; });
+    if (!exists) FOOD_DB.push(f);
+  });
+}
+
+/* ─ PATCH SVSET TO SAVE GEMINI KEY + PROFILE ─────────────────── */
+var _origSvSet = svSet;
+svSet = function() {
+  var s = gSet();
+  var ak = document.getElementById('sak') ? document.getElementById('sak').value.trim() : '';
+  if (ak) s.api = ak;
+  var gk = document.getElementById('s-gemini') ? document.getElementById('s-gemini').value.trim() : '';
+  if (gk) s.gemini = gk;
+  var age = parseInt(document.getElementById('s-age') ? document.getElementById('s-age').value : 0);
+  if (age) s.age = age;
+  var wp = parseInt(document.getElementById('s-weight-p') ? document.getElementById('s-weight-p').value : 0);
+  if (wp) s.weightKg = wp;
+  s.cal  = parseInt(document.getElementById('sc').value)  || s.cal;
+  s.prot = parseInt(document.getElementById('sp').value)  || s.prot;
+  s.carb = parseInt(document.getElementById('sg').value)  || s.carb;
+  s.fat  = parseInt(document.getElementById('sf').value)  || s.fat;
+  S.set('set', s);
+  cM('m-set');
+  rNu();
+};
+
+/* ─ PATCH rBo TO LOAD STEPS AND SHOW BURN ───────────────────── */
+var _origRBo = rBo;
+rBo = function() {
+  _origRBo();
+  // Load saved steps
+  var savedSteps = S.get('steps_' + todayStr()) || 0;
+  var inp = document.getElementById('steps-input');
+  if (inp && savedSteps) inp.value = savedSteps;
+  updateBurn();
+};
+
+/* ─ PATCH SETTINGS OPEN ─────────────────────────────────────── */
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.set-btn');
+  if (btn) {
+    setTimeout(function() {
+      var s = gSet();
+      var ageEl = document.getElementById('s-age');
+      var wpEl = document.getElementById('s-weight-p');
+      var gkEl = document.getElementById('s-gemini');
+      if (ageEl) ageEl.value = s.age || 26;
+      if (wpEl) wpEl.value = s.weightKg || 82;
+      if (gkEl) gkEl.value = '';
+    }, 50);
+  }
+});
+
 </script>
 </body>
 </html>
