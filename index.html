@@ -1315,6 +1315,324 @@ window.addEventListener('load', function() {
     var b = document.getElementById('install-b'); if (b) b.classList.add('on');
   }
 });
+
+/* ─ FOOD DATABASE ─────────────────────────────────────────────── */
+var FOOD_DB = [
+{id:"riz_c",name:"Riz blanc cuit",cal:130,prot:2.7,carb:28,fat:0.3},
+{id:"riz_b",name:"Riz brun cuit",cal:112,prot:2.6,carb:23,fat:0.9},
+{id:"riz_basmati",name:"Riz basmati cuit",cal:138,prot:2.9,carb:30,fat:0.3},
+{id:"pates_c",name:"Pates cuites",cal:158,prot:5.8,carb:31,fat:0.9},
+{id:"pain_b",name:"Pain blanc",cal:265,prot:9,carb:49,fat:3.2},
+{id:"pain_c",name:"Pain complet",cal:247,prot:9,carb:41,fat:3.4},
+{id:"avoine",name:"Flocons d avoine",cal:379,prot:13,carb:68,fat:7},
+{id:"quin",name:"Quinoa cuit",cal:120,prot:4.4,carb:21,fat:1.9},
+{id:"pomme_t",name:"Pomme de terre cuite",cal:87,prot:1.9,carb:20,fat:0.1},
+{id:"patate_d",name:"Patate douce cuite",cal:90,prot:2,carb:21,fat:0.1},
+{id:"semoul",name:"Semoule cuite",cal:150,prot:5.3,carb:31,fat:0.3},
+{id:"pouch_bl",name:"Blanc de poulet grille",cal:165,prot:31,carb:0,fat:3.6},
+{id:"pouch_c",name:"Cuisse de poulet cuite",cal:209,prot:26,carb:0,fat:11},
+{id:"boeuf_m",name:"Boeuf maigre cuit",cal:215,prot:28,carb:0,fat:11},
+{id:"steak_5",name:"Steak hache 5%",cal:136,prot:21,carb:0,fat:5.4},
+{id:"steak_15",name:"Steak hache 15%",cal:235,prot:17,carb:0,fat:18},
+{id:"dinde",name:"Blanc de dinde grille",cal:135,prot:30,carb:0,fat:1.6},
+{id:"saumon",name:"Saumon grille",cal:208,prot:25,carb:0,fat:12},
+{id:"thon_bo",name:"Thon en boite naturel",cal:116,prot:26,carb:0,fat:1},
+{id:"cabillaud",name:"Cabillaud cuit",cal:105,prot:23,carb:0,fat:0.9},
+{id:"crevettes",name:"Crevettes cuites",cal:99,prot:21,carb:0,fat:1.1},
+{id:"oeuf",name:"Oeuf entier",cal:155,prot:13,carb:1.1,fat:11},
+{id:"blanc_oeuf",name:"Blanc d oeuf",cal:52,prot:11,carb:0.7,fat:0.2},
+{id:"lentilles",name:"Lentilles cuites",cal:116,prot:9,carb:20,fat:0.4},
+{id:"pois_ch",name:"Pois chiches cuits",cal:164,prot:8.9,carb:27,fat:2.6},
+{id:"haricots",name:"Haricots rouges cuits",cal:127,prot:8.7,carb:23,fat:0.5},
+{id:"feves",name:"Feves cuites",cal:110,prot:7.6,carb:20,fat:0.4},
+{id:"tofu",name:"Tofu nature",cal:76,prot:8,carb:1.9,fat:4.8},
+{id:"fromage_b",name:"Fromage blanc 0%",cal:47,prot:7.5,carb:3.8,fat:0.2},
+{id:"yaourt_n",name:"Yaourt nature",cal:59,prot:3.5,carb:4.7,fat:3.3},
+{id:"yaourt_g",name:"Yaourt grec 0%",cal:59,prot:10,carb:3.6,fat:0.4},
+{id:"skyr",name:"Skyr nature",cal:63,prot:11,carb:4,fat:0.2},
+{id:"lait",name:"Lait demi-ecreme",cal:46,prot:3.2,carb:4.7,fat:1.5},
+{id:"mozzarella",name:"Mozzarella",cal:280,prot:18,carb:2.2,fat:22},
+{id:"gruyere",name:"Gruyere",cal:413,prot:29,carb:0,fat:33},
+{id:"whey",name:"Whey proteine poudre",cal:380,prot:75,carb:7,fat:5},
+{id:"beurre_ca",name:"Beurre de cacahuete",cal:588,prot:25,carb:20,fat:50},
+{id:"brocoli",name:"Brocolis cuits",cal:35,prot:2.4,carb:7,fat:0.4},
+{id:"epinards",name:"Epinards cuits",cal:23,prot:2.9,carb:3.8,fat:0.4},
+{id:"courgette",name:"Courgettes cuites",cal:20,prot:1.5,carb:3.7,fat:0.3},
+{id:"tomate",name:"Tomates",cal:18,prot:0.9,carb:3.9,fat:0.2},
+{id:"carotte",name:"Carottes",cal:41,prot:0.9,carb:10,fat:0.2},
+{id:"avocat",name:"Avocat",cal:160,prot:2,carb:9,fat:15},
+{id:"banane",name:"Banane",cal:89,prot:1.1,carb:23,fat:0.3},
+{id:"pomme",name:"Pomme",cal:52,prot:0.3,carb:14,fat:0.2},
+{id:"orange",name:"Orange",cal:47,prot:0.9,carb:12,fat:0.1},
+{id:"mangue",name:"Mangue",cal:60,prot:0.8,carb:15,fat:0.4},
+{id:"huile_ol",name:"Huile d olive",cal:884,prot:0,carb:0,fat:100},
+{id:"beurre",name:"Beurre",cal:717,prot:0.9,carb:0.1,fat:81},
+{id:"amandes",name:"Amandes",cal:579,prot:21,carb:22,fat:50},
+{id:"noix",name:"Noix",cal:654,prot:15,carb:14,fat:65},
+{id:"chocolat",name:"Chocolat noir 70%",cal:598,prot:8,carb:46,fat:43},
+{id:"barre_pr",name:"Barre proteines",cal:360,prot:30,carb:35,fat:8},
+{id:"injera",name:"Injera (galette teff)",cal:218,prot:5.7,carb:43,fat:1.1},
+{id:"teff_d",name:"Teff grain sec",cal:367,prot:13,carb:73,fat:2.4},
+{id:"doro_wat",name:"Doro wat (poulet epice)",cal:185,prot:18,carb:8,fat:9},
+{id:"tibs_b",name:"Beef tibs (boeuf saute)",cal:210,prot:22,carb:4,fat:12},
+{id:"tibs_a",name:"Tibs agneau",cal:240,prot:20,carb:3,fat:16},
+{id:"kitfo",name:"Kitfo (boeuf hache epice)",cal:260,prot:23,carb:1,fat:18},
+{id:"shiro",name:"Shiro (pois chiches epices)",cal:155,prot:8,carb:20,fat:5.5},
+{id:"misir",name:"Misir wat (lentilles rouges)",cal:118,prot:8.5,carb:21,fat:0.8},
+{id:"gomen",name:"Gomen (chou epice)",cal:55,prot:2.1,carb:10,fat:1.8},
+{id:"fosolia",name:"Fosolia (haricots verts ethiopiens)",cal:65,prot:1.8,carb:11,fat:2.2},
+{id:"kik_ali",name:"Kik alicha (pois jaunes)",cal:135,prot:8,carb:24,fat:0.6},
+{id:"atakilt",name:"Atakilt wat (legumes)",cal:75,prot:2,carb:14,fat:2},
+{id:"ful",name:"Ful (feves epicees)",cal:130,prot:8.5,carb:22,fat:1.2},
+{id:"ayib",name:"Ayib (fromage ethiopien)",cal:110,prot:9,carb:2,fat:7.5},
+{id:"firfir",name:"Firfir (injera epicee)",cal:190,prot:5,carb:35,fat:4},
+{id:"sambusa",name:"Sambusa lentilles",cal:280,prot:8,carb:34,fat:12},
+{id:"genfo",name:"Genfo (bouillie teff)",cal:185,prot:5.5,carb:38,fat:1.5},
+{id:"buna",name:"Cafe ethiopien buna",cal:5,prot:0.3,carb:0.5,fat:0},
+{id:"tej",name:"Tej (miel fermente)",cal:75,prot:0.3,carb:12,fat:0},
+{id:"kurt",name:"Kurt (boeuf cru epicee)",cal:175,prot:26,carb:0,fat:7.5},
+{id:"dabo",name:"Dabo (pain ethiopien)",cal:255,prot:8,carb:50,fat:3}
+];
+
+var selectedFood = null;
+
+function searchFood(q) {
+  document.getElementById('food-gram-box').style.display = 'none';
+  var ct = document.getElementById('food-results');
+  if (!q || q.length < 1) {
+    ct.innerHTML = '<div style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Tape un aliment pour chercher</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">' +
+      ['Riz','Poulet','Boeuf','Oeuf','Lentilles','Yaourt','Injera','Tibs','Shiro','Misir','Doro','Avoine'].map(function(s){
+        return '<button style="background:var(--c3);border:none;border-radius:8px;padding:5px 10px;font-size:12px;color:var(--t2);cursor:pointer" onclick="searchFood(\''+s+'\')">'+s+'</button>';
+      }).join('') + '</div>';
+    return;
+  }
+  var ql = q.toLowerCase().replace(/[éèê]/g,'e').replace(/[àâ]/g,'a').replace(/[ùû]/g,'u').replace(/[îï]/g,'i').replace(/[ôö]/g,'o').replace(/[ç]/g,'c');
+  var res = FOOD_DB.filter(function(f){
+    var fn = f.name.toLowerCase().replace(/[éèê]/g,'e').replace(/[àâ]/g,'a').replace(/[ùû]/g,'u').replace(/[îï]/g,'i').replace(/[ôö]/g,'o').replace(/[ç]/g,'c');
+    return fn.indexOf(ql) >= 0;
+  });
+  if (!res.length) {
+    ct.innerHTML = '<div style="font-size:13px;color:var(--t3);text-align:center;padding:16px">Aucun résultat. Utilise la saisie manuelle.</div>';
+    return;
+  }
+  var html = '';
+  res.slice(0,25).forEach(function(f){
+    html += '<div class="fdb-i" onclick="selectFood(\''+f.id+'\')">'+
+      '<div><div class="fdb-n">'+f.name+'</div><div class="fdb-m">P:'+f.prot+'g G:'+f.carb+'g L:'+f.fat+'g / 100g</div></div>'+
+      '<div class="fdb-c">'+f.cal+' kcal</div></div>';
+  });
+  ct.innerHTML = html;
+}
+
+function selectFood(id) {
+  var f = null;
+  FOOD_DB.forEach(function(x){ if(x.id===id) f=x; });
+  if (!f) return;
+  selectedFood = f;
+  document.getElementById('food-results').innerHTML = '';
+  document.getElementById('food-gram-label').textContent = f.name;
+  document.getElementById('food-per100').innerHTML = 'Pour 100g : <strong>'+f.cal+' kcal</strong> · P:'+f.prot+'g · G:'+f.carb+'g · L:'+f.fat+'g';
+  document.getElementById('food-grams').value = '';
+  document.getElementById('food-preview').innerHTML = '';
+  document.getElementById('food-gram-box').style.display = 'block';
+  setTimeout(function(){ document.getElementById('food-grams').focus(); }, 100);
+}
+
+function updateGramPreview() {
+  var g = parseFloat(document.getElementById('food-grams').value) || 0;
+  var f = selectedFood;
+  if (!f || !g) { document.getElementById('food-preview').innerHTML = ''; return; }
+  var r = g/100;
+  var cal=Math.round(f.cal*r), prot=(f.prot*r).toFixed(1), carb=(f.carb*r).toFixed(1), fat=(f.fat*r).toFixed(1);
+  document.getElementById('food-preview').innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+
+    '<div style="background:rgba(255,159,10,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+cal+'</div><div style="font-size:10px;color:var(--t2)">kcal</div></div>'+
+    '<div style="background:rgba(10,132,255,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--bl)">'+prot+'</div><div style="font-size:10px;color:var(--t2)">prot g</div></div>'+
+    '<div style="background:rgba(255,159,10,.08);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+carb+'</div><div style="font-size:10px;color:var(--t2)">gluc g</div></div>'+
+    '<div style="background:rgba(191,90,242,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--pu)">'+fat+'</div><div style="font-size:10px;color:var(--t2)">lip g</div></div>'+
+    '</div>';
+}
+
+function addFoodFromDB() {
+  var g = parseFloat(document.getElementById('food-grams').value);
+  if (!g || g <= 0) { alert('Entre une quantité en grammes.'); return; }
+  var f = selectedFood; if (!f) return;
+  var r = g/100;
+  addFood({name:f.name+' ('+Math.round(g)+'g)',cal:Math.round(f.cal*r),prot:parseFloat((f.prot*r).toFixed(1)),carb:parseFloat((f.carb*r).toFixed(1)),fat:parseFloat((f.fat*r).toFixed(1))});
+  resetFoodSearch();
+  cM('m-af');
+}
+
+function resetFoodSearch() {
+  selectedFood = null;
+  document.getElementById('food-gram-box').style.display = 'none';
+  document.getElementById('food-search').value = '';
+  searchFood('');
+}
+
+/* ─ CORPS ─────────────────────────────────────────────────────── */
+function getWeights() { return S.get('wts') || []; }
+
+function logW() {
+  var val = parseFloat(document.getElementById('wf-input').value);
+  if (!val || val < 20 || val > 300) { alert('Entre un poids valide.'); return; }
+  var wts = getWeights(); var date = todayStr(); var idx = -1;
+  wts.forEach(function(w,i){ if(w.date===date) idx=i; });
+  if (idx>=0) wts[idx].w=val; else wts.push({date:date,w:val});
+  wts.sort(function(a,b){ return a.date.localeCompare(b.date); });
+  S.set('wts',wts);
+  document.getElementById('wf-input').value='';
+  rBo(); uHome();
+  if(navigator.vibrate) navigator.vibrate([10]);
+}
+
+function rBo() {
+  var wts = getWeights();
+  var last = wts.length ? wts[wts.length-1] : null;
+  var prev = wts.length>1 ? wts[wts.length-2] : null;
+  document.getElementById('wc').innerHTML = last ? last.w+'<span>kg</span>' : '–<span>kg</span>';
+  var ch = document.getElementById('wch');
+  if (last&&prev) { var d=(last.w-prev.w).toFixed(1); ch.className='wch '+(d>0?'up':'dn'); ch.textContent=(d>0?'+':'')+d+' kg vs précédent'; } else ch.textContent='';
+  if (last) {
+    var bmi=(last.w/(1.78*1.78)).toFixed(1);
+    document.getElementById('bmi-v').textContent=bmi;
+    var cat='Normal',pct=0;
+    if(bmi<18.5){cat='Insuffisance pondérale';pct=bmi/18.5*.25;}
+    else if(bmi<25){cat='Poids normal';pct=.25+(bmi-18.5)/(25-18.5)*.25;}
+    else if(bmi<30){cat='Surpoids';pct=.5+(bmi-25)/5*.25;}
+    else{cat='Obésité';pct=.75;}
+    document.getElementById('bmi-l').textContent=cat;
+    document.getElementById('bmi-cur').style.left=Math.min(95,Math.max(5,pct*100))+'%';
+  }
+  var cd = document.getElementById('wc-d');
+  if (wts.length<2) { cd.innerHTML='<div class="empty" style="padding:16px">Enregistre ton poids sur plusieurs jours</div>'; }
+  else { cd.innerHTML=buildWeightChart(wts); }
+  var h='';
+  wts.slice(-15).reverse().forEach(function(w,i,arr){
+    var pv=arr[i+1]; var dl=pv?(w.w-pv.w).toFixed(1):null;
+    h+='<div class="whi"><div class="whid">'+fmtDate(w.date)+'</div><div style="display:flex;align-items:center;gap:8px">';
+    if(dl!==null) h+='<span class="wdl '+(dl>0?'up':'dn')+'">'+(dl>0?'+':'')+dl+'kg</span>';
+    h+='<div class="whiv">'+w.w+' kg</div>';
+    h+='<button style="background:none;border:none;color:var(--rd);font-size:14px;padding:4px;cursor:pointer" onclick="delWeight(\''+w.date+'\')">🗑</button>';
+    h+='</div></div>';
+  });
+  document.getElementById('w-h').innerHTML=h;
+  var savedSteps = S.get('steps_'+todayStr()) || 0;
+  var inp = document.getElementById('steps-input');
+  if(inp && savedSteps) inp.value=savedSteps;
+  updateBurn();
+}
+
+function delWeight(date) { S.set('wts',getWeights().filter(function(x){return x.date!==date;})); rBo(); uHome(); }
+
+function buildWeightChart(wts) {
+  var W=300,H=90,PL=36,PR=10,PT=16,PB=16;
+  var n=Math.min(wts.length,20); var data=wts.slice(-n);
+  var vals=data.map(function(w){return w.w;});
+  var minV=Math.min.apply(null,vals)-.5, maxV=Math.max.apply(null,vals)+.5, range=maxV-minV;
+  var cx=function(i){return PL+(i/(n-1))*(W-PL-PR);};
+  var cy=function(v){return PT+(1-(v-minV)/range)*(H-PT-PB);};
+  var pts=data.map(function(w,i){return{x:cx(i),y:cy(w.w),v:w.w};});
+  var line=pts.map(function(p){return p.x+','+p.y;}).join(' ');
+  var area='M'+pts[0].x+','+(H-PB)+' '+pts.map(function(p){return'L'+p.x+','+p.y;}).join(' ')+' L'+pts[n-1].x+','+(H-PB)+' Z';
+  var last=pts[n-1];
+  return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(48,209,88,.1)"/><polyline points="'+line+'" fill="none" stroke="var(--gr)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+last.x+'" cy="'+last.y+'" r="5" fill="var(--gr)"/><text x="'+last.x+'" y="'+(last.y-9)+'" text-anchor="middle" fill="var(--gr)" font-size="11" font-weight="700">'+last.v+'kg</text><text x="0" y="'+(PT+4)+'" fill="rgba(255,255,255,.3)" font-size="9">'+maxV.toFixed(1)+'</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(255,255,255,.3)" font-size="9">'+minV.toFixed(1)+'</text></svg>';
+}
+
+/* ─ STATS ──────────────────────────────────────────────────────── */
+var progDay = 'L';
+
+function buildProgDayRow() {
+  var days = S.days(); var html = '';
+  Object.keys(days).forEach(function(k){
+    var d=days[k];
+    html+='<button class="pdc '+d.type+(k===progDay?' on':'')+'" onclick="selectProgDay(\''+k+'\',this)">'+d.day+'</button>';
+  });
+  document.getElementById('pdr').innerHTML=html;
+}
+
+function selectProgDay(k,btn) {
+  progDay=k;
+  document.querySelectorAll('.pdc').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  rSt();
+}
+
+function rSt() {
+  buildProgDayRow();
+  var days=S.days(); var day=days[progDay];
+  document.getElementById('pcards').innerHTML=day.exs.map(function(ex){return buildProgCard(ex);}).join('');
+}
+
+function buildProgCard(ex) {
+  var logs=S.logs(ex.id), n=logs.length;
+  if(!n) return'<div class="pc"><div class="pc-h"><div class="pcn">'+ex.name+'</div><div class="pcs"><span>Aucune donnée</span></div></div><div class="pcnd">Log cet exercice pour voir la progression</div></div>';
+  var mxs=logs.map(function(l){var m=0;l.sets.forEach(function(s){if((s.w||0)>m)m=s.w||0;});return m;});
+  var vls=logs.map(function(l){return l.sets.reduce(function(a,s){return a+(s.w||0)*(s.r||0);},0);});
+  var gMx=Math.max.apply(null,mxs), lVl=vls[n-1];
+  var chart=n>=2?buildExChart(mxs):'<div style="font-size:12px;color:var(--t3);text-align:center;padding:10px 0">Reviens après la prochaine séance</div>';
+  var sets=''; logs[n-1].sets.forEach(function(s,i){sets+='<div class="pset"><div class="psv">'+(s.w||'-')+'x'+(s.r||'-')+'</div><div class="psl">S'+(i+1)+'</div></div>';});
+  return'<div class="pc"><div class="pc-h"><div class="pcn">'+ex.name+'</div>'+
+    '<div class="pcs"><span>'+n+' séance'+(n>1?'s':'')+'</span><span>Max: <strong>'+gMx+'kg</strong></span><span>Vol: '+lVl+'kg</span></div></div>'+
+    '<div class="pcc">'+chart+'</div>'+
+    '<div class="pcsets">'+sets+'</div></div>';
+}
+
+function buildExChart(mxs) {
+  var W=300,H=80,PL=32,PR=10,PT=14,PB=14;
+  var n=mxs.length; var minV=Infinity,maxV=-Infinity;
+  mxs.forEach(function(v){if(v>0&&v<minV)minV=v;if(v>maxV)maxV=v;});
+  if(minV===Infinity)minV=0; var range=maxV-minV||1;
+  var cx=function(i){return PL+(i/(n-1))*(W-PL-PR);};
+  var cy=function(v){return PT+(1-(v-minV)/range)*(H-PT-PB);};
+  var pts=mxs.map(function(v,i){return{x:cx(i),y:cy(v),v:v};});
+  var line=pts.map(function(p){return p.x+','+p.y;}).join(' ');
+  var area='M'+pts[0].x+','+(H-PB)+' '+pts.map(function(p){return'L'+p.x+','+p.y;}).join(' ')+' L'+pts[n-1].x+','+(H-PB)+' Z';
+  var dots='';pts.forEach(function(p,i){
+    var isLast=i===n-1,pk=p.v===maxV&&maxV>0;
+    dots+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+(isLast||pk?4.5:2.5)+'" fill="'+(isLast?'var(--bl)':pk?'var(--or)':'var(--c4)')+'" />';
+    if(isLast||pk)dots+='<text x="'+p.x+'" y="'+(p.y-8)+'" text-anchor="middle" fill="'+(isLast?'var(--bl)':'var(--or)')+'" font-size="10" font-weight="700">'+p.v+'kg</text>';
+  });
+  return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(10,132,255,.09)"/><polyline points="'+line+'" fill="none" stroke="var(--bl)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'<text x="0" y="'+(PT+4)+'" fill="rgba(255,255,255,.25)" font-size="9">'+maxV+'kg</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(255,255,255,.25)" font-size="9">'+minV+'kg</text></svg>';
+}
+
+function uSkpi() {
+  var sets=0,exs=0,vol=0,days2={};
+  Object.values(S.days()).forEach(function(d){d.exs.forEach(function(ex){
+    var l=S.logs(ex.id);
+    if(l.length){exs++;l.forEach(function(e){sets+=e.sets.length;days2[e.date]=1;e.sets.forEach(function(s){vol+=(s.w||0)*(s.r||0);});});}
+  });});
+  var el=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+  el('sk-s',sets||'–');el('sk-d',Object.keys(days2).length||'–');
+  el('sk-v',vol>0?(vol/1000).toFixed(1)+'t':'–');el('sk-e',exs||'–');
+}
+
+/* ─ CALORIE BURN ─────────────────────────────────────────────── */
+function calcBMR() {
+  var s=gSet(); var w=s.weightKg||82; var age=s.age||26;
+  return Math.round(10*w+6.25*178-5*age+5);
+}
+
+function calcSportCalories() {
+  var td=todayStr(); var cal=0;
+  Object.values(S.days()).forEach(function(d){d.exs.forEach(function(ex){
+    var logs=S.logs(ex.id);
+    var todayLog=logs.filter(function(l){return l.date===td;});
+    todayLog.forEach(function(l){l.sets.forEach(function(s){cal+=(s.w||0)*(s.r||0)*0.1;});});
+  });});
+  return Math.round(cal);
+}
+
+function updateBurn() {
+  var bmr=calcBMR(); var sportCal=calcSportCalories();
+  var steps=parseInt(document.getElementById('steps-input')?document.getElementById('steps-input').value:0)||0;
+  var stepsCal=Math.round(steps*0.04);
+  var total=bmr+sportCal+stepsCal;
+  var el=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+  el('bmr-val',bmr);el('sport-cal-val',sportCal);el('steps-cal-val',stepsCal);el('total-burn-val',total);
+  S.set('steps_'+todayStr(),steps);
+}
 </script>
 
 <!-- Supplements modal -->
