@@ -1129,7 +1129,7 @@ function analyzeWithGemini(b64, mime, key) {
     generationConfig: {maxOutputTokens: 500, temperature: 0.1}
   });
   function gemFetch(useBearer) {
-    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent' + (useBearer ? '' : '?key=' + key);
+    var url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent' + (useBearer ? '' : '?key=' + key);
     var h = {'Content-Type': 'application/json'};
     if (useBearer) h['Authorization'] = 'Bearer ' + key;
     return fetch(url, {method:'POST', headers:h, body:gemBody}).then(function(r){ return r.json(); });
@@ -1227,7 +1227,7 @@ function testGeminiKey() {
   res.textContent = 'Test en cours...'; res.style.color = 'var(--t2)'; btn.disabled = true;
   var tb2 = JSON.stringify({contents:[{parts:[{text:'OK'}]}], generationConfig:{maxOutputTokens:3}});
   function testF(useBearer) {
-    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent' + (useBearer ? '' : '?key=' + key);
+    var url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent' + (useBearer ? '' : '?key=' + key);
     var h = {'Content-Type':'application/json'};
     if (useBearer) h['Authorization'] = 'Bearer ' + key;
     return fetch(url, {method:'POST', headers:h, body:tb2}).then(function(r){ return r.json(); });
