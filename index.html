@@ -547,11 +547,11 @@ input[type=number]{-moz-appearance:textfield}
 <div><label style="font-size:10px;color:var(--t3)">Age</label><input class="inp" type="number" inputmode="numeric" id="s-age" placeholder="26" style="min-height:40px;font-size:15px"></div>
 <div><label style="font-size:10px;color:var(--t3)">Poids (kg)</label><input class="inp" type="number" inputmode="numeric" id="s-weight-p" placeholder="82" style="min-height:40px;font-size:15px"></div>
 </div></div>
-<div class="mf"><label>Clé Gemini (analyse photo gratuite)</label>
-<input class="inp" type="text" id="s-gemini" placeholder="AIza... ou AQ...." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<div class="mf"><label>Clé API (Groq gratuit ou OpenAI)</label>
+<input class="inp" type="text" id="s-gemini" placeholder="gsk_... (Groq) ou sk-... (OpenAI)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 <div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.6">
-Gratuit sur <strong style="color:var(--bl)">aistudio.google.com</strong> → Get API Key<br>
-Format accepté : <strong>AIza...</strong> ou <strong>AQ....</strong><br>
+<strong style="color:var(--gr)">Groq gratuit</strong> : console.groq.com → API Keys (clé = gsk_...)<br>
+
 <button onclick="testGeminiKey()" style="margin-top:6px;background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" id="test-key-btn">🔍 Tester la clé</button>
 <span id="test-key-result" style="font-size:12px;margin-left:8px"></span>
 </div></div>
@@ -1109,49 +1109,106 @@ function hPh(input) {
   reader.readAsDataURL(file);
 }
 
-/* ─ GEMINI PHOTO ANALYSIS ────────────────────────────────────── */
+/* ─ PHOTO ANALYSIS (Groq / OpenAI) ─────────────────────────── */
 function analyzePhoto(b64, mime) {
   var s = gSet();
-  var geminiKey = s.gemini || '';
-  if (!geminiKey) {
+  var key = s.gemini || '';
+  if (!key) {
     document.getElementById('ld').classList.remove('on');
     cM('m-ph'); oM('m-set');
-    alert('Entre ta clé Gemini dans Paramètres ⚙️\nVa sur aistudio.google.com → Get API Key\nLa clé commence par AIza...');
+    alert('Entre ta clé API dans Paramètres ⚙️\nGroq (gratuit) : console.groq.com\nOpenAI : platform.openai.com');
     return;
   }
-  analyzeWithGemini(b64, mime, geminiKey);
+  if (key.startsWith('sk-')) {
+    analyzeWithOpenAI(b64, mime, key);
+  } else {
+    analyzeWithGroq(b64, mime, key);
+  }
 }
 
-function analyzeWithGemini(b64, mime, key) {
-  var prompt = 'You are a nutrition expert. Analyze this food photo and return ONLY valid JSON (no markdown, no explanation):\n{"dish":"dish name in french","calories":450,"protein":35,"carbs":50,"fat":12,"confidence":"high","items":["ingredient ~Xg"]}\nBe precise with the calorie and macro estimates.';
-  var gemBody = JSON.stringify({
-    contents: [{parts: [{inline_data: {mime_type: mime, data: b64}}, {text: prompt}]}],
-    generationConfig: {maxOutputTokens: 500, temperature: 0.1}
-  });
-  function gemFetch(useBearer) {
-    var url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent' + (useBearer ? '' : '?key=' + key);
-    var h = {'Content-Type': 'application/json'};
-    if (useBearer) h['Authorization'] = 'Bearer ' + key;
-    return fetch(url, {method:'POST', headers:h, body:gemBody}).then(function(r){ return r.json(); });
-  }
-  gemFetch(false).then(function(data) {
-    if (data.error && (data.error.code === 400 || data.error.code === 401 || data.error.code === 403)) {
-      return gemFetch(true);
-    }
-    return data;
-  }).then(function(data) {
-    if (data.error) throw new Error(data.error.message);
-    var text = '';
-    try { text = data.candidates[0].content.parts[0].text || '{}'; } catch(e) { throw new Error('Réponse invalide'); }
-    var clean = text.replace(/```json?|```/g,'').trim();
-    var m = clean.match(/\{[\s\S]*\}/);
+function analyzeWithGroq(b64, mime, key) {
+  var prompt = 'Analyze this food photo. Return ONLY valid JSON (no markdown, no extra text): {"dish":"name in french","calories":500,"protein":30,"carbs":60,"fat":15,"confidence":"high","items":["ingredient ~Xg"]}';
+  fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body: JSON.stringify({
+      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      messages: [{role:'user', content:[
+        {type:'image_url', image_url:{url:'data:'+mime+';base64,'+b64}},
+        {type:'text', text:prompt}
+      ]}],
+      max_tokens: 400, temperature: 0.1
+    })
+  }).then(function(r){return r.json();}).then(function(d){
+    if (d.error) throw new Error(d.error.message);
+    var text = d.choices[0].message.content || '{}';
+    var m = text.replace(/```json?|```/g,'').trim().match(/\{[\s\S]*\}/);
     if (!m) throw new Error('Format inattendu');
-    var parsed = JSON.parse(m[0]);
-    showAI(parsed);
-  }).catch(function(err) {
+    showAI(JSON.parse(m[0]));
+  }).catch(function(err){
     document.getElementById('ld').classList.remove('on');
-    alert('Erreur : ' + err.message);
+    alert('Erreur Groq : '+err.message);
   });
+}
+
+function analyzeWithOpenAI(b64, mime, key) {
+  var prompt = 'Analyze this food photo. Return ONLY valid JSON (no markdown): {"dish":"name in french","calories":500,"protein":30,"carbs":60,"fat":15,"confidence":"high","items":["ingredient ~Xg"]}';
+  fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [{role:'user', content:[
+        {type:'image_url', image_url:{url:'data:'+mime+';base64,'+b64}},
+        {type:'text', text:prompt}
+      ]}],
+      max_tokens: 400
+    })
+  }).then(function(r){return r.json();}).then(function(d){
+    if (d.error) throw new Error(d.error.message);
+    var text = d.choices[0].message.content || '{}';
+    var m = text.replace(/```json?|```/g,'').trim().match(/\{[\s\S]*\}/);
+    if (!m) throw new Error('Format inattendu');
+    showAI(JSON.parse(m[0]));
+  }).catch(function(err){
+    document.getElementById('ld').classList.remove('on');
+    alert('Erreur OpenAI : '+err.message);
+  });
+}
+
+function showAI(d) {
+  document.getElementById('ld').classList.remove('on');
+  document.getElementById('aib').classList.add('on');
+  document.getElementById('ai-d').textContent = d.dish || 'Plat analysé';
+  var cf = d.confidence || 'm';
+  var cb = document.getElementById('ai-cf');
+  cb.textContent = cf==='high'?'Haute':cf==='medium'?'Moyenne':'Basse';
+  cb.className = 'cfb '+(cf==='high'?'h':cf==='medium'?'m':'l');
+  document.getElementById('ai-ca').textContent = d.calories||0;
+  document.getElementById('ai-pr').textContent = d.protein||0;
+  document.getElementById('ai-cb').textContent = d.carbs||0;
+  document.getElementById('ai-fa').textContent = d.fat||0;
+  document.getElementById('a-ca').value = d.calories||0;
+  document.getElementById('a-pr').value = d.protein||0;
+  document.getElementById('a-cb').value = d.carbs||0;
+  document.getElementById('a-fa').value = d.fat||0;
+  var it = '';
+  (d.items||[]).forEach(function(x){it+='<div style="font-size:12px;color:var(--t2);padding:2px 0">• '+x+'</div>';});
+  document.getElementById('ai-it').innerHTML = it;
+  document.getElementById('ph-s').style.display = 'block';
+  aiData = d;
+}
+
+function svPh() {
+  if (!aiData) return;
+  addFood({
+    name: aiData.dish || 'Plat analysé',
+    cal:  parseFloat(document.getElementById('a-ca').value)||0,
+    prot: parseFloat(document.getElementById('a-pr').value)||0,
+    carb: parseFloat(document.getElementById('a-cb').value)||0,
+    fat:  parseFloat(document.getElementById('a-fa').value)||0
+  });
+  cM('m-ph');
 }
 
 
@@ -1225,21 +1282,21 @@ function testGeminiKey() {
   if (!key) { res.textContent = 'Entre une clé d abord'; res.style.color = 'var(--or)'; return; }
   if (key.length < 10) { res.textContent = 'Clé trop courte'; res.style.color = 'var(--or)'; return; }
   res.textContent = 'Test en cours...'; res.style.color = 'var(--t2)'; btn.disabled = true;
-  var tb2 = JSON.stringify({contents:[{parts:[{text:'OK'}]}], generationConfig:{maxOutputTokens:3}});
-  function testF(useBearer) {
-    var url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent' + (useBearer ? '' : '?key=' + key);
-    var h = {'Content-Type':'application/json'};
-    if (useBearer) h['Authorization'] = 'Bearer ' + key;
-    return fetch(url, {method:'POST', headers:h, body:tb2}).then(function(r){ return r.json(); });
+  if (key.startsWith('sk-')) {
+    fetch('https://api.openai.com/v1/models', {headers:{'Authorization':'Bearer '+key}})
+    .then(function(r){return r.json();}).then(function(d){
+      btn.disabled=false;
+      if(d.error){res.textContent='Cle OpenAI invalide';res.style.color='var(--rd)';}
+      else{res.textContent='Cle OpenAI valide ! Sauvegardee.';res.style.color='var(--gr)';var s=gSet();s.gemini=key;S.set('set',s);}
+    }).catch(function(){btn.disabled=false;res.textContent='Erreur reseau';res.style.color='var(--rd)';});
+  } else {
+    fetch('https://api.groq.com/openai/v1/models', {headers:{'Authorization':'Bearer '+key}})
+    .then(function(r){return r.json();}).then(function(d){
+      btn.disabled=false;
+      if(d.error||!d.data){res.textContent='Cle Groq invalide';res.style.color='var(--rd)';}
+      else{res.textContent='Cle Groq valide ! Sauvegardee.';res.style.color='var(--gr)';var s=gSet();s.gemini=key;S.set('set',s);}
+    }).catch(function(){btn.disabled=false;res.textContent='Erreur reseau';res.style.color='var(--rd)';});
   }
-  testF(false).then(function(data) {
-    if (data.error && (data.error.code === 400 || data.error.code === 401 || data.error.code === 403)) return testF(true);
-    return data;
-  }).then(function(data) {
-    btn.disabled = false;
-    if (data.error) { res.textContent = '❌ ' + data.error.message; res.style.color = 'var(--rd)'; }
-    else { res.textContent = '✅ Clé valide ! Sauvegardée.'; res.style.color = 'var(--gr)'; var s = gSet(); s.gemini = key; S.set('set', s); }
-  }).catch(function() { btn.disabled = false; res.textContent = '❌ Erreur réseau'; res.style.color = 'var(--rd)'; });
 }
 
 /* ─ INIT ─────────────────────────────────────────────────────── */
