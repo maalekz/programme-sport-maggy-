@@ -254,7 +254,7 @@ input[type=number]{-moz-appearance:textfield}
 </head>
 <body>
 
-<button class="set-btn" onclick="oM('m-set')">⚙️</button>
+<button class="set-btn" onclick="openSettings()">⚙️</button>
 
 <!-- PAGE ACCUEIL -->
 <div class="pg on" id="pg-h">
@@ -544,8 +544,14 @@ input[type=number]{-moz-appearance:textfield}
 <div><label style="font-size:10px;color:var(--t3)">Age</label><input class="inp" type="number" inputmode="numeric" id="s-age" placeholder="26" style="min-height:40px;font-size:15px"></div>
 <div><label style="font-size:10px;color:var(--t3)">Poids (kg)</label><input class="inp" type="number" inputmode="numeric" id="s-weight-p" placeholder="82" style="min-height:40px;font-size:15px"></div>
 </div></div>
-<div class="mf"><label>Analyse photo IA (clé Gemini - gratuit)</label><input class="inp" type="password" id="s-gemini" placeholder="AIza..."><div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.5">Clé <strong>gratuite</strong> sur <strong>aistudio.google.com</strong> → Get API Key. 1500 analyses/jour gratuites.</div></div>
-<div class="mf"><label>Clé API Anthropic (optionnel)</label><input class="inp" type="password" id="sak" placeholder="sk-ant-api03-…"></div>
+<div class="mf"><label>Clé Gemini (analyse photo gratuite)</label>
+<input class="inp" type="text" id="s-gemini" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.6">
+Gratuit sur <strong style="color:var(--bl)">aistudio.google.com</strong> → Get API Key<br>
+La clé commence par <strong>AIzaSy...</strong><br>
+<button onclick="testGeminiKey()" style="margin-top:6px;background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" id="test-key-btn">🔍 Tester la clé</button>
+<span id="test-key-result" style="font-size:12px;margin-left:8px"></span>
+</div></div>
 <div class="mf"><label>Objectif calorique (kcal/jour)</label><input class="inp" type="number" inputmode="numeric" id="sc" placeholder="2350"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
 <div class="mf" style="margin:0"><label>Prot. g</label><input class="inp" type="number" id="sp"></div>
@@ -629,8 +635,10 @@ var S = {
 function gSet() { return S.get('set') || {cal:2350, prot:172, carb:250, fat:70, api:''}; }
 function svSet() {
   var s = gSet();
-  var ak = document.getElementById('sak').value.trim();
-  if (ak) s.api = ak;
+  // Save Gemini key - only if user typed something new (not masked)
+  var gkEl = document.getElementById('s-gemini');
+  var gk = gkEl ? gkEl.value.trim() : '';
+  if (gk && gk.length > 5) s.gemini = gk;
   s.cal  = parseInt(document.getElementById('sc').value)  || s.cal;
   s.prot = parseInt(document.getElementById('sp').value)  || s.prot;
   s.carb = parseInt(document.getElementById('sg').value)  || s.carb;
@@ -1075,7 +1083,9 @@ function resetPhoto() {
   document.getElementById('aib').classList.remove('on');
   document.getElementById('ph-a').style.display = 'block';
   document.getElementById('ph-s').style.display = 'none';
-  document.getElementById('phi').value = '';
+  var pc = document.getElementById('phi-cam'); if(pc) pc.value = '';
+  var pl = document.getElementById('phi-lib'); if(pl) pl.value = '';
+  var po = document.getElementById('phi'); if(po) po.value = '';
 }
 
 var aiData = null, capturedUrl = null;
@@ -1194,6 +1204,71 @@ function addCustomSupp() {
   alert(name + ' ajouté au journal ✓');
 }
 
+
+/* ─ SETTINGS OPEN + KEY TEST ─────────────────────────────────── */
+function openSettings() {
+  var s = gSet();
+  var gkEl = document.getElementById('s-gemini');
+  if (gkEl) gkEl.value = s.gemini || '';
+  document.getElementById('sc').value = s.cal;
+  document.getElementById('sp').value = s.prot;
+  document.getElementById('sg').value = s.carb;
+  document.getElementById('sf').value = s.fat;
+  var ageEl = document.getElementById('s-age');
+  var wpEl = document.getElementById('s-weight-p');
+  if (ageEl) ageEl.value = s.age || 26;
+  if (wpEl) wpEl.value = s.weightKg || 82;
+  oM('m-set');
+}
+
+function testGeminiKey() {
+  var gkEl = document.getElementById('s-gemini');
+  var key = gkEl ? gkEl.value.trim() : '';
+  var res = document.getElementById('test-key-result');
+  var btn = document.getElementById('test-key-btn');
+  if (!key) { res.textContent = 'Entre une clé d abord'; res.style.color = 'var(--or)'; return; }
+  if (!key.startsWith('AIza')) {
+    res.textContent = 'Format invalide. La clé doit commencer par AIza';
+    res.style.color = 'var(--rd)'; return;
+  }
+  res.textContent = 'Test en cours...'; res.style.color = 'var(--t2)'; btn.disabled = true;
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + key, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({contents:[{parts:[{text:'Reply with the word: OK'}]}], generationConfig:{maxOutputTokens:5}})
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    btn.disabled = false;
+    if (data.error) {
+      res.textContent = 'Erreur : ' + data.error.message;
+      res.style.color = 'var(--rd)';
+    } else {
+      res.textContent = 'Cle valide ! Enregistre.';
+      res.style.color = 'var(--gr)';
+      // Auto-save if valid
+      var s = gSet(); s.gemini = key; S.set('set', s);
+    }
+  }).catch(function() {
+    btn.disabled = false;
+    res.textContent = 'Erreur réseau'; res.style.color = 'var(--rd)';
+  });
+}
+
+/* ─ INIT ─────────────────────────────────────────────────────── */
+window.addEventListener('load', function() {
+  nutriDay = todayStr();
+  buildDayChips();
+  renderWorkout(curDay);
+  buildProgDayRow();
+  uHome();
+  var s = gSet();
+  var sc = document.getElementById('sc'); if(sc) sc.value = s.cal;
+  var sp = document.getElementById('sp'); if(sp) sp.value = s.prot;
+  var sg = document.getElementById('sg'); if(sg) sg.value = s.carb;
+  var sf = document.getElementById('sf'); if(sf) sf.value = s.fat;
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.standalone) {
+    var b = document.getElementById('install-b'); if (b) b.classList.add('on');
+  }
+});
 </script>
 
 <!-- Supplements modal -->
