@@ -444,9 +444,15 @@ input[type=number]{-moz-appearance:textfield}
 <button class="btn btn-gr2" style="flex:1" onclick="resetFoodSearch()">Retour</button>
 </div>
 </div>
-<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:14px;padding-top:12px;display:flex;gap:8px">
+<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:14px;padding-top:12px">
+<div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Autres options</div>
+<div style="display:flex;gap:8px">
 <button onclick="oPh()" style="flex:1;background:rgba(10,132,255,.15);border:none;border-radius:12px;padding:11px;color:var(--bl);font-size:13px;font-weight:600;cursor:pointer">📷 Photo IA</button>
 <button onclick="oMf()" style="flex:1;background:var(--c3);border:none;border-radius:12px;padding:11px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">✏️ Manuel</button>
+</div>
+<div style="margin-top:8px">
+<button onclick="oSupp()" style="width:100%;background:rgba(48,209,88,.1);border:none;border-radius:12px;padding:11px;color:var(--gr);font-size:13px;font-weight:600;cursor:pointer">💊 Compléments alimentaires</button>
+</div>
 </div>
 </div></div>
 
@@ -467,8 +473,13 @@ input[type=number]{-moz-appearance:textfield}
 <div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Ajuster si besoin</div>
 <div class="adj"><input class="inp" type="number" inputmode="numeric" placeholder="kcal" id="a-ca"><input class="inp" type="number" inputmode="decimal" placeholder="P g" id="a-pr"><input class="inp" type="number" inputmode="decimal" placeholder="G g" id="a-cb"><input class="inp" type="number" inputmode="decimal" placeholder="L g" id="a-fa"></div>
 </div></div>
-<input type="file" id="phi" accept="image/*" capture="environment" style="display:none" onchange="hPh(this)">
-<div id="ph-a"><button class="btn btn-bl" style="width:100%;margin-bottom:10px" onclick="document.getElementById('phi').click()">📷 Prendre / Choisir une photo</button><button class="btn btn-gr2" style="width:100%" onclick="cM('m-ph')">Annuler</button></div>
+<input type="file" id="phi-cam" accept="image/*" capture="environment" style="display:none" onchange="hPh(this)">
+<input type="file" id="phi-lib" accept="image/*" style="display:none" onchange="hPh(this)">
+<div id="ph-a">
+<button class="btn btn-bl" style="width:100%;margin-bottom:8px" onclick="document.getElementById('phi-cam').click()">📷 Prendre une photo</button>
+<button class="btn" style="width:100%;margin-bottom:8px;background:var(--c3);color:var(--t2)" onclick="document.getElementById('phi-lib').click()">🖼️ Choisir dans la bibliothèque</button>
+<button class="btn btn-gr2" style="width:100%" onclick="cM('m-ph')">Annuler</button>
+</div>
 <div id="ph-s" style="display:none"><div class="mrow"><button class="btn btn-bl" style="flex:2" onclick="svPh()">Ajouter au journal</button><button class="btn btn-gr2" style="flex:1" onclick="cM('m-ph')">Annuler</button></div></div>
 </div></div>
 
@@ -1641,16 +1652,14 @@ function analyzePhoto(b64, mime) {
   var s = gSet();
   var geminiKey = s.gemini || '';
   var anthropicKey = s.api || '';
-
   if (geminiKey) {
     analyzeWithGemini(b64, mime, geminiKey);
   } else if (anthropicKey) {
     analyzeWithAnthropic(b64, mime, anthropicKey);
   } else {
     document.getElementById('ld').classList.remove('on');
-    cM('m-ph');
-    oM('m-set');
-    alert('Entre une clé API Gemini (gratuite) dans Paramètres pour analyser les photos.');
+    cM('m-ph'); oM('m-set');
+    alert('Entre ta clé Gemini (gratuite) dans Paramètres ⚙️\nAIzaSy... depuis aistudio.google.com');
   }
 }
 
@@ -1784,10 +1793,13 @@ if (typeof FOOD_DB !== 'undefined') {
 var _origSvSet = svSet;
 svSet = function() {
   var s = gSet();
-  var ak = document.getElementById('sak') ? document.getElementById('sak').value.trim() : '';
-  if (ak) s.api = ak;
-  var gk = document.getElementById('s-gemini') ? document.getElementById('s-gemini').value.trim() : '';
-  if (gk) s.gemini = gk;
+  var sakEl = document.getElementById('sak');
+  var ak = sakEl ? sakEl.value.trim() : '';
+  // Only save if user typed a new key (not the masked display)
+  if (ak && !ak.startsWith('••')) s.api = ak;
+  var gkEl = document.getElementById('s-gemini');
+  var gk = gkEl ? gkEl.value.trim() : '';
+  if (gk && !gk.startsWith('••')) s.gemini = gk;
   var age = parseInt(document.getElementById('s-age') ? document.getElementById('s-age').value : 0);
   if (age) s.age = age;
   var wp = parseInt(document.getElementById('s-weight-p') ? document.getElementById('s-weight-p').value : 0);
@@ -1821,13 +1833,103 @@ document.addEventListener('click', function(e) {
       var ageEl = document.getElementById('s-age');
       var wpEl = document.getElementById('s-weight-p');
       var gkEl = document.getElementById('s-gemini');
+      var sakEl = document.getElementById('sak');
       if (ageEl) ageEl.value = s.age || 26;
       if (wpEl) wpEl.value = s.weightKg || 82;
-      if (gkEl) gkEl.value = '';
+      // Show masked key if saved
+      if (gkEl) gkEl.value = s.gemini ? '••••••••' + s.gemini.slice(-6) : '';
+      gkEl && gkEl.setAttribute('data-saved', s.gemini ? '1' : '0');
+      if (sakEl) sakEl.value = s.api ? '••••••••' + s.api.slice(-6) : '';
+      sakEl && sakEl.setAttribute('data-saved', s.api ? '1' : '0');
     }, 50);
   }
 });
 
+
+/* ─ SUPPLEMENTS ─────────────────────────────────────────────── */
+var SUPPLEMENTS = [
+  {id:'vit_d3',   name:'Vitamine D3',        cal:0,   prot:0,   note:'2000-4000 UI/j'},
+  {id:'vit_c',    name:'Vitamine C',          cal:0,   prot:0,   note:'500-1000mg/j'},
+  {id:'magnesium',name:'Magnésium bisglycinate',cal:0, prot:0,   note:'300-400mg/j'},
+  {id:'zinc',     name:'Zinc',               cal:0,   prot:0,   note:'15-25mg/j'},
+  {id:'omega3',   name:'Omega-3 (poisson)',   cal:18,  prot:0,   note:'2g/j EPA+DHA'},
+  {id:'b12',      name:'Vitamine B12',        cal:0,   prot:0,   note:'250mcg/j'},
+  {id:'fer',      name:'Fer',                 cal:0,   prot:0,   note:'14mg/j'},
+  {id:'multivit', name:'Multivitamines',      cal:5,   prot:0,   note:'1 cp/j matin'},
+  {id:'probio',   name:'Probiotiques',        cal:5,   prot:0,   note:'10 milliards UFC'},
+  {id:'curcuma',  name:'Curcumine + poivre',  cal:5,   prot:0,   note:'500mg/j'},
+  {id:'collagen', name:'Collagène marin',     cal:35,  prot:8,   note:'10g/j'},
+  {id:'creat_s',  name:'Créatine 5g',         cal:0,   prot:0,   note:'5g/j (maintenance)'},
+  {id:'vit_b_comp',name:'Complexe B',         cal:0,   prot:0,   note:'1 cp/j'},
+  {id:'ashwag',   name:'Ashwagandha',         cal:5,   prot:0,   note:'300-600mg/j'},
+  {id:'melatonine',name:'Mélatonine',         cal:0,   prot:0,   note:'0.5-1mg avant sommeil'},
+  {id:'vit_e',    name:'Vitamine E',          cal:0,   prot:0,   note:'200UI/j'},
+  {id:'seleni',   name:'Sélénium',            cal:0,   prot:0,   note:'55mcg/j'},
+  {id:'iode',     name:'Iode',                cal:0,   prot:0,   note:'150mcg/j'},
+];
+
+function oSupp() {
+  cM('m-af');
+  var html = '';
+  SUPPLEMENTS.forEach(function(s) {
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--c3);border-radius:12px;padding:11px 13px">' +
+      '<div><div style="font-size:14px;font-weight:600">' + s.name + '</div><div style="font-size:11px;color:var(--t3);margin-top:2px">' + s.note + (s.cal ? ' · ' + s.cal + ' kcal' : '') + (s.prot ? ' · P:' + s.prot + 'g' : '') + '</div></div>' +
+      '<button style="background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" class="supp-add-btn" data-sid="' + s.id + '">+ Log</button>' +
+      '</div>';
+  });
+  document.getElementById('supp-list').innerHTML = html;
+  oM('m-supp');
+}
+
+
+
+// Event delegation for supplement buttons
+document.addEventListener('click', function(ev) {
+  var btn = ev.target.closest('.supp-add-btn');
+  if (btn) {
+    var id = btn.getAttribute('data-sid');
+    var s = null;
+    SUPPLEMENTS.forEach(function(x){ if(x.id===id) s=x; });
+    if (!s) return;
+    addFood({name: s.name, cal: s.cal||0, prot: s.prot||0, carb: 0, fat: 0});
+    btn.textContent = '✓';
+    btn.style.background = 'rgba(48,209,88,.3)';
+    setTimeout(function(){ btn.textContent = '+ Log'; btn.style.background = 'rgba(48,209,88,.15)'; }, 1200);
+  }
+});
+
+function addCustomSupp() {
+  var name = document.getElementById('supp-name').value.trim();
+  if (!name) { alert('Entre le nom du complément.'); return; }
+  addFood({
+    name: name,
+    cal:  parseFloat(document.getElementById('supp-cal').value) || 0,
+    prot: parseFloat(document.getElementById('supp-prot').value) || 0,
+    carb: 0, fat: 0
+  });
+  document.getElementById('supp-name').value = '';
+  document.getElementById('supp-cal').value = '';
+  document.getElementById('supp-prot').value = '';
+  alert(name + ' ajouté au journal ✓');
+}
+
 </script>
+
+<!-- Supplements modal -->
+<div class="modal" id="m-supp" onclick="if(event.target===this)cM('m-supp')">
+<div class="mbox">
+<div class="mbar"></div><div class="mtit">Compléments alimentaires 💊</div>
+<div style="font-size:12px;color:var(--t3);margin-bottom:12px">Clique pour ajouter au journal du jour</div>
+<div style="display:flex;flex-direction:column;gap:6px" id="supp-list"></div>
+<div style="border-top:1px solid rgba(255,255,255,.07);margin-top:14px;padding-top:12px">
+<div class="mf"><label>Complément personnalisé</label><input class="inp" type="text" id="supp-name" placeholder="Ex : Vitamine D3, Magnésium..."></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+<div class="mf" style="margin:0"><label>Calories</label><input class="inp" type="number" inputmode="numeric" id="supp-cal" placeholder="0"></div>
+<div class="mf" style="margin:0"><label>Protéines g</label><input class="inp" type="number" inputmode="decimal" id="supp-prot" placeholder="0"></div>
+</div>
+<div class="mrow"><button class="btn btn-bl" style="flex:2" onclick="addCustomSupp()">Ajouter</button><button class="btn btn-gr2" style="flex:1" onclick="cM('m-supp')">Fermer</button></div>
+</div>
+</div></div>
+
 </body>
 </html>
