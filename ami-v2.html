@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Younes Training">
+<meta name="theme-color" content="#f5efe5">
+<title>Younes Training V2</title>
+<style>
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:linear-gradient(180deg,#f8f2e9,#eee4d6);font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+#loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(180deg,#f8f2e9,#eee4d6);z-index:2;transition:opacity .3s}
+.card{max-width:420px;background:rgba(255,255,255,.75);backdrop-filter:blur(16px);border:1px solid rgba(80,100,90,.12);border-radius:28px;box-shadow:0 18px 45px rgba(90,70,40,.12);padding:24px;color:#213036}
+.card h1{margin:0 0 8px;font-size:30px;line-height:1.05}.card p{margin:0;color:#617176;line-height:1.5}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.b{padding:8px 12px;border-radius:999px;background:rgba(79,139,114,.12);color:#4f8b72;font-size:12px;font-weight:700}
+iframe{position:fixed;inset:0;border:0;width:100%;height:100%;opacity:0;transition:opacity .35s}
+</style>
+</head>
+<body>
+<div id="loader"><div class="card"><h1>Younes Training<br>Version plus jolie</h1><p>Design plus premium, plus doux, plus intuitif, avec de meilleures couleurs et une sensation plus agréable à utiliser.</p><div class="badges"><div class="b">Nouveau design</div><div class="b">UX plus clean</div><div class="b">Couleurs plus douces</div></div></div></div>
+<iframe id="app" src="./sport-jeunesse.html"></iframe>
+<script>
+(function(){
+  var frame=document.getElementById('app');
+  var loader=document.getElementById('loader');
+  function patchTheme(doc){
+    var st=doc.createElement('style');
+    st.textContent=`
+      :root{--bl:#6f88ff!important;--gr:#4f8b72!important;--or:#d18c4c!important;--rd:#db7768!important;--pu:#8b78d2!important;--c2:rgba(255,255,255,.82)!important;--c3:#f4edde!important;--c4:#ddd3c3!important;--t2:rgba(33,48,54,.72)!important;--t3:rgba(33,48,54,.46)!important}
+      html{background:#f8f2e9!important}body{background:linear-gradient(180deg,#f8f2e9,#eee4d6)!important;color:#213036!important}.pg{background:transparent!important}
+      .ph{background:linear-gradient(180deg,#f8f2e9,rgba(248,242,233,.15))!important;padding:20px 16px 14px!important}
+      .ptit{color:#213036!important;font-size:30px!important;letter-spacing:-.03em!important}
+      #bar{background:rgba(255,249,242,.84)!important;border-top:1px solid rgba(90,110,100,.10)!important;backdrop-filter:blur(18px)!important;box-shadow:0 -10px 30px rgba(90,70,40,.08)!important}
+      .tb{color:rgba(33,48,54,.45)!important}.tb.on{color:var(--gr)!important}
+      .today-c,.kc,.prog-wrap,.grp,.exc,.rw,.wh,.bmic,.cc,.fi,.whi,.fdb-i,.mbox,.pc,.si{background:rgba(255,255,255,.82)!important;border:1px solid rgba(90,110,100,.12)!important;box-shadow:0 12px 26px rgba(90,70,40,.08)!important;border-radius:18px!important}
+      .mbox{border-radius:28px 28px 0 0!important;background:#fbf7f1!important}.mbar{background:#d8cfbf!important}
+      .btn-gr,.start-btn,.save-btn,.add-f-btn,.log-w{background:linear-gradient(135deg,#5a987d,#4f8b72)!important;color:#fff!important;box-shadow:0 10px 20px rgba(79,139,114,.22)!important}
+      .btn-c3,.dnav-btn,.rep-btn,.add-set-btn,.pick-btn{background:#f4edde!important;color:#42555b!important}
+      .log-btn{background:rgba(79,139,114,.12)!important;color:var(--gr)!important;border-radius:12px!important}
+      .vid-btn{background:rgba(111,136,255,.12)!important;color:var(--bl)!important;border-radius:12px!important}
+      .edit-btn{background:#f4edde!important;color:#607075!important;border-radius:10px!important}
+      .inp,.sin,.sf,.dtin,.wi{background:#f8f3ea!important;color:#223036!important;border:1px solid rgba(90,110,100,.12)!important}
+      .today-tag,.lbl,.llbl{color:var(--gr)!important}.rv,.fc,.hmx,.kpi-val{color:var(--or)!important}
+      .prog-fill{background:linear-gradient(90deg,#4f8b72,#74ad94)!important}.mbox a#vid-link{background:linear-gradient(135deg,#ff8669,#ff6f59)!important}
+    `;
+    doc.head.appendChild(st);
+  }
+  function patchProgram(w){
+    var A={name:'Upper Push + Bras',day:'Séance 1',type:'up',note:'Pectoraux, épaules et bras. Barre + haltères + poulie. Technique propre avant la charge.',exs:[
+      {id:'dcb',name:'Développé couché barre',sets:4,reps:'8-10',tempo:'2-0-1-0',rest:"1\'30",rir:'3',note:'Omoplates serrées, pieds ancrés au sol'},
+      {id:'dih',name:'Développé incliné haltères',sets:3,reps:'10-12',tempo:'2-0-1-0',rest:"1\'30",rir:'3'},
+      {id:'deh',name:'Développé épaules haltères ou machine',sets:3,reps:'10-12',tempo:'2-0-1-0',rest:"1\'30",rir:'3'},
+      {id:'ell',name:'Élévations latérales haltères',sets:3,reps:'12-15',tempo:'2-0-1-0',rest:"1\'",rir:'2'},
+      {id:'cez',name:'Curl barre EZ ou haltères',sets:3,reps:'10-12',tempo:'2-0-1-0',rest:'-',rir:'2',grp:'g1'},
+      {id:'ptc',name:'Pushdown triceps corde',sets:3,reps:'10-12',tempo:'2-0-1-1',rest:"1\'",rir:'2',grp:'g1'}]};
+    if(w.DAYS) w.DAYS.A=A; if(w.GRP) w.GRP.g1={t:'ss',l:'SUPERSET BICEPS + TRICEPS'};
+    if(w.CUES){w.CUES.dcb={n:'Développé couché barre',c:['Pieds bien ancrés au sol','Omoplates serrées et poitrine sortie','Barre vers le bas des pectoraux','Coudes à 45°, pas à 90°']};w.CUES.deh={n:'Développé épaules haltères',c:['Dos gainé','Haltères au niveau des oreilles','Ne cambre pas le bas du dos','Monte de façon contrôlée']};w.CUES.cez={n:'Curl barre EZ',c:['Coudes fixes','Pas d élan avec le dos','Monte sans avancer les épaules','Descente lente']};}
+    if(w.S){var days=w.S.days();days.A=A;w.S.setDays(days);var s=w.gSet?w.gSet():null;if(s){s.name='Younes';w.S.set('set',s);}}
+    if(w.buildDayChips) w.buildDayChips(); if(w.renderWorkout) w.renderWorkout('A'); if(w.buildProgDayRow) w.buildProgDayRow(); if(w.uHome) w.uHome();
+  }
+  frame.addEventListener('load',function(){try{var w=frame.contentWindow,d=frame.contentDocument||w.document;patchTheme(d);patchProgram(w);}catch(e){console.error(e)}frame.style.opacity='1';loader.style.opacity='0';setTimeout(function(){loader.style.display='none'},350)})
+})();
+</script>
+</body>
+</html>
