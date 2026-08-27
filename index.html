@@ -26,7 +26,7 @@ input[type=number]{-moz-appearance:textfield}
 
 /* TAB BAR */
 #bar{position:fixed;bottom:0;left:0;right:0;z-index:999;display:flex;background:rgba(255,255,255,.98);border-top:1px solid #e2e7f0;box-shadow:0 -1px 12px rgba(15,23,42,.06);padding-bottom:env(safe-area-inset-bottom,0px)}
-.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 2px 6px;color:rgba(15,23,42,.4);min-height:50px;-webkit-user-select:none}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 2px 6px;color:rgba(15,23,42,.5);min-height:50px;-webkit-user-select:none}
 .tb.on{color:#0a84ff}
 .tb svg{width:20px;height:20px;fill:currentColor}
 .tb-l{font-size:9px;font-weight:500}
@@ -40,9 +40,9 @@ input[type=number]{-moz-appearance:textfield}
 
 /* VARIABLES */
 :root{
-  --bl:#0a84ff;--gr:#30d158;--or:#ff9f0a;--rd:#ff453a;--pu:#bf5af2;
-  --c2:#1c1c1e;--c3:#2c2c2e;--c4:#3a3a3c;
-  --t2:rgba(255,255,255,.6);--t3:rgba(255,255,255,.3)
+  --bl:#0b5ed7;--gr:#0a7340;--or:#96570a;--rd:#c0271c;--pu:#6b3fc9;
+  --c2:#ffffff;--c3:#eef1f7;--c4:#dde2ec;
+  --t2:rgba(15,23,42,.68);--t3:rgba(15,23,42,.56)
 }
 
 /* UTILS */
@@ -53,8 +53,8 @@ input[type=number]{-moz-appearance:textfield}
 .cp{padding:14px 16px}
 .lbl{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em}
 .bdg{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:8px;white-space:nowrap}
-.bb{background:rgba(10,132,255,.15);color:var(--bl)}.bo{background:rgba(255,159,10,.13);color:var(--or)}
-.bg{background:rgba(48,209,88,.13);color:var(--gr)}.bc{background:var(--c3);color:var(--t2)}
+.bb{background:rgba(11,94,215,.10);color:var(--bl)}.bo{background:rgba(150,87,10,.10);color:var(--or)}
+.bg{background:rgba(10,115,64,.10);color:var(--gr)}.bc{background:var(--c3);color:var(--t2)}
 .empty{text-align:center;padding:28px;color:var(--t3);font-size:13px;font-style:italic}
 .inp{display:block;width:100%;background:var(--c3);border:none;border-radius:12px;padding:12px 14px;font-size:16px;color:#0f172a;min-height:46px;outline:none;color-scheme:light}
 .inp::placeholder{color:var(--t3)}
@@ -71,12 +71,12 @@ input[type=number]{-moz-appearance:textfield}
 .kv{font-size:26px;font-weight:700;letter-spacing:-.5px}
 .kl{font-size:12px;color:var(--t2);margin-top:2px}
 .kc.bl .kv{color:var(--bl)}.kc.gr .kv{color:var(--gr)}.kc.or .kv{color:var(--or)}.kc.pu .kv{color:var(--pu)}
-.today-c{background:linear-gradient(135deg,#eaf2ff,#e0edff);border:1px solid rgba(0,102,255,.15);border-radius:16px;padding:16px;margin-bottom:14px}
+.today-c{background:linear-gradient(135deg,#eef4ff,#e4edff);border:1px solid rgba(11,94,215,.18);border-radius:16px;padding:16px;margin-bottom:14px}
 .today-tag{font-size:11px;font-weight:700;color:var(--bl);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
 .today-nm{font-size:18px;font-weight:700;margin-bottom:3px}
 .today-sb{font-size:13px;color:var(--t2)}
 .start-btn{display:block;width:100%;margin-top:12px;background:var(--bl);border:none;border-radius:13px;padding:13px;font-size:16px;font-weight:700;color:#fff;cursor:pointer}
-.install-b{background:linear-gradient(135deg,#eaf2ff,#dbe9ff);border:1px solid rgba(0,102,255,.22);border-radius:16px;padding:14px;margin-bottom:14px;display:none}
+.install-b{background:linear-gradient(135deg,#eef4ff,#dfe9ff);border:1px solid rgba(11,94,215,.22);border-radius:16px;padding:14px;margin-bottom:14px;display:none}
 .install-b.on{display:block}
 .set-btn{position:fixed;right:16px;top:calc(18px + env(safe-area-inset-top,0px));background:var(--c2);border:none;border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:17px;z-index:100;cursor:pointer}
 
@@ -84,18 +84,18 @@ input[type=number]{-moz-appearance:textfield}
 .dscroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
 .dscroll::-webkit-scrollbar{display:none}
 .dchip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:var(--c2);color:var(--t2);cursor:pointer}
-.dchip.up.on{background:rgba(10,132,255,.15);color:var(--bl)}
-.dchip.lo.on{background:rgba(48,209,88,.13);color:var(--gr)}
-.dchip.ar.on{background:rgba(191,90,242,.13);color:var(--pu)}
+.dchip.up.on{background:rgba(11,94,215,.12);color:var(--bl)}
+.dchip.lo.on{background:rgba(10,115,64,.12);color:var(--gr)}
+.dchip.ar.on{background:rgba(107,63,201,.12);color:var(--pu)}
 .sinfo{display:flex;gap:8px;padding:8px 16px}
 .si{flex:1;background:var(--c2);border-radius:12px;padding:10px;text-align:center}
 .si-v{font-size:18px;font-weight:700}.si-l{font-size:10px;color:var(--t2);margin-top:1px}
 .si.bl .si-v{color:var(--bl)}.si.gr .si-v{color:var(--gr)}.si.or .si-v{color:var(--or)}
-.snote{margin:4px 16px 8px;padding:9px 12px;background:rgba(255,159,10,.13);border-radius:10px;font-size:12px;color:var(--or);line-height:1.5}
+.snote{margin:4px 16px 8px;padding:9px 12px;background:rgba(150,87,10,.08);border-radius:10px;font-size:12px;color:var(--or);line-height:1.5}
 .wsec{padding:0 16px}
 .wsec-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0 7px}
 .wsec-t{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em}
-.add-ex-btn{background:rgba(10,132,255,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--bl);cursor:pointer}
+.add-ex-btn{background:rgba(11,94,215,.12);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--bl);cursor:pointer}
 .grp{background:var(--c2);border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 3px rgba(15,23,42,.07)}
 .grp-h{display:flex;align-items:center;gap:6px;padding:9px 14px;border-bottom:1px solid rgba(15,23,42,.08)}
 .gdot{width:6px;height:6px;border-radius:50%}
@@ -111,7 +111,7 @@ input[type=number]{-moz-appearance:textfield}
 .exnt{font-size:12px;color:var(--t3);margin-top:3px;font-style:italic}
 .exmt{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
 .exb{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
-.log-btn{width:44px;height:44px;border-radius:11px;background:rgba(10,132,255,.15);border:none;display:flex;align-items:center;justify-content:center;color:var(--bl);font-size:18px;cursor:pointer}
+.log-btn{width:44px;height:44px;border-radius:11px;background:rgba(11,94,215,.12);border:none;display:flex;align-items:center;justify-content:center;color:var(--bl);font-size:18px;cursor:pointer}
 .edit-btn{width:44px;height:28px;border-radius:8px;background:var(--c3);border:none;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;cursor:pointer}
 .logp{display:none;border-top:1px solid rgba(15,23,42,.08);background:#f8fafc;padding:13px}
 .logp.on{display:block}
@@ -140,7 +140,7 @@ input[type=number]{-moz-appearance:textfield}
 .del-btn{border:none;color:var(--rd);font-size:13px;padding:3px;min-width:24px;background:none;cursor:pointer}
 .hsets{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
 .hset{font-size:11px;font-weight:500;background:var(--c4);border-radius:5px;padding:2px 7px}
-.hset.pr{background:rgba(255,159,10,.2);color:var(--or)}
+.hset.pr{background:rgba(150,87,10,.14);color:var(--or)}
 
 /* NUTRITION */
 .rw{display:flex;align-items:center;gap:14px;padding:14px;background:var(--c2);border-radius:16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.07)}
@@ -204,9 +204,9 @@ input[type=number]{-moz-appearance:textfield}
 .pdr{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
 .pdr::-webkit-scrollbar{display:none}
 .pdc{flex-shrink:0;padding:7px 13px;border-radius:20px;font-size:13px;font-weight:600;border:none;background:var(--c2);color:var(--t2);cursor:pointer}
-.pdc.up.on{background:rgba(10,132,255,.15);color:var(--bl)}
-.pdc.lo.on{background:rgba(48,209,88,.13);color:var(--gr)}
-.pdc.ar.on{background:rgba(191,90,242,.13);color:var(--pu)}
+.pdc.up.on{background:rgba(11,94,215,.12);color:var(--bl)}
+.pdc.lo.on{background:rgba(10,115,64,.12);color:var(--gr)}
+.pdc.ar.on{background:rgba(107,63,201,.12);color:var(--pu)}
 .pc{background:var(--c2);border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.07)}
 .pc-h{padding:12px 14px;border-bottom:1px solid rgba(15,23,42,.08)}
 .pcn{font-size:14px;font-weight:600;margin-bottom:3px}
@@ -219,7 +219,7 @@ input[type=number]{-moz-appearance:textfield}
 .pset{background:var(--c3);border-radius:9px;padding:7px 11px;text-align:center}
 .psv{font-size:14px;font-weight:700}
 .psl{font-size:9px;color:var(--t2);margin-top:1px}
-.tipc{background:#eaf2ff;border-left:3px solid var(--bl);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.tipc{background:#eef4ff;border-left:3px solid var(--bl);border-radius:10px;padding:12px 14px;margin-bottom:10px}
 .tipt{font-size:12px;font-weight:700;color:var(--bl);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
 .tipb{font-size:13px;color:var(--t2);line-height:1.6}
 .cardc{background:var(--c2);border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.07)}
@@ -232,7 +232,7 @@ input[type=number]{-moz-appearance:textfield}
 .cardc-body{padding:0 16px 14px}
 .cardc-proto{background:var(--c3);border-radius:11px;padding:11px 13px;font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px}
 .cardc-when{font-size:12px;color:var(--t3);font-style:italic;margin-bottom:10px}
-.card-log-btn{width:100%;min-height:42px;background:rgba(0,102,255,.1);border:none;border-radius:11px;font-size:14px;font-weight:700;color:var(--bl)}
+.card-log-btn{width:100%;min-height:42px;background:rgba(11,94,215,.10);border:none;border-radius:11px;font-size:14px;font-weight:700;color:var(--bl)}
 .card-log-btn:active{opacity:.7}
 .chi{background:var(--c2);border-radius:12px;padding:11px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(15,23,42,.07)}
 .chi-n{font-size:14px;font-weight:600}
@@ -257,7 +257,7 @@ input[type=number]{-moz-appearance:textfield}
 .amv{font-size:15px;font-weight:700}.aml{font-size:10px;color:var(--t2);margin-top:1px}
 .am.ca .amv{color:var(--or)}.am.pr .amv{color:var(--bl)}.am.cb .amv{color:var(--gr)}.am.fa .amv{color:var(--pu)}
 .cfb{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;margin-left:6px}
-.cfb.h{background:rgba(48,209,88,.13);color:var(--gr)}.cfb.m{background:rgba(255,159,10,.13);color:var(--or)}.cfb.l{background:rgba(255,69,58,.13);color:var(--rd)}
+.cfb.h{background:rgba(10,115,64,.10);color:var(--gr)}.cfb.m{background:rgba(150,87,10,.10);color:var(--or)}.cfb.l{background:rgba(192,39,28,.10);color:var(--rd)}
 .ld{text-align:center;padding:22px;display:none}
 .ld.on{display:block}
 .sp{width:30px;height:30px;border:3px solid var(--c4);border-top-color:var(--bl);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
@@ -396,7 +396,7 @@ input[type=number]{-moz-appearance:textfield}
       <div style="font-size:10px;color:var(--t2);margin-top:2px">Marche kcal</div>
     </div>
   </div>
-  <div style="background:rgba(48,209,88,.1);border-radius:12px;padding:12px;text-align:center;margin-bottom:14px">
+  <div style="background:rgba(10,115,64,.08);border-radius:12px;padding:12px;text-align:center;margin-bottom:14px">
     <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Total brûlé aujourd'hui</div>
     <div style="font-size:32px;font-weight:700;color:var(--gr)" id="total-burn-val">–</div>
     <div style="font-size:12px;color:var(--t2);margin-top:2px">kcal</div>
@@ -476,11 +476,11 @@ input[type=number]{-moz-appearance:textfield}
 <div style="border-top:1px solid rgba(15,23,42,.08);margin-top:14px;padding-top:12px">
 <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Autres options</div>
 <div style="display:flex;gap:8px">
-<button onclick="oPh()" style="flex:1;background:rgba(10,132,255,.15);border:none;border-radius:12px;padding:11px;color:var(--bl);font-size:13px;font-weight:600;cursor:pointer">📷 Photo IA</button>
+<button onclick="oPh()" style="flex:1;background:rgba(11,94,215,.12);border:none;border-radius:12px;padding:11px;color:var(--bl);font-size:13px;font-weight:600;cursor:pointer">📷 Photo IA</button>
 <button onclick="oMf()" style="flex:1;background:var(--c3);border:none;border-radius:12px;padding:11px;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">✏️ Manuel</button>
 </div>
 <div style="margin-top:8px">
-<button onclick="oSupp()" style="width:100%;background:rgba(48,209,88,.1);border:none;border-radius:12px;padding:11px;color:var(--gr);font-size:13px;font-weight:600;cursor:pointer">💊 Compléments alimentaires</button>
+<button onclick="oSupp()" style="width:100%;background:rgba(10,115,64,.10);border:none;border-radius:12px;padding:11px;color:var(--gr);font-size:13px;font-weight:600;cursor:pointer">💊 Compléments alimentaires</button>
 </div>
 </div>
 </div></div>
@@ -577,7 +577,7 @@ input[type=number]{-moz-appearance:textfield}
 <input class="inp" type="text" id="s-gemini" placeholder="sk-proj-..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 <div style="font-size:12px;color:var(--t3);margin-top:6px;line-height:1.6">
 
-<button onclick="testGeminiKey()" style="margin-top:6px;background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" id="test-key-btn">🔍 Tester la clé OpenAI</button>
+<button onclick="testGeminiKey()" style="margin-top:6px;background:rgba(10,115,64,.12);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" id="test-key-btn">🔍 Tester la clé OpenAI</button>
 <span id="test-key-result" style="font-size:12px;margin-left:8px"></span>
 </div></div>
 <div class="mf"><label>Objectif calorique (kcal/jour)</label><input class="inp" type="number" inputmode="numeric" id="sc" placeholder="2450"></div>
@@ -1100,10 +1100,10 @@ function updateGramPreview(){
   var r=g/100,cal=Math.round(f.cal*r),prot=(f.prot*r).toFixed(1),carb=(f.carb*r).toFixed(1),fat=(f.fat*r).toFixed(1);
   document.getElementById('food-preview').innerHTML=
     '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">'+
-    '<div style="background:rgba(255,159,10,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+cal+'</div><div style="font-size:10px;color:var(--t2)">kcal</div></div>'+
-    '<div style="background:rgba(10,132,255,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--bl)">'+prot+'</div><div style="font-size:10px;color:var(--t2)">prot g</div></div>'+
-    '<div style="background:rgba(255,159,10,.08);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+carb+'</div><div style="font-size:10px;color:var(--t2)">gluc g</div></div>'+
-    '<div style="background:rgba(191,90,242,.1);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--pu)">'+fat+'</div><div style="font-size:10px;color:var(--t2)">lip g</div></div>'+
+    '<div style="background:rgba(150,87,10,.08);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+cal+'</div><div style="font-size:10px;color:var(--t2)">kcal</div></div>'+
+    '<div style="background:rgba(11,94,215,.08);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--bl)">'+prot+'</div><div style="font-size:10px;color:var(--t2)">prot g</div></div>'+
+    '<div style="background:rgba(150,87,10,.06);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--or)">'+carb+'</div><div style="font-size:10px;color:var(--t2)">gluc g</div></div>'+
+    '<div style="background:rgba(107,63,201,.08);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--pu)">'+fat+'</div><div style="font-size:10px;color:var(--t2)">lip g</div></div>'+
     '</div>';
 }
 function addFoodFromDB(){
@@ -1207,7 +1207,7 @@ function oSupp(){
   SUPPLEMENTS.forEach(function(s){
     html+='<div style="display:flex;align-items:center;justify-content:space-between;background:var(--c3);border-radius:12px;padding:11px 13px">'+
       '<div><div style="font-size:14px;font-weight:600">'+s.name+'</div><div style="font-size:11px;color:var(--t3);margin-top:2px">'+s.note+(s.cal?' · '+s.cal+' kcal':'')+(s.prot?' · P:'+s.prot+'g':'')+'</div></div>'+
-      '<button style="background:rgba(48,209,88,.15);border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" class="supp-add-btn" data-sid="'+s.id+'">+ Log</button>'+
+      '<button style="background:rgba(10,115,64,.12);border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:700;color:var(--gr);cursor:pointer" class="supp-add-btn" data-sid="'+s.id+'">+ Log</button>'+
       '</div>';
   });
   document.getElementById('supp-list').innerHTML=html;oM('m-supp');
@@ -1219,8 +1219,8 @@ document.addEventListener('click',function(ev){
     SUPPLEMENTS.forEach(function(x){if(x.id===id)s=x;});
     if(!s)return;
     addFood({name:s.name,cal:s.cal||0,prot:s.prot||0,carb:0,fat:0});
-    btn.textContent='✓';btn.style.background='rgba(48,209,88,.3)';
-    setTimeout(function(){btn.textContent='+ Log';btn.style.background='rgba(48,209,88,.15)';},1200);
+    btn.textContent='✓';btn.style.background='rgba(10,115,64,.20)';
+    setTimeout(function(){btn.textContent='+ Log';btn.style.background='rgba(10,115,64,.12)';},1200);
   }
 });
 function addCustomSupp(){
@@ -1284,7 +1284,7 @@ function buildWeightChart(wts){
   var line=pts.map(function(p){return p.x+','+p.y;}).join(' ');
   var area='M'+pts[0].x+','+(H-PB)+' '+pts.map(function(p){return'L'+p.x+','+p.y;}).join(' ')+' L'+pts[n-1].x+','+(H-PB)+' Z';
   var last=pts[n-1];
-  return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(48,209,88,.1)"/><polyline points="'+line+'" fill="none" stroke="var(--gr)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+last.x+'" cy="'+last.y+'" r="5" fill="var(--gr)"/><text x="'+last.x+'" y="'+(last.y-9)+'" text-anchor="middle" fill="var(--gr)" font-size="11" font-weight="700">'+last.v+'kg</text><text x="0" y="'+(PT+4)+'" fill="rgba(15,23,42,.38)" font-size="9">'+maxV.toFixed(1)+'</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(15,23,42,.38)" font-size="9">'+minV.toFixed(1)+'</text></svg>';
+  return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(10,115,64,.10)"/><polyline points="'+line+'" fill="none" stroke="var(--gr)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+last.x+'" cy="'+last.y+'" r="5" fill="var(--gr)"/><text x="'+last.x+'" y="'+(last.y-9)+'" text-anchor="middle" fill="var(--gr)" font-size="11" font-weight="700">'+last.v+'kg</text><text x="0" y="'+(PT+4)+'" fill="rgba(15,23,42,.55)" font-size="9">'+maxV.toFixed(1)+'</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(15,23,42,.55)" font-size="9">'+minV.toFixed(1)+'</text></svg>';
 }
 function calcBMR(){var s=gSet();return Math.round(10*(s.weightKg||82)+6.25*178-5*(s.age||26)+5);}
 function calcSportCalories(){
@@ -1345,7 +1345,7 @@ function buildExChart(mxs){
     dots+='<circle cx="'+p.x+'" cy="'+p.y+'" r="'+(isLast||pk?4.5:2.5)+'" fill="'+(isLast?'var(--bl)':pk?'var(--or)':'var(--c4)') +'"/>';
     if(isLast||pk)dots+='<text x="'+p.x+'" y="'+(p.y-8)+'" text-anchor="middle" fill="'+(isLast?'var(--bl)':'var(--or)')+'" font-size="10" font-weight="700">'+p.v+'kg</text>';
   });
-  return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(10,132,255,.09)"/><polyline points="'+line+'" fill="none" stroke="var(--bl)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'<text x="0" y="'+(PT+4)+'" fill="rgba(15,23,42,.32)" font-size="9">'+maxV+'kg</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(15,23,42,.32)" font-size="9">'+minV+'kg</text></svg>';
+  return'<svg viewBox="0 0 '+W+' '+H+'"><path d="'+area+'" fill="rgba(11,94,215,.10)"/><polyline points="'+line+'" fill="none" stroke="var(--bl)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'<text x="0" y="'+(PT+4)+'" fill="rgba(15,23,42,.55)" font-size="9">'+maxV+'kg</text><text x="0" y="'+(H-PB+4)+'" fill="rgba(15,23,42,.55)" font-size="9">'+minV+'kg</text></svg>';
 }
 function uSkpi(){
   var sets=0,exs=0,vol=0,days2={};
@@ -1440,11 +1440,11 @@ document.addEventListener('click', function(ev) {
     logs.push({date: todayStr(), id: id, name: cc.name});
     S.set('cardio', logs);
     btn.textContent = '✓ Enregistré !';
-    btn.style.background = 'rgba(0,168,107,.15)';
-    btn.style.color = '#00a86b';
+    btn.style.background = 'rgba(10,115,64,.16)';
+    btn.style.color = '#0a7340';
     setTimeout(function(){
       btn.textContent = '✓ Séance faite';
-      btn.style.background = 'rgba(0,102,255,.1)';
+      btn.style.background = 'rgba(11,94,215,.10)';
       btn.style.color = 'var(--bl)';
     }, 1500);
     renderCardioHist();
