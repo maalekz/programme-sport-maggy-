@@ -87,6 +87,7 @@ input[type=number]{-moz-appearance:textfield}
 .dchip.up.on{background:rgba(11,94,215,.12);color:var(--bl)}
 .dchip.lo.on{background:rgba(10,115,64,.12);color:var(--gr)}
 .dchip.ar.on{background:rgba(107,63,201,.12);color:var(--pu)}
+.dchip.fn.on{background:rgba(10,115,64,.12);color:var(--gr)}
 .sinfo{display:flex;gap:8px;padding:8px 16px}
 .si{flex:1;background:var(--c2);border-radius:12px;padding:10px;text-align:center}
 .si-v{font-size:18px;font-weight:700}.si-l{font-size:10px;color:var(--t2);margin-top:1px}
@@ -207,6 +208,7 @@ input[type=number]{-moz-appearance:textfield}
 .pdc.up.on{background:rgba(11,94,215,.12);color:var(--bl)}
 .pdc.lo.on{background:rgba(10,115,64,.12);color:var(--gr)}
 .pdc.ar.on{background:rgba(107,63,201,.12);color:var(--pu)}
+.pdc.fn.on{background:rgba(10,115,64,.12);color:var(--gr)}
 .pc{background:var(--c2);border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.07)}
 .pc-h{padding:12px 14px;border-bottom:1px solid rgba(15,23,42,.08)}
 .pcn{font-size:14px;font-weight:600;margin-bottom:3px}
@@ -303,6 +305,10 @@ input[type=number]{-moz-appearance:textfield}
 <div class="tipc" style="margin-bottom:14px">
 <div class="tipt">Les supersets, mode d'emploi</div>
 <div class="tipb">Sur les paires en superset : tu enchaînes les deux exercices <b style="color:#0f172a">sans repos entre eux</b>, puis tu récupères le temps indiqué avant de recommencer. Sur les paires lourdes (couché/tractions), garde 2 min de récup complète : l'objectif reste la performance. Sur le volume, repos courts pour la densité et la dépense.</div>
+</div>
+<div class="tipc" style="margin-bottom:14px">
+<div class="tipt">Séance 6 · Fonctionnel</div>
+<div class="tipb">Séance optionnelle du samedi. Elle sert à <b style="color:#0f172a">brûler beaucoup sans casser ta récupération</b> : charges modérées, mouvements complets, rythme soutenu. Le sled et le farmer walk sont excentrique-free, donc quasi zéro courbatures. Si ta semaine a été dure, fais-en 3 tours au lieu de 4 ou saute-la.</div>
 </div>
 <div class="card cp">
 <div class="lbl" style="margin-bottom:10px">Protocole · 16 semaines</div>
@@ -641,17 +647,27 @@ var DAYS={
       {id:'els',name:'Élévations latérales tempo lent',sets:3,reps:'15',tempo:'3-0-1-1',rest:"45s",rir:'1-2',grp:'g13'},
       {id:'pd',name:'Pushdown corde triceps',sets:3,reps:'15',tempo:'2-0-1-1',rest:"45s",rir:'1-2',grp:'g13'},
       {id:'db',name:'Dead bug',sets:3,reps:'12/côté',tempo:'lent',rest:'-',rir:'-',bw:true,grp:'g14'},
-      {id:'pp2',name:'Pallof press',sets:3,reps:'12/côté',tempo:'2-0-1-1',rest:"45s",rir:'-',grp:'g14'}]}
+      {id:'pp2',name:'Pallof press',sets:3,reps:'12/côté',tempo:'2-0-1-1',rest:"45s",rir:'-',grp:'g14'}]},
+  Fo:{name:'Functional',day:'Séance 6',type:'fn',note:"Circuit fonctionnel et métabolique. 4 tours, 90s de repos entre les tours. Charges modérées, exécution rapide et propre.",
+    exs:[
+      {id:'sled',name:'Poussée de traîneau (sled push)',sets:4,reps:'20-25m',tempo:'explosif',rest:'-',rir:'-',grp:'g15',note:'Buste bas, petits pas rapides, bras tendus'},
+      {id:'kbg',name:'Kettlebell goblet squat',sets:4,reps:'15',tempo:'2-0-1-0',rest:'-',rir:'2',grp:'g15'},
+      {id:'kbsw',name:'Kettlebell swing russe',sets:4,reps:'20',tempo:'explosif',rest:'-',rir:'-',grp:'g15',note:'Hanches, pas les bras. La KB monte à hauteur poitrine.'},
+      {id:'kbfw',name:'Farmer walk kettlebells',sets:4,reps:'30-40m',tempo:'-',rest:"1'30",rir:'-',grp:'g15',note:'Épaules basses, gainage serré, marche droite'},
+      {id:'kbcp',name:'Kettlebell clean and press',sets:3,reps:'8/bras',tempo:'explosif',rest:'-',rir:'2',grp:'g16'},
+      {id:'kbrr',name:'Renegade row kettlebells',sets:3,reps:'8/bras',tempo:'2-0-1-0',rest:"1'",rir:'2',grp:'g16',note:'Bassin immobile, anti-rotation'},
+      {id:'battle',name:'Battle ropes',sets:4,reps:'30s',tempo:'max',rest:'30s',rir:'-',grp:'g17'},
+      {id:'kbtg',name:'Turkish get-up allégé',sets:3,reps:'4/côté',tempo:'lent',rest:"1'",rir:'-',note:'Technique avant charge. Excellent pour les épaules et le gainage.'}]}
 };
 var GRP={
   g1:{t:'ss',l:'SUPERSET LOURD'},g2:{t:'ss',l:'SUPERSET'},g3:{t:'ss',l:'SUPERSET BRAS'},
   g4:{t:'ss',l:'SUPERSET'},g5:{t:'ab',l:'FINISHER'},
   g6:{t:'ss',l:'SUPERSET'},g7:{t:'ss',l:'SUPERSET'},g8:{t:'ss',l:'SUPERSET ÉPAULES'},g9:{t:'ss',l:'SUPERSET BRAS'},
   g10:{t:'ss',l:'SUPERSET'},g11:{t:'ss',l:'SUPERSET'},
-  g12:{t:'ts',l:'CIRCUIT · 4 TOURS'},g13:{t:'ss',l:'SUPERSET'},g14:{t:'ab',l:'FINISHER CORE'}
+  g12:{t:'ts',l:'CIRCUIT · 4 TOURS'},g15:{t:'ts',l:'CIRCUIT FONCTIONNEL · 4 TOURS'},g16:{t:'ss',l:'SUPERSET KETTLEBELL'},g17:{t:'ab',l:'FINISHER CARDIO'},g13:{t:'ss',l:'SUPERSET'},g14:{t:'ab',l:'FINISHER CORE'}
 };
 var GRPM=GRP;
-var TDM={1:'L',2:'Ma',3:'J',4:'V',5:'Sa',6:null,0:null};
+var TDM={1:'L',2:'Ma',3:'J',4:'V',5:'Sa',6:'Fo',0:null};
 var LIB=[
   {id:'lp',name:'Leg press',cat:'lo'},{id:'rdl',name:'Romanian deadlift',cat:'lo'},
   {id:'hdb',name:'Hip thrust haltere',cat:'lo'},{id:'lcs',name:'Leg curl assis',cat:'lo'},
@@ -759,7 +775,7 @@ function renderWorkout(k){
   var days=S.days(),day=days[k];if(!day)return;
   var body=document.getElementById('wbody');if(!body)return;
   var ts=day.exs.reduce(function(a,e){return a+e.sets;},0);
-  var ct=day.type==='up'?'bl':day.type==='lo'?'gr':'';
+  var ct=day.type==='up'?'bl':day.type==='lo'?'gr':day.type==='fn'?'gr':'';
   var html='<div class="sinfo">';
   html+='<div class="si '+ct+'"><div class="si-v">'+day.name.split(' ')[0]+'</div><div class="si-l">Type</div></div>';
   html+='<div class="si or"><div class="si-v">'+ts+'</div><div class="si-l">Séries</div></div>';
